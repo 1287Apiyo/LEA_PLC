@@ -1,0 +1,52 @@
+# ── Root ───────────────────────────────────────────────
+composer.phar
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+package-lock.json
+
+# ── Frontend (Next.js) ─────────────────────────────────
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+frontend/next-env.d.ts
+frontend/*.tsbuildinfo
+frontend/.vercel
+frontend/.turbo/
+
+# ── Backend (Laravel) ──────────────────────────────────
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/.phpunit.result.cache
+backend/storage/*.key
+backend/storage/logs/*
+!backend/storage/logs/.gitignore
+backend/storage/framework/cache/*
+!backend/storage/framework/cache/.gitignore
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitignore
+backend/storage/framework/views/*
+!backend/storage/framework/views/.gitignore
+backend/storage/app/private/*
+!backend/storage/app/private/.gitignore
+backend/storage/app/public/*
+!backend/storage/app/public/.gitignore
+backend/public/build/
+backend/public/hot
+backend/public/storage
+backend/.phpunit.cache/
+backend/database/*.sqlite
+backend/database/*.sqlite-journal
+
+# ── IDE ────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
