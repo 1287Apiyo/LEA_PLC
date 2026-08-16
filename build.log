@@ -1,0 +1,23 @@
+﻿
+> frontend@0.1.0 build
+> next build
+
+ΓÜá No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+   Γû▓ Next.js 15.5.9
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+npm : 
+At line:1 char:63
++ ... "C:\Users\Volo\Desktop\LEASYSTEM\frontend";npm run build 2>&1 | Out-F ...
++                                                ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+> Build error occurred
+[Error: spawn EPERM] { errno: -4048, code: 'EPERM', syscall: 'spawn' }
