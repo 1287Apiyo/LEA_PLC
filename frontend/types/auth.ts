@@ -28,6 +28,7 @@ export interface RegisterInput {
   email: string;
   password: string;
   password_confirmation: string;
+  role: Role;
 }
 
 export interface ForgotPasswordInput {

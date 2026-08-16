@@ -6,17 +6,17 @@ import {
   BookOpen,
   CalendarDays,
   FileCheck2,
+  Flame,
   MapPin,
   Sparkles,
   UserCheck,
 } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ChartCard } from "@/components/dashboard/chart-card";
+import { GreetingBanner } from "@/components/dashboard/greeting-banner";
 import { TrendLineChart } from "@/components/dashboard/charts";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import {
@@ -25,16 +25,48 @@ import {
   CourseProgressList,
 } from "@/components/dashboard/dashboard-lists";
 import { useLearnerDashboard } from "@/hooks/use-dashboard";
+import { useAuthStore } from "@/lib/auth-store";
+import { cn } from "@/lib/utils";
 
-/** Learner dashboard — courses, next class, assignments, progress and rewards. */
+/** Flat, bright accents for the fun learner portal — no gradients. */
+const ACHIEVEMENT_COLORS = [
+  "bg-orange-500",
+  "bg-violet-500",
+  "bg-emerald-500",
+  "bg-sky-500",
+  "bg-pink-500",
+];
+
+/** Learner dashboard — greeting banner, courses, next class, progress and rewards. */
 export function LearnerDashboard() {
   const { data, isLoading, isError, refetch } = useLearnerDashboard();
+  const user = useAuthStore((s) => s.user);
+
+  const firstName = user?.name.split(" ")[0] ?? "Learner";
+  const avgProgress =
+    data && data.myCourses.length > 0
+      ? Math.round(
+          data.myCourses.reduce((sum, course) => sum + course.progress, 0) /
+            data.myCourses.length
+        )
+      : null;
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Dashboard"
-        description="Your learning at a glance — keep the momentum going."
+      {/* Greeting banner */}
+      <GreetingBanner
+        firstName={firstName}
+        message={
+          avgProgress !== null
+            ? `You're ${avgProgress}% through this term's courses — keep the momentum going.`
+            : "Your learning journey starts here — pick a course and get going."
+        }
+        chip={
+          <>
+            <Flame className="h-3.5 w-3.5" aria-hidden />
+            {data?.stats.attendanceRate.value ?? "—"} attendance
+          </>
+        }
       />
 
       {isLoading ? (
@@ -67,7 +99,8 @@ export function LearnerDashboard() {
               <CourseProgressList courses={data.myCourses} />
             </div>
             {data.nextClass ? (
-              <Card>
+              <Card className="overflow-hidden">
+                <div className="h-1 bg-primary" />
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm font-medium">
                     <CalendarDays className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -120,11 +153,17 @@ export function LearnerDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-2">
-                {data.achievements.map((achievement) => (
-                  <Badge key={achievement} variant="secondary" className="gap-1.5 py-1">
-                    <Award className="h-3 w-3" aria-hidden />
+                {data.achievements.map((achievement, index) => (
+                  <span
+                    key={achievement}
+                    className={cn(
+                      "flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-white",
+                      ACHIEVEMENT_COLORS[index % ACHIEVEMENT_COLORS.length]
+                    )}
+                  >
+                    <Award className="h-4 w-4" aria-hidden />
                     {achievement}
-                  </Badge>
+                  </span>
                 ))}
               </CardContent>
             </Card>

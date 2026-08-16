@@ -64,9 +64,7 @@ export function LearnerPortfolio() {
           <Card key={project.title} className="flex flex-col">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm font-medium">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <MonitorSmartphone className="h-4 w-4" aria-hidden />
-                </span>
+                <MonitorSmartphone className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
                 {project.title}
               </CardTitle>
             </CardHeader>

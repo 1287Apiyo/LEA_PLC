@@ -21,6 +21,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { resourceService, type ResourceRow } from "@/services/resources";
+import type { ColumnMeta } from "@/lib/table-registry";
+import { cn } from "@/lib/utils";
 
 export interface DataTableQuery {
   page: number;
@@ -40,6 +42,10 @@ interface DataTableProps {
   showCount?: boolean;
   /** Optional row action menu (e.g. edit/delete), appended as the last column. */
   renderRowActions?: (row: ResourceRow) => React.ReactNode;
+}
+
+function columnMeta(column: ColumnDef<ResourceRow>): ColumnMeta | undefined {
+  return column.meta as ColumnMeta | undefined;
 }
 
 /**
@@ -99,6 +105,7 @@ export function DataTable({
         id: "actions",
         header: "",
         enableSorting: false,
+        meta: { align: "right" } satisfies ColumnMeta,
         cell: ({ row }: { row: { original: ResourceRow } }) => (
           <div className="flex justify-end">{renderRowActions(row.original)}</div>
         ),
@@ -133,7 +140,7 @@ export function DataTable({
 
   return (
     <div>
-      <div className="flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search
             className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -144,10 +151,10 @@ export function DataTable({
             onChange={(event) => setSearchInput(event.target.value)}
             placeholder={searchPlaceholder}
             aria-label={searchPlaceholder}
-            className="h-9 w-full rounded-md border bg-background pl-9 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="h-8 w-full rounded-md border bg-background pl-8 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
-        <span className="text-sm text-muted-foreground">{resultLabel}</span>
+        <span className="text-xs text-muted-foreground">{resultLabel}</span>
       </div>
 
       <div className="overflow-x-auto">
@@ -156,24 +163,29 @@ export function DataTable({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
+                  const meta = columnMeta(header.column.columnDef);
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
-                  const alignEnd = header.id === "actions";
+                  const isActions = header.id === "actions";
                   return (
                     <TableHead
                       key={header.id}
-                      className={alignEnd ? "text-right" : undefined}
+                      className={cn(
+                        "whitespace-nowrap",
+                        meta?.align === "right" && !isActions && "text-right"
+                      )}
+                      style={{ minWidth: meta?.width }}
                     >
                       {canSort ? (
                         <button
                           type="button"
-                          className="inline-flex items-center gap-1 font-medium hover:text-foreground"
+                          className={cn(
+                            "inline-flex items-center gap-1 font-medium hover:text-foreground",
+                            meta?.align === "right" && !isActions && "flex-row-reverse"
+                          )}
                           onClick={header.column.getToggleSortingHandler()}
                         >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          {flexRender(header.column.columnDef.header, header.getContext())}
                           {sorted === "asc" ? (
                             <ArrowUp className="h-3 w-3" aria-hidden />
                           ) : sorted === "desc" ? (
@@ -193,8 +205,8 @@ export function DataTable({
             {isLoading ? (
               Array.from({ length: 6 }).map((_, index) => (
                 <TableRow key={index}>
-                  {effectiveColumns.map((_, cellIndex) => (
-                    <TableCell key={cellIndex}>
+                  {effectiveColumns.map((col, cellIndex) => (
+                    <TableCell key={cellIndex} style={{ minWidth: columnMeta(col)?.width }}>
                       <Skeleton className="h-5 w-full max-w-[140px]" />
                     </TableCell>
                   ))}
@@ -211,14 +223,26 @@ export function DataTable({
             ) : (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} className="hover:bg-muted/40">
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.id === "actions" ? "text-right" : undefined}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const meta = columnMeta(cell.column.columnDef);
+                    const isActions = cell.column.id === "actions";
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          "whitespace-nowrap py-2.5",
+                          meta?.align === "right" && !isActions && "text-right"
+                        )}
+                        style={{ minWidth: meta?.width }}
+                      >
+                        {isActions ? (
+                          flexRender(cell.column.columnDef.cell, cell.getContext())
+                        ) : (
+                          <div className="truncate">{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             )}
@@ -226,14 +250,15 @@ export function DataTable({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between gap-3 border-t p-4">
-        <p className="text-sm text-muted-foreground">
+      <div className="flex items-center justify-between gap-3 border-t px-4 py-3">
+        <p className="text-xs text-muted-foreground">
           Page {meta?.current_page ?? 1} of {lastPage}
         </p>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
+            className="h-8"
             disabled={page <= 1 || isLoading}
             onClick={() => setPage((value) => Math.max(1, value - 1))}
             aria-label="Previous page"
@@ -243,6 +268,7 @@ export function DataTable({
           <Button
             variant="outline"
             size="sm"
+            className="h-8"
             disabled={page >= lastPage || isLoading}
             onClick={() => setPage((value) => value + 1)}
             aria-label="Next page"

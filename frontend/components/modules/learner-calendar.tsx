@@ -67,7 +67,7 @@ export function LearnerCalendar() {
                   >
                     <span
                       className={cn(
-                        "flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary"
+                        "flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-lg border text-muted-foreground"
                       )}
                     >
                       <Clock className="h-4 w-4" aria-hidden />

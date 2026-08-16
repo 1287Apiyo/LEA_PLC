@@ -10,7 +10,7 @@ import { ApiError, type ApiErrorBody } from "@/types/api";
  *   and redirecting to /login (single silent bounce).
  */
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+  process.env.NEXT_PUBLIC_API_URL ?? "/api/v1";
 
 interface RequestOptions extends Omit<RequestInit, "body"> {
   /** JSON-serializable body — automatically stringified and content-typed. */

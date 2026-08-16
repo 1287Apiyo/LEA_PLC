@@ -78,7 +78,7 @@ export function NotificationsPopover() {
                   className={
                     notification.read_at
                       ? "flex gap-3 px-4 py-3"
-                      : "flex gap-3 bg-primary/5 px-4 py-3"
+                      : "flex gap-3 bg-muted/60 px-4 py-3"
                   }
                 >
                   <div className="min-w-0 flex-1 space-y-0.5">

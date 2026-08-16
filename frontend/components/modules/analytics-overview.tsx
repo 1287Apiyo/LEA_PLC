@@ -58,7 +58,7 @@ export function AnalyticsOverview() {
                       key={entry}
                       className="flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm"
                     >
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
                         {entry.charAt(0)}
                       </span>
                       {entry}

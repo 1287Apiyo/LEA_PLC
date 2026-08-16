@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LoginForm } from "@/components/auth/login-form";
-import { DemoAccounts } from "@/components/auth/demo-accounts";
 
 export const metadata = { title: "Sign in" };
 
@@ -17,16 +16,15 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sign in</CardTitle>
+        <CardTitle className="text-xl">Welcome back</CardTitle>
         <CardDescription>
-          Access your LEA Labs workspace.
+          Sign in to your LEA Labs workspace and pick up where you left off.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Suspense>
           <LoginForm />
         </Suspense>
-        <DemoAccounts />
       </CardContent>
       <CardFooter className="flex justify-center text-sm text-muted-foreground">
         <span>

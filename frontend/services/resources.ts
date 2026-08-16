@@ -23,6 +23,8 @@ export const resourceService = {
         order: params.order,
       })}`
     ),
+  get: (resource: string, id: string) =>
+    api.get<{ data: ResourceRow }>(`/${resource}/${id}`),
   create: (resource: string, data: ResourceRow) =>
     api.post<{ data: ResourceRow }>(`/${resource}`, data),
   update: (resource: string, id: string, data: ResourceRow) =>

@@ -35,7 +35,7 @@ export default async function LearnerModulePage({
   return (
     <div className="space-y-6">
       <PageHeader title={definition.title} description={definition.description} />
-      <ModuleListView role="learner" slug={module} />
+      <ModuleListView role="learner" slug={module} plural={definition.title} />
     </div>
   );
 }

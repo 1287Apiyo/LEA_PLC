@@ -35,7 +35,7 @@ export default async function AdminModulePage({
   return (
     <div className="space-y-6">
       <PageHeader title={definition.title} description={definition.description} />
-      <ModuleListView role="administrator" slug={module} />
+      <ModuleListView role="administrator" slug={module} plural={definition.title} />
     </div>
   );
 }

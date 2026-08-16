@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Menu, Sparkles } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { BrandMark } from "@/components/shared/brand-mark";
 import { SidebarNav } from "@/components/shared/sidebar-nav";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { CommandPalette } from "@/components/shared/command-palette";
@@ -20,11 +21,11 @@ interface AppShellProps {
 
 function Brand() {
   return (
-    <div className="flex h-14 items-center gap-2 border-b px-4">
-      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <Sparkles className="h-4 w-4" aria-hidden />
+    <div className="flex h-14 items-center gap-2.5 border-b border-sidebar-border px-4">
+      <BrandMark className="h-7 w-7 shrink-0" />
+      <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+        {APP_NAME}
       </span>
-      <span className="text-sm font-semibold tracking-tight">{APP_NAME}</span>
     </div>
   );
 }
@@ -39,14 +40,21 @@ export function AppShell({ role, children }: AppShellProps) {
   return (
     <div className="min-h-screen">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r bg-background lg:flex">
+      <aside
+        data-sidebar-role={role}
+        className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex"
+      >
         <Brand />
         <SidebarNav role={role} />
       </aside>
 
       {/* Mobile sidebar */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="w-64 p-0">
+        <SheetContent
+          side="left"
+          data-sidebar-role={role}
+          className="w-64 border-sidebar-border bg-sidebar p-0 text-sidebar-foreground"
+        >
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <div className="flex h-full flex-col">
             <Brand />

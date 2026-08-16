@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import type {
   InstructorAssignment,
   LearnerAssignment,
@@ -170,22 +169,40 @@ export function AssignmentList({
   );
 }
 
+/** One flat color per course — the learner portal's playful progress bars. */
+const COURSE_COLORS = [
+  "bg-orange-500",
+  "bg-sky-500",
+  "bg-emerald-500",
+  "bg-violet-500",
+  "bg-pink-500",
+];
+
 export function CourseProgressList({ courses }: { courses: LearnerCourse[] }) {
   return (
     <ListCard title="My courses" href="/learner/courses">
-      {courses.map((course) => (
-        <div key={course.id} className="space-y-1.5 rounded-md px-2 py-2.5 hover:bg-muted/50">
+      {courses.map((course, index) => (
+        <Link
+          key={course.id}
+          href={`/learner/courses/${course.id}`}
+          className="block space-y-1.5 rounded-md px-2 py-2.5 transition-colors hover:bg-muted/50"
+        >
           <div className="flex items-center justify-between gap-3">
             <p className="truncate text-sm font-medium">{course.title}</p>
             <span className="shrink-0 text-xs font-medium text-muted-foreground">
               {course.progress}%
             </span>
           </div>
-          <Progress value={course.progress} className="h-1.5" />
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className={cn("h-full rounded-full transition-all", COURSE_COLORS[index % COURSE_COLORS.length])}
+              style={{ width: `${course.progress}%` }}
+            />
+          </div>
           <p className="truncate text-xs text-muted-foreground">
             Next: {course.next_lesson}
           </p>
-        </div>
+        </Link>
       ))}
     </ListCard>
   );

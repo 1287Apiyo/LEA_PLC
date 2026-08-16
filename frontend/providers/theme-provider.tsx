@@ -3,7 +3,7 @@
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ComponentProps } from "react";
 
-/** next-themes wrapper — dark mode is on by default with system detection. */
+/** next-themes wrapper — light mode by default (black sidebar, white content). */
 export function ThemeProvider({
   children,
   ...props
@@ -11,8 +11,7 @@ export function ThemeProvider({
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="system"
-      enableSystem
+      defaultTheme="light"
       disableTransitionOnChange
       {...props}
     >

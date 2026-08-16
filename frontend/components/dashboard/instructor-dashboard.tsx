@@ -1,25 +1,34 @@
 "use client";
 
 import { CalendarDays, ClipboardCheck, FileCheck2, Users } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ChartCard } from "@/components/dashboard/chart-card";
+import { GreetingBanner } from "@/components/dashboard/greeting-banner";
 import { CategoryBarChart, TrendLineChart } from "@/components/dashboard/charts";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { AssignmentList, TodaySchedule } from "@/components/dashboard/dashboard-lists";
 import { useInstructorDashboard } from "@/hooks/use-dashboard";
+import { useAuthStore } from "@/lib/auth-store";
 
 /** Instructor dashboard — classes, attendance, grading and learner analytics. */
 export function InstructorDashboard() {
   const { data, isLoading, isError, refetch } = useInstructorDashboard();
+  const user = useAuthStore((s) => s.user);
+  const firstName = user?.name.split(" ")[0] ?? "Instructor";
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Dashboard"
-        description="Your teaching overview — classes, grading and learner activity."
+      <GreetingBanner
+        firstName={firstName}
+        message="Your teaching overview — classes, grading and learner activity."
+        chip={
+          <>
+            <CalendarDays className="h-3.5 w-3.5" aria-hidden />
+            {data?.stats.todayClasses.value ?? "—"} classes today
+          </>
+        }
       />
 
       {isLoading ? (

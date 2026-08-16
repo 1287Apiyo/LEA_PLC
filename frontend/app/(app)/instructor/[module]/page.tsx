@@ -35,7 +35,7 @@ export default async function InstructorModulePage({
   return (
     <div className="space-y-6">
       <PageHeader title={definition.title} description={definition.description} />
-      <ModuleListView role="instructor" slug={module} />
+      <ModuleListView role="instructor" slug={module} plural={definition.title} />
     </div>
   );
 }

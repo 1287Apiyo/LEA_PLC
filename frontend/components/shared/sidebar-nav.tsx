@@ -11,11 +11,11 @@ export function SidebarNav({ role }: { role: Role }) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
+    <nav className="sidebar-scroll flex-1 space-y-5 overflow-y-auto px-3 py-3">
       {NAV[role].map((section, index) => (
         <div key={index}>
           {section.title ? (
-            <p className="px-3 pb-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <p className="px-3 pb-1 text-xs font-medium uppercase tracking-wider text-white/80">
               {section.title}
             </p>
           ) : null}
@@ -29,12 +29,18 @@ export function SidebarNav({ role }: { role: Role }) {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                      "relative flex items-center gap-3 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                       active
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        ? "text-primary"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     )}
                   >
+                    {active ? (
+                      <span
+                        aria-hidden
+                        className="absolute -left-3 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-primary"
+                      />
+                    ) : null}
                     <item.icon className="h-4 w-4 shrink-0" aria-hidden />
                     {item.title}
                   </Link>

@@ -19,8 +19,8 @@ import type { CategoryPoint, ChartPoint } from "@/types/dashboard";
 
 /** Fallback hex series (light/dark) when CSS variables are unavailable. */
 const FALLBACK: Record<"light" | "dark", string[]> = {
-  light: ["#3E7096", "#C56443", "#6F8854", "#C68E31", "#836687"],
-  dark: ["#75A7C9", "#E38769", "#9BB379", "#E2B158", "#AD90B0"],
+  light: ["#F97316", "#8B5CF6", "#10B981", "#F59E0B", "#F43F5E"],
+  dark: ["#FB923C", "#A78BFA", "#34D399", "#FBBF24", "#FB7185"],
 };
 
 interface ChartColors {
@@ -84,12 +84,6 @@ export function TrendAreaChart({ data, height = 260 }: TrendChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <AreaChart data={data} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
-        <defs>
-          <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={colors.series[0]} stopOpacity={0.28} />
-            <stop offset="100%" stopColor={colors.series[0]} stopOpacity={0.02} />
-          </linearGradient>
-        </defs>
         <CartesianGrid stroke={colors.grid} strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey="label"
@@ -114,7 +108,8 @@ export function TrendAreaChart({ data, height = 260 }: TrendChartProps) {
           dataKey="value"
           stroke={colors.series[0]}
           strokeWidth={2}
-          fill="url(#trendFill)"
+          fill={colors.series[0]}
+          fillOpacity={0.12}
         />
       </AreaChart>
     </ResponsiveContainer>

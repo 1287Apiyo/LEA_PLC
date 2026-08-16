@@ -103,7 +103,7 @@ export const NAV: Record<Role, NavSection[]> = {
       title: "Overview",
       items: [
         { title: "Dashboard", href: "/learner", icon: LayoutDashboard },
-        { title: "My Courses", href: "/learner/courses", icon: BookOpen },
+        { title: "Course catalog", href: "/learner/courses", icon: BookOpen },
         { title: "Assignments", href: "/learner/assignments", icon: FileText },
         { title: "Certificates", href: "/learner/certificates", icon: Award },
         { title: "Attendance", href: "/learner/attendance", icon: ClipboardList },

@@ -7,11 +7,11 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ChartCard } from "@/components/dashboard/chart-card";
+import { GreetingBanner } from "@/components/dashboard/greeting-banner";
 import {
   CategoryBarChart,
   TrendAreaChart,
@@ -24,17 +24,26 @@ import {
   TodaySchedule,
 } from "@/components/dashboard/dashboard-lists";
 import { useAdminDashboard } from "@/hooks/use-dashboard";
+import { useAuthStore } from "@/lib/auth-store";
 
 /** Administrator dashboard — platform-wide metrics, charts and activity. */
 export function AdminDashboard() {
   const { data, isLoading, isError, refetch } = useAdminDashboard();
+  const user = useAuthStore((s) => s.user);
+  const firstName = user?.name.split(" ")[0] ?? "Administrator";
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Dashboard"
-        description="Platform overview — learning, operations and finance at a glance."
-        actions={
+      <GreetingBanner
+        firstName={firstName}
+        message="Platform overview — learning, operations and finance at a glance."
+        chip={
+          <>
+            <CalendarDays className="h-3.5 w-3.5" aria-hidden />
+            {data?.stats.todayClasses.value ?? "—"} classes today
+          </>
+        }
+        action={
           <Button
             variant="outline"
             size="sm"

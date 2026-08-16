@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
-import { MockProvider } from "@/components/mock-provider";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
 import { APP_NAME } from "@/lib/constants";
 import "./globals.css";
@@ -32,12 +31,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <ThemeProvider>
-          <MockProvider>
-            <QueryProvider>
-              <ErrorBoundary>{children}</ErrorBoundary>
-              <Toaster richColors position="top-right" closeButton />
-            </QueryProvider>
-          </MockProvider>
+          <QueryProvider>
+            <ErrorBoundary>{children}</ErrorBoundary>
+            <Toaster richColors position="top-right" closeButton />
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

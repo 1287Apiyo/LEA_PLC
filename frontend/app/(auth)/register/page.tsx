@@ -15,9 +15,9 @@ export default function RegisterPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create account</CardTitle>
+        <CardTitle className="text-xl">Create your account</CardTitle>
         <CardDescription>
-          Join LEA Labs to start learning.
+          Join LEA Labs — pick your role and get started.
         </CardDescription>
       </CardHeader>
       <CardContent>

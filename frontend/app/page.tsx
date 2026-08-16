@@ -1,11 +1,20 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import LandingPage from "@/components/landing/landing-page";
 import { AUTH_COOKIE, ROLE_COOKIE, ROLE_HOME } from "@/lib/constants";
 import type { Role } from "@/types/auth";
 
+export const metadata = {
+  title: "LEA Labs — Learn. Explore. Achieve.",
+  description:
+    "Coding, digital literacy and real certificates for young learners — guided video lessons, hands-on coding workspaces and progress you can see.",
+};
+
 /**
- * Entry point — routes users to their role home or the login page.
- * (The edge middleware doesn't cover "/", so this server component does.)
+ * Public landing page — the LEA Labs website. Visitors get the marketing page
+ * with a login entry point; authenticated users are sent straight to their
+ * role home. (The edge middleware doesn't cover "/", so this server component
+ * does the auth check.)
  */
 export default async function HomePage() {
   const cookieStore = await cookies();
@@ -15,5 +24,6 @@ export default async function HomePage() {
   if (isAuthed && role && role in ROLE_HOME) {
     redirect(ROLE_HOME[role]);
   }
-  redirect("/login");
+
+  return <LandingPage />;
 }

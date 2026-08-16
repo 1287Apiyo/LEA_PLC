@@ -14,6 +14,9 @@ export const registerSchema = z
     email: z.string().min(1, "Email is required").email("Enter a valid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     password_confirmation: z.string(),
+    role: z.enum(["learner", "instructor", "administrator"], {
+      required_error: "Choose a role to continue",
+    }),
   })
   .refine((data) => data.password === data.password_confirmation, {
     path: ["password_confirmation"],

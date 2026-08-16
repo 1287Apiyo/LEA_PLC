@@ -2,7 +2,33 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import type { ResourceRow } from "@/services/resources";
-import type { ResourceKey } from "@/mocks/data";
+/** Backend resource slugs served by the generic /api/v1/[resource] routes. */
+export type ResourceKey =
+  | "learners"
+  | "instructors"
+  | "staff"
+  | "programmes"
+  | "courses"
+  | "content"
+  | "classes"
+  | "attendance"
+  | "assessments"
+  | "certificates"
+  | "companies"
+  | "schools"
+  | "partners"
+  | "projects"
+  | "events"
+  | "leads"
+  | "assignments"
+  | "submissions"
+  | "materials"
+  | "announcements"
+  | "messages"
+  | "achievements"
+  | "progress"
+  | "bookmarks"
+  | "downloads";
 
 /**
  * Column registry — defines the table shown on each module page.
@@ -75,11 +101,39 @@ interface ColumnOptions {
   sortable?: boolean;
 }
 
+/** Column layout metadata applied by the data table. */
+export interface ColumnMeta {
+  align?: "left" | "right";
+  width?: string;
+}
+
+/** Keys that render as numbers — right-aligned automatically. */
+const NUMERIC_KEYS = new Set([
+  "amount", "price", "value", "budget", "salary", "score", "max_score",
+  "enrolled", "learners", "students", "devices", "labs", "modules",
+  "lessons", "capacity", "registrations", "submissions", "graded",
+  "rating", "attendance_rate", "progress", "quiz_avg", "downloads",
+  "tickets_open", "employees_trained", "training_hours", "contract_value",
+  "funding", "fee", "leave_balance", "assigned_classes", "teachers", "visits_this_term",
+]);
+
+/** Keys that need extra room — wider minimum width. */
+const WIDE_KEYS: Record<string, string> = {
+  email: "240px",
+  description: "260px",
+  preview: "260px",
+};
+
 function column(id: string, header: string, options: ColumnOptions = {}): ColumnDef<ResourceRow> {
+  const meta: ColumnMeta = {
+    align: NUMERIC_KEYS.has(id) ? "right" : "left",
+    width: WIDE_KEYS[id],
+  };
   return {
     accessorKey: id,
     header,
     enableSorting: options.sortable ?? true,
+    meta,
     cell: ({ getValue, row }) =>
       options.cell ? options.cell(getValue(), row.original) : String(getValue() ?? "—"),
   };
@@ -492,5 +546,7 @@ export const TABLE_REGISTRY: Record<string, ModuleTableConfig> = {
 };
 
 export function getTableConfig(role: string, slug: string): ModuleTableConfig | undefined {
-  return TABLE_REGISTRY[`${role}/${slug}`];
+  // Registry keys use the route prefix ("admin"), the role value is "administrator".
+  const prefix = role === "administrator" ? "admin" : role;
+  return TABLE_REGISTRY[`${prefix}/${slug}`];
 }

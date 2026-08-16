@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
+import { usePathname, useRouter } from "next/navigation";
 import { Eye, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -271,6 +272,8 @@ export function CrudTable({
   plural,
 }: CrudTableProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const pathname = usePathname();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ResourceRow | null>(null);
   const [deleting, setDeleting] = useState<ResourceRow | null>(null);
@@ -302,7 +305,7 @@ export function CrudTable({
   return (
     <Card>
       <CardContent className="p-0">
-        <div className="flex items-center justify-between border-b px-4 py-3">
+        <div className="flex items-center justify-between border-b px-4 py-2.5">
           <p className="text-sm font-medium">
             {plural ?? `${title}s`}
             <span className="ml-2 text-xs font-normal text-muted-foreground">
@@ -311,7 +314,7 @@ export function CrudTable({
           </p>
           <Button
             size="sm"
-            className="gap-1.5"
+            className="h-8 gap-1.5"
             onClick={() => {
               setEditing(null);
               setDialogOpen(true);
@@ -336,13 +339,10 @@ export function CrudTable({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                  onSelect={() =>
-                    toast.info(
-                      `Viewing ${title.toLowerCase()} — ${String(
-                        row.name ?? row.title ?? row.id ?? ""
-                      )}`
-                    )
-                  }
+                  onSelect={() => {
+                    const id = String(row.id ?? "");
+                    if (id) void router.push(`${pathname}/${encodeURIComponent(id)}`);
+                  }}
                 >
                   <Eye className="mr-2 h-4 w-4" aria-hidden />
                   View
