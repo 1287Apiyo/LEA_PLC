@@ -1,0 +1,1 @@
+$p='C:\Users\Volo\Desktop\LEA_PLC\frontend\components\landing\landing-page.tsx';$s=Get-Content -Raw -LiteralPath $p;$i=$s.IndexOf('<section className=');[Console]::WriteLine($s.Substring($i,3500))

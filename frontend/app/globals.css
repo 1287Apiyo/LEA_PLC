@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -7,7 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
@@ -124,7 +124,7 @@
   --sidebar-ring: oklch(0.75 0.183 55.934);
 }
 
-/* ── Auth screen animations ───────────────────────────────── */
+/* â”€â”€ Auth screen animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes lea-float {
   0%,
   100% {
@@ -203,7 +203,7 @@
   }
 }
 
-/* Role-based sidebar — the learner portal keeps the purple; admin and instructor stay black. */
+/* Role-based sidebar â€” the learner portal keeps the purple; admin and instructor stay black. */
 [data-sidebar-role="learner"] {
   --sidebar: oklch(0.27 0.12 295);
 }
@@ -212,7 +212,7 @@
   --sidebar: oklch(0.22 0.1 295);
 }
 
-/* Sidebar scroll area — scrollable when needed but no visible scrollbar. */
+/* Sidebar scroll area â€” scrollable when needed but no visible scrollbar. */
 .sidebar-scroll {
   scrollbar-width: none;
 }
@@ -231,3 +231,7 @@
     @apply font-sans;
   }
 }
+html {
+ scroll-behavior: smooth;
+}
+

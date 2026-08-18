@@ -1,0 +1,1 @@
+const fs=require('fs');const p='C:/Users/Volo/Desktop/LEA_PLC/frontend/components/landing/landing-page.tsx';const s=fs.readFileSync(p,'utf8');const i=s.indexOf('mt-14 flex flex-wrap');console.log(s.slice(i-1200,i+2600));

@@ -1,0 +1,1 @@
+const fs=require('fs');const p='C:/Users/Volo/Desktop/LEA_PLC/frontend/components/landing/landing-page.tsx';const s=fs.readFileSync(p,'utf8');for(const n of [4528,6891,8421,8427,8445,20594,22968,22976]){console.log('\nPOS',n,'\n',s.slice(n-260,n+420));}

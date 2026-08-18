@@ -1,0 +1,1 @@
+$p='C:\Users\Volo\Desktop\LEA_PLC\frontend\app\layout.tsx';$s=Get-Content -Raw -LiteralPath $p;$marker=([char]96)+'r'+([char]96)+'n';$s=$s.Replace($marker,[Environment]::NewLine);Set-Content -LiteralPath $p -Value $s -Encoding utf8;Write-Output 'layout repaired'

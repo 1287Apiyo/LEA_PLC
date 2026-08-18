@@ -1,4 +1,5 @@
-import type { Metadata, Viewport } from "next";
+﻿import type { Metadata, Viewport } from "next";
+import { Outfit } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
@@ -6,10 +7,12 @@ import { ErrorBoundary } from "@/components/shared/error-boundary";
 import { APP_NAME } from "@/lib/constants";
 import "./globals.css";
 
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap" });
+
 export const metadata: Metadata = {
   title: {
-    default: `${APP_NAME} — Integrated Learning & Operations Platform`,
-    template: `%s · ${APP_NAME}`,
+    default: `${APP_NAME} â€” Integrated Learning & Operations Platform`,
+    template: `%s Â· ${APP_NAME}`,
   },
   description:
     "The digital operating system for LEA Labs: learning, corporate training, technology services, partnerships, finance and reporting.",
@@ -29,7 +32,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+      <body className={`${outfit.variable} min-h-screen bg-background font-sans text-foreground antialiased`}>
         <ThemeProvider>
           <QueryProvider>
             <ErrorBoundary>{children}</ErrorBoundary>
@@ -40,3 +43,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+
