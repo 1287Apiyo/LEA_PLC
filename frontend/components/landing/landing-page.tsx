@@ -50,22 +50,35 @@ export default function LandingPage() {
       <LandingNav />
 
       <main>
-        <section className="relative grid min-h-0 lg:min-h-[560px] overflow-hidden border-b border-[#eadfe9] bg-[#f6eef9] lg:grid-cols-[1fr_1fr]">
-          <div className="relative flex flex-col justify-start px-5 pb-8 pt-6 sm:px-10 sm:pb-10 sm:pt-7 lg:pr-[7vw] lg:pl-[max(7vw,calc((100vw_-_14vw_-_1440px)_/_2_+_7vw))] lg:pb-12 lg:pt-7">
-            <div className="mt-8 sm:mt-10 lg:mt-12">
-              <h1 className="mt-5 max-w-[650px] text-[clamp(2.55rem,4.5vw,4.95rem)] font-semibold leading-[0.93] tracking-[-0.065em] text-[#17131a]"><span className="text-[#151116]">Build the skills</span><br /><span className="text-[#4d176e]">your next role will</span><br /><span className="text-[#f47945]">ask for.</span></h1>
-              <p className="mt-6 max-w-[540px] text-sm leading-6 text-[#6a5a70] sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p><p className="mt-4 max-w-[500px] text-xs font-semibold leading-6 text-[#4d176e] sm:text-sm">Learn by building, grow with guidance, and leave with work you can show.</p>
-              <div className="mt-6 flex flex-wrap items-center gap-4"><Link href="#programmes" className="inline-flex h-12 items-center gap-3 rounded-full bg-[#f47945] px-6 text-xs font-black text-[#351039] shadow-[0_14px_24px_rgba(244,121,69,0.2)] transition hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4d176e] focus-visible:ring-offset-2">Explore programmes <ArrowDownRight className="h-4 w-4" /></Link><Link href="#programmes" className="inline-flex items-center gap-1 border-b border-[#4d176e]/45 pb-1 text-xs font-black text-[#4d176e] transition hover:border-[#f47945] hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link></div>
+        <section className="relative grid min-h-0 overflow-hidden border-b border-[#eadfe9] bg-[#f6eef9] lg:min-h-[calc(100svh-72px)] lg:grid-cols-2">
+          <div className="relative flex min-h-[640px] flex-col overflow-hidden px-5 sm:px-10 lg:min-h-[calc(100svh-72px)] lg:pl-[max(7vw,calc((100vw_-_14vw_-_1440px)_/_2_+_7vw))] lg:pr-12">
+            <span className="pointer-events-none absolute right-[14%] top-[18%] h-1 w-1 rounded-full bg-[#f47945]" />
+            <div className="relative z-10 flex flex-1 flex-col justify-center pb-8 pt-10 sm:pt-12 lg:pb-5 lg:pt-0">
+              <h1 className="max-w-[690px] text-[clamp(3.1rem,5.15vw,5.65rem)] font-semibold leading-[0.92] tracking-[-0.075em] text-[#4d176e]">
+                <span>Build the skills</span><br />
+                <span>your next role will</span><br />
+                <span className="text-[#f47945]">ask for.</span>
+              </h1>
+              <p className="mt-7 max-w-[560px] text-sm leading-6 text-[#6a5a70] sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p>
+              <p className="mt-3 max-w-[510px] text-xs font-semibold leading-6 text-[#4d176e] sm:text-sm">Learn by building, grow with guidance, and leave with work you can show.</p>
+              <div className="mt-7 flex flex-wrap items-center gap-4">
+                <Link href="#programmes" className="inline-flex h-12 items-center gap-3 rounded-full bg-[#f47945] px-6 text-xs font-black text-[#351039] shadow-[0_14px_24px_rgba(244,121,69,0.2)] transition hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4d176e] focus-visible:ring-offset-2">Explore programmes <ArrowDownRight className="h-4 w-4" /></Link>
+                <Link href="#programmes" className="inline-flex items-center gap-1 border-b border-[#4d176e]/45 pb-1 text-xs font-black text-[#4d176e] transition hover:border-[#f47945] hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link>
+              </div>
             </div>
-            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[10px] font-bold text-[#6b5b73] sm:mt-9"><span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#f47945]" /> Practical learning</span><span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7db3a9]" /> Guided support</span><span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#4d176e]" /> Career direction</span></div>
+            <div className="relative z-10 flex flex-wrap gap-x-6 gap-y-2 pb-7 text-[10px] font-bold text-[#6b5b73] sm:pb-8">
+              <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#f47945]" /> Practical learning</span>
+              <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7db3a9]" /> Guided support</span>
+              <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#4d176e]" /> Career direction</span>
+            </div>
           </div>
-          <div className="relative min-h-[420px] overflow-hidden bg-[#e9d9ed] sm:min-h-[480px] lg:min-h-0">
-            <div className="absolute inset-y-0 left-0 z-10 w-1/3 bg-gradient-to-r from-[#f6eef9] via-[#f6eef9]/80 to-transparent" />
+          <div className="relative min-h-[480px] overflow-hidden bg-[#e9d9ed] sm:min-h-[560px] lg:min-h-[calc(100svh-72px)]">
             <div className="absolute left-0 top-0 z-20 h-40 w-28 bg-[#4d176e] [clip-path:polygon(0_0,100%_0,0_100%)]" />
-            <img src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" className="absolute inset-0 h-full w-full object-cover object-[64%_center]" />
-            <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#f6eef9]/80 via-transparent to-[#4d176e]/10" />
-            <div className="absolute right-8 top-7 z-30 hidden flex-col items-center gap-1 sm:flex"><span className="h-8 w-[3px] rotate-[28deg] bg-[#f47945]" /><span className="-mt-3 ml-3 h-5 w-[3px] rotate-[115deg] bg-[#2e4768]" /></div>
-            <div className="absolute bottom-0 left-10 z-30 flex items-end sm:left-20"><div className="relative flex h-20 w-24 items-center justify-center bg-[#4d176e] text-3xl font-black text-white sm:h-24 sm:w-28">01</div><svg className="h-20 w-[250px] text-[#f47945] sm:h-24" viewBox="0 0 250 72" fill="none" aria-hidden><path d="M0 55 C50 60 48 12 105 31 C153 47 160 5 207 25 C225 33 236 41 250 38" stroke="currentColor" strokeWidth="3" /></svg></div>
+            <img src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" className="absolute inset-0 h-full w-full object-cover object-[58%_center]" />
+            <div className="absolute inset-0 z-10 bg-gradient-to-br from-[#2e4768]/20 via-transparent to-[#4d176e]/20 mix-blend-multiply" />
+            <div className="absolute inset-y-0 left-0 z-10 w-[16%] bg-gradient-to-r from-[#f6eef9]/70 via-[#f6eef9]/15 to-transparent" />
+            <div className="absolute right-8 top-8 z-30 hidden items-center gap-2 sm:flex"><span className="h-8 w-[3px] rotate-[28deg] bg-[#f47945]" /><span className="h-5 w-[3px] rotate-[115deg] bg-[#2e4768]" /><span className="rounded-sm bg-[#4d176e] px-2 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-white">01 / Access</span></div>
+            <div className="absolute bottom-0 left-8 z-30 flex items-end sm:left-14"><div className="flex h-20 w-24 flex-col justify-center bg-[#4d176e] px-3 text-white sm:h-24 sm:w-28"><span className="text-[8px] font-black uppercase tracking-[0.16em]">LEA</span><span className="text-3xl font-black leading-none">01</span><span className="text-[8px] font-black uppercase tracking-[0.16em]">Move forward</span></div><svg className="h-20 w-[280px] text-[#f47945] sm:h-24" viewBox="0 0 280 72" fill="none" aria-hidden><path d="M0 56 C56 64 58 12 118 31 C168 47 182 8 229 26 C246 32 264 45 280 38" stroke="currentColor" strokeWidth="3" /></svg></div>
           </div>
         </section>
 
@@ -79,23 +92,23 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="how-it-works" className="relative scroll-mt-20 overflow-hidden bg-[#4d176e] px-5 py-17 text-white sm:px-10 sm:py-20 lg:min-h-[680px] lg:px-[7vw] lg:py-22">
+        <section id="how-it-works" className="relative scroll-mt-20 overflow-hidden bg-[#4d176e] px-5 py-12 text-white sm:px-10 sm:py-14 lg:min-h-[560px] lg:px-[7vw] lg:py-16">
           <div className="pointer-events-none absolute -right-28 -top-20 h-64 w-[390px] rotate-[-18deg] rounded-[50%] border border-white/20 sm:-right-20 sm:-top-16" />
           <div className="pointer-events-none absolute right-[32%] top-[52%] h-1.5 w-1.5 rounded-full bg-[#f47945]" />
           <div className="pointer-events-none absolute bottom-0 left-0 h-px w-full bg-white/10" />
-          <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
-            <div className="flex flex-col justify-between lg:min-h-[500px]">
+          <div className="relative mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10">
+            <div className="flex flex-col justify-start lg:min-h-[410px]">
               <div>
-                <h2 className="mt-5 max-w-[480px] text-[clamp(2.35rem,4.2vw,4.55rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-white"><span className="text-white">Your next move</span><br /><span className="text-[#f47945]">is more than a</span><br /><span className="text-white">course.</span></h2>
-                <p className="mt-5 max-w-[470px] text-sm leading-7 text-[#ead9ed] sm:text-base">LEA is designed as a practical sequence: find a fit, make the work, gather feedback, and shape a direction you can carry beyond the classroom.</p>
-                <Link href="/register" className="mt-8 inline-flex h-11 items-center gap-4 rounded-full bg-white px-5 text-xs font-semibold text-[#26142f] transition hover:-translate-y-0.5 hover:bg-[#fff7ef] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#4d176e]">Start the conversation <ArrowRight className="h-4 w-4" /></Link>
+                <h2 className="mt-0 max-w-[450px] text-[clamp(2.05rem,3.5vw,3.75rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-white"><span className="text-white">Your next move</span><br /><span className="text-[#f47945]">is more than a</span><br /><span className="text-white">course.</span></h2>
+                <p className="mt-3 max-w-[450px] text-sm leading-7 text-[#ead9ed] sm:text-base">LEA is designed as a practical sequence: find a fit, make the work, gather feedback, and shape a direction you can carry beyond the classroom.</p>
+                <Link href="/register" className="mt-5 inline-flex h-10 items-center gap-4 rounded-full bg-white px-5 text-xs font-semibold text-[#26142f] transition hover:-translate-y-0.5 hover:bg-[#fff7ef] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#4d176e]">Start the conversation <ArrowRight className="h-4 w-4" /></Link>
               </div>
             </div>
-            <div className="space-y-5 lg:pt-2">
+            <div className="space-y-3 lg:pt-0">
               {steps.map(([number, title, text], index) => (
-                <article key={number} className="grid grid-cols-[56px_1fr] gap-5 sm:grid-cols-[60px_1fr] sm:gap-5">
-                  <div className="relative flex justify-center"><span className="z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/45 text-[11px] font-semibold text-white sm:h-12 sm:w-12">{number}</span>{index < steps.length - 1 && <span className="absolute left-1/2 top-12 h-[calc(100%+1.25rem)] -translate-x-1/2 border-l border-dashed border-white/35" />}</div>
-                  <div className="pb-1"><h3 className="text-lg font-semibold tracking-[-0.025em] text-[#f6d9c8] sm:text-xl">{title}</h3><p className="mt-2 max-w-[460px] text-xs leading-6 text-[#ead9ed] sm:text-sm">{text}</p></div>
+                <article key={number} className="grid grid-cols-[46px_1fr] gap-3 sm:grid-cols-[50px_1fr] sm:gap-3">
+                  <div className="relative flex justify-center"><span className="z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/45 text-[10px] font-semibold text-white sm:h-10 sm:w-10">{number}</span>{index < steps.length - 1 && <span className="absolute left-1/2 top-10 h-[calc(100%+0.75rem)] -translate-x-1/2 border-l border-dashed border-white/35" />}</div>
+                  <div className="pb-0"><h3 className="text-base font-semibold tracking-[-0.02em] text-[#f6d9c8] sm:text-lg">{title}</h3><p className="mt-1 max-w-[450px] text-[11px] leading-5 text-[#ead9ed] sm:text-sm">{text}</p></div>
                 </article>
               ))}
             </div>

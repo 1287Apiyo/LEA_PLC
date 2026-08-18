@@ -1,16 +1,12 @@
-/**
- * LEA Labs brand mark — the official circular logo, presented as a circle.
- * Rendered from the original artwork so the mark stays exactly as designed.
- */
-const LOGO_URL = "https://sc02.alicdn.com/kf/Ab1bbeb6220d049ba88182a1f54ec4df6a.png";
+type BrandMarkProps = { className?: string };
 
-export function BrandMark({ className }: { className?: string }) {
+export function BrandMark({ className }: BrandMarkProps) {
   return (
     <img
-      src={LOGO_URL}
-      alt="LEA Labs logo"
-      className={`rounded-full object-contain ${className ?? ""}`}
-      loading="lazy"
+      src="/lea-logo222.png"
+      alt="LEA Learn Explore Achieve logo"
+      className={`object-contain ${className ?? ""}`}
+      loading="eager"
       draggable={false}
     />
   );
