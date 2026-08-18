@@ -50,16 +50,16 @@ export default function LandingPage() {
       <LandingNav />
 
       <main>
-        <section className="relative grid min-h-0 lg:min-h-[calc(100vh-136px)] overflow-hidden border-b border-[#eadfe9] bg-[#f6eef9] lg:grid-cols-[1fr_1fr]">
-          <div className="relative flex flex-col justify-start px-5 pb-8 pt-6 sm:px-10 sm:pb-10 sm:pt-7 lg:px-[7vw] lg:pb-12 lg:pt-7">
+        <section className="relative grid min-h-0 lg:min-h-[560px] overflow-hidden border-b border-[#eadfe9] bg-[#f6eef9] lg:grid-cols-[1fr_1fr]">
+          <div className="relative flex flex-col justify-start px-5 pb-8 pt-6 sm:px-10 sm:pb-10 sm:pt-7 lg:pr-[7vw] lg:pl-[max(7vw,calc((100vw_-_14vw_-_1440px)_/_2_+_7vw))] lg:pb-12 lg:pt-7">
             <div className="mt-8 sm:mt-10 lg:mt-12">
               <h1 className="mt-5 max-w-[650px] text-[clamp(2.55rem,4.5vw,4.95rem)] font-semibold leading-[0.93] tracking-[-0.065em] text-[#17131a]"><span className="text-[#151116]">Build the skills</span><br /><span className="text-[#4d176e]">your next role will</span><br /><span className="text-[#f47945]">ask for.</span></h1>
-              <p className="mt-6 max-w-[540px] text-sm leading-6 text-[#6a5a70] sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p>
+              <p className="mt-6 max-w-[540px] text-sm leading-6 text-[#6a5a70] sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p><p className="mt-4 max-w-[500px] text-xs font-semibold leading-6 text-[#4d176e] sm:text-sm">Learn by building, grow with guidance, and leave with work you can show.</p>
               <div className="mt-6 flex flex-wrap items-center gap-4"><Link href="#programmes" className="inline-flex h-12 items-center gap-3 rounded-full bg-[#f47945] px-6 text-xs font-black text-[#351039] shadow-[0_14px_24px_rgba(244,121,69,0.2)] transition hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4d176e] focus-visible:ring-offset-2">Explore programmes <ArrowDownRight className="h-4 w-4" /></Link><Link href="#programmes" className="inline-flex items-center gap-1 border-b border-[#4d176e]/45 pb-1 text-xs font-black text-[#4d176e] transition hover:border-[#f47945] hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link></div>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[10px] font-bold text-[#6b5b73] sm:mt-9"><span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#f47945]" /> Practical learning</span><span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7db3a9]" /> Guided support</span><span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#4d176e]" /> Career direction</span></div>
           </div>
-          <div className="relative min-h-[560px] overflow-hidden bg-[#e9d9ed] lg:min-h-0">
+          <div className="relative min-h-[420px] overflow-hidden bg-[#e9d9ed] sm:min-h-[480px] lg:min-h-0">
             <div className="absolute inset-y-0 left-0 z-10 w-1/3 bg-gradient-to-r from-[#f6eef9] via-[#f6eef9]/80 to-transparent" />
             <div className="absolute left-0 top-0 z-20 h-40 w-28 bg-[#4d176e] [clip-path:polygon(0_0,100%_0,0_100%)]" />
             <img src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" className="absolute inset-0 h-full w-full object-cover object-[64%_center]" />
