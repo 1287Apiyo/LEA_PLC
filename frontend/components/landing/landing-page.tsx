@@ -85,16 +85,16 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="how-it-works" className="relative scroll-mt-20 overflow-hidden bg-[#1f0d2e] px-5 py-12 text-white sm:px-10 sm:py-14 lg:min-h-[560px] lg:px-[7vw] lg:py-16">
+        <section id="how-it-works" className="relative scroll-mt-20 overflow-hidden bg-[#1f0d2e] px-5 py-12 text-white sm:px-10 sm:py-14 lg:flex lg:min-h-[540px] lg:items-center lg:px-[7vw] lg:py-12">
           <div className="pointer-events-none absolute -right-28 -top-20 h-64 w-[390px] rotate-[-18deg] rounded-[50%] border border-white/20 sm:-right-20 sm:-top-16" />
           <div className="pointer-events-none absolute right-[32%] top-[52%] h-1.5 w-1.5 rounded-full bg-[#f47945]" />
           <div className="pointer-events-none absolute bottom-0 left-0 h-px w-full bg-white/10" />
-          <div className="relative mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10">
-            <div className="flex flex-col justify-start lg:min-h-[410px]">
+          <div className="relative mx-auto grid w-full max-w-[1440px] items-center gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10">
+            <div className="flex flex-col justify-center lg:min-h-[380px]">
               <div>
                 <h2 className="mt-0 max-w-[450px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-white"><span className="text-white">Your next move</span><br /><span className="text-[#f47945]">is more than a</span><br /><span className="text-white">course.</span></h2>
                 <p className="mt-3 max-w-[450px] text-sm leading-7 text-[#ead9ed] sm:text-base">LEA is designed as a practical sequence: find a fit, make the work, gather feedback, and shape a direction you can carry beyond the classroom.</p>
-                <Link href="/register" className="mt-5 inline-flex h-10 items-center gap-4 rounded-full bg-white px-5 text-xs font-semibold text-[#26142f] transition hover:-translate-y-0.5 hover:bg-[#fff7ef] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#4d176e]">Start the conversation <ArrowRight className="h-4 w-4" /></Link>
+                <Link href="/register" className="mt-5 inline-flex h-10 items-center gap-4 rounded-full bg-white px-5 text-xs font-semibold text-[#26142f] transition hover:-translate-y-0.5 hover:bg-[#fff7ef] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f0d2e]">Start the conversation <ArrowRight className="h-4 w-4" /></Link>
               </div>
             </div>
             <div className="space-y-3 lg:pt-0">
@@ -108,7 +108,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="border-t border-[#4d176e] bg-[#fffdfb] px-5 py-13 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
+        <section className="border-t-2 border-[#f47945]/70 bg-[#fffdfb] px-5 py-13 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
           <div className="mx-auto grid max-w-[1440px] items-center gap-9 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">
             <div className="relative pl-8 pt-8 sm:pl-14 sm:pt-10">
               <div className="absolute left-0 top-0 h-24 w-24 border-l border-t border-[#f47945] sm:h-28 sm:w-28" />
@@ -118,7 +118,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
+        <section className="relative overflow-hidden border-t border-[#f47945]/55 bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="pointer-events-none absolute left-[17%] top-7 hidden text-[7rem] font-black leading-none text-[#eee7f2] lg:block">03</div>
           <div className="pointer-events-none absolute bottom-9 right-[15%] h-24 w-52 rotate-[7deg] rounded-[50%] border border-[#f47945]/60" />
           <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
@@ -131,7 +131,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="community" className="relative scroll-mt-20 overflow-hidden bg-[#f6eef9] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
+        <section id="community" className="relative scroll-mt-20 overflow-hidden border-t border-[#f47945]/35 bg-[#f6eef9] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full border border-[#4d176e]/15" />
           <div className="relative mx-auto grid max-w-[1440px] items-center gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-24">
             <div className="relative pt-8 sm:pt-10"><div className="absolute left-0 top-0 h-20 w-20 border-l border-t border-[#f47945]" /><img src={COMMUNITY_IMAGE} alt="Young professionals connecting after a LEA community event" className="aspect-[1.4] w-full object-cover object-center [clip-path:polygon(0_0,100%_0,100%_82%,82%_100%,0_88%)]" /></div>
@@ -139,7 +139,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="questions" className="relative scroll-mt-20 border-t border-[#eee7f2] bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
+        <section id="questions" className="relative scroll-mt-20 border-t border-[#f47945]/60 bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="pointer-events-none absolute right-[16%] top-16 hidden h-20 w-20 border-r border-t border-[#f47945] lg:block" />
           <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[0.76fr_1.24fr] lg:gap-16">
             <div className="max-w-[330px]">
