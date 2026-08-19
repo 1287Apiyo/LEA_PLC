@@ -12,7 +12,6 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { BrandMark } from "@/components/shared/brand-mark";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { APP_NAME } from "@/lib/constants";
 import { PROGRAMMES as programmes } from "@/lib/programmes";
@@ -153,8 +152,27 @@ export default function LandingPage() {
 
         </main>
 
-        <footer className="border-t border-white/10 bg-[#1f0d2e] px-5 py-10 text-white sm:px-10 lg:px-[7vw] lg:py-13">
-          <div className="mx-auto max-w-[1440px]"><div className="grid gap-10 md:grid-cols-[1.1fr_0.9fr_0.8fr_1.2fr] md:items-start"><div><Link href="#top" className="inline-flex items-center gap-3"><BrandMark className="h-10 w-10" /><span className="text-[11px] font-black uppercase leading-[0.9] tracking-[0.22em] text-[#f6eef9]">LEA<br />LABS</span></Link></div><p className="max-w-[240px] text-sm leading-7 text-[#d7c6df]">Learning, momentum, and meaningful work—held together in one practical space.</p><div><p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f7c2aa]">Explore</p><div className="mt-4 space-y-3 text-sm text-[#f6eef9]"><Link className="block transition hover:text-[#f47945]" href="#programmes">Programmes</Link><Link className="block transition hover:text-[#f47945]" href="#how-it-works">How LEA works</Link><Link className="block transition hover:text-[#f47945]" href="#community">Community</Link></div></div><div><p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f7c2aa]">Connect</p><div className="mt-4 space-y-3 text-sm text-[#f6eef9]"><Link className="block transition hover:text-[#f47945]" href="/register">Admissions</Link><Link className="block transition hover:text-[#f47945]" href="/register">Contact LEA</Link><Link className="block transition hover:text-[#f47945]" href="/login">Log in</Link></div></div><div><p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f7c2aa]">Stay in the current</p><p className="mt-4 text-sm leading-7 text-[#d7c6df]">Receive programme updates, useful resources, and invitations to upcoming LEA conversations.</p><Link href="/register" className="mt-5 inline-flex items-center gap-2 border-b border-[#f47945] pb-2 text-xs font-bold text-white transition hover:text-[#f47945]">Join the LEA list <ArrowRight className="h-3.5 w-3.5" /></Link></div></div><div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-5 text-xs text-[#bfa9c8] sm:flex-row sm:items-center sm:justify-between"><span>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</span><Link href="#top" className="inline-flex items-center gap-2 font-bold text-white hover:text-[#f47945]">Back to top <ArrowRight className="h-3.5 w-3.5 -rotate-90" /></Link><span>Built for learning in motion.</span></div></div>
+        <footer className="border-t border-white/10 bg-[#1f0d2e] px-5 py-8 text-white sm:px-10 lg:px-[7vw] lg:py-9">
+          <div className="mx-auto max-w-[1440px]">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#f6eef9]">LEA Labs</p>
+                <p className="mt-2 max-w-[260px] text-xs leading-6 text-[#d7c6df]">Practical learning for digital work.</p>
+              </div>
+              <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#f6eef9]">
+                <Link className="transition hover:text-[#f47945]" href="#programmes">Programmes</Link>
+                <Link className="transition hover:text-[#f47945]" href="/about">About</Link>
+                <Link className="transition hover:text-[#f47945]" href="/corporate">Corporate Training</Link>
+                <Link className="transition hover:text-[#f47945]" href="/login">Log in</Link>
+                <Link className="font-semibold text-[#f47945] transition hover:text-[#ff8f57]" href="/register">Get started</Link>
+              </nav>
+              <Link className="text-xs text-[#d7c6df] transition hover:text-[#f47945]" href="mailto:hello@lealabs.africa">hello@lealabs.africa</Link>
+            </div>
+            <div className="mt-6 flex flex-col gap-2 border-t border-white/10 pt-4 text-[11px] text-[#bfa9c8] sm:flex-row sm:items-center sm:justify-between">
+              <span>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</span>
+              <span>Applewood Adams, 13th Floor</span>
+            </div>
+          </div>
         </footer>
     </div>
   );

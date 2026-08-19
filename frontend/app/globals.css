@@ -80,7 +80,7 @@
   --chart-4: oklch(0.769 0.188 70.08);
   --chart-5: oklch(0.645 0.246 16.439);
   --radius: 0.625rem;
-  --sidebar: oklch(0.27 0.12 295);
+  --sidebar: #1f0d2e;
   --sidebar-foreground: oklch(0.9 0 0);
   --sidebar-primary: oklch(0.705 0.213 47.604);
   --sidebar-primary-foreground: oklch(0.13 0 0);
@@ -114,7 +114,7 @@
   --chart-3: oklch(0.765 0.177 163.223);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.712 0.194 13.428);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: #1f0d2e;
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.75 0.183 55.934);
   --sidebar-primary-foreground: oklch(0.205 0 0);
@@ -203,13 +203,13 @@
   }
 }
 
-/* Role-based sidebar â€” the learner portal keeps the purple; admin and instructor stay black. */
+/* Shared LEA sidebar theme — all roles use the footer purple. */
 [data-sidebar-role="learner"] {
-  --sidebar: oklch(0.27 0.12 295);
+  --sidebar: #1f0d2e;
 }
 
 .dark [data-sidebar-role="learner"] {
-  --sidebar: oklch(0.22 0.1 295);
+  --sidebar: #1f0d2e;
 }
 
 /* Sidebar scroll area â€” scrollable when needed but no visible scrollbar. */
