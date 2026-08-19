@@ -50,35 +50,28 @@ export default function LandingPage() {
       <LandingNav />
 
       <main>
-        <section className="relative grid min-h-0 overflow-hidden border-b border-[#eadfe9] bg-[#f6eef9] lg:min-h-[calc(100svh-72px)] lg:grid-cols-2">
-          <div className="relative flex min-h-[640px] flex-col overflow-hidden px-5 sm:px-10 lg:min-h-[calc(100svh-72px)] lg:pl-[max(7vw,calc((100vw_-_14vw_-_1440px)_/_2_+_7vw))] lg:pr-12">
-            <span className="pointer-events-none absolute right-[14%] top-[18%] h-1 w-1 rounded-full bg-[#f47945]" />
-            <div className="relative z-10 flex flex-1 flex-col justify-center pb-8 pt-10 sm:pt-12 lg:pb-5 lg:pt-0">
-              <h1 className="max-w-[690px] text-[clamp(3.1rem,5.15vw,5.65rem)] font-semibold leading-[0.92] tracking-[-0.075em] text-[#4d176e]">
-                <span>Build the skills</span><br />
-                <span>your next role will</span><br />
-                <span className="text-[#f47945]">ask for.</span>
-              </h1>
-              <p className="mt-7 max-w-[560px] text-sm leading-6 text-[#6a5a70] sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p>
-              <p className="mt-3 max-w-[510px] text-xs font-semibold leading-6 text-[#4d176e] sm:text-sm">Learn by building, grow with guidance, and leave with work you can show.</p>
-              <div className="mt-7 flex flex-wrap items-center gap-4">
-                <Link href="#programmes" className="inline-flex h-12 items-center gap-3 rounded-full bg-[#f47945] px-6 text-xs font-black text-[#351039] shadow-[0_14px_24px_rgba(244,121,69,0.2)] transition hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4d176e] focus-visible:ring-offset-2">Explore programmes <ArrowDownRight className="h-4 w-4" /></Link>
-                <Link href="#programmes" className="inline-flex items-center gap-1 border-b border-[#4d176e]/45 pb-1 text-xs font-black text-[#4d176e] transition hover:border-[#f47945] hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link>
+        <section className="relative overflow-hidden border-b border-[#1f0d2e] bg-[#1f0d2e] lg:min-h-[calc(100svh-72px)]">
+          <div className="relative grid min-h-[650px] w-full lg:min-h-[calc(100svh-72px)] lg:grid-cols-2">
+            <div className="relative z-10 flex items-center px-5 py-16 sm:px-10 sm:py-20 lg:pl-[max(7vw,calc((100vw_-_1440px)_/_2))] lg:pr-[5vw] lg:py-24">
+              <div className="max-w-[650px]">
+                <h1 className="max-w-[610px] text-[clamp(2.25rem,4.3vw,4.6rem)] font-semibold leading-[0.92] tracking-[-0.075em] text-[#fffdfb]">
+                  <span>Build the skills</span><br />
+                  <span>your next role will</span><br />
+                  <span className="text-[#f47945]">ask for.</span>
+                </h1>
+                <p className="mt-6 max-w-[500px] text-sm leading-6 text-white/75 sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p>
+                <p className="mt-3 max-w-[470px] text-xs font-medium leading-6 text-[#f6eef9]/90 sm:text-sm">Learn by building, grow with guidance, and leave with work you can show.</p>
+                <div className="mt-7 flex flex-wrap items-center gap-4">
+                  <Link href="#programmes" className="inline-flex h-11 items-center gap-3 rounded-md bg-[#f47945] px-5 text-xs font-semibold text-[#351039] transition hover:bg-[#e96836] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f0d2e]">Explore programmes <ArrowDownRight className="h-4 w-4" /></Link>
+                  <Link href="#programmes" className="inline-flex items-center gap-1 border-b border-white/55 pb-1 text-xs font-semibold text-white transition hover:border-[#f47945] hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link>
+                </div>
               </div>
             </div>
-            <div className="relative z-10 flex flex-wrap gap-x-6 gap-y-2 pb-7 text-[10px] font-bold text-[#6b5b73] sm:pb-8">
-              <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#f47945]" /> Practical learning</span>
-              <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7db3a9]" /> Guided support</span>
-              <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#4d176e]" /> Career direction</span>
+            <div className="relative min-h-[430px] overflow-hidden bg-transparent lg:min-h-[calc(100svh-72px)]">
+              <img src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" className="absolute inset-0 h-full w-full object-cover object-[58%_center]" />
+              <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(77,23,110,0.62)_0%,rgba(55,31,76,0.20)_46%,rgba(21,17,22,0.16)_100%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_25%,rgba(244,121,69,0.34),transparent_34%),linear-gradient(180deg,rgba(46,71,104,0.12),rgba(21,17,22,0.32))]" />
             </div>
-          </div>
-          <div className="relative min-h-[480px] overflow-hidden bg-[#e9d9ed] sm:min-h-[560px] lg:min-h-[calc(100svh-72px)]">
-            <div className="absolute left-0 top-0 z-20 h-40 w-28 bg-[#4d176e] [clip-path:polygon(0_0,100%_0,0_100%)]" />
-            <img src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" className="absolute inset-0 h-full w-full object-cover object-[58%_center]" />
-            <div className="absolute inset-0 z-10 bg-gradient-to-br from-[#2e4768]/20 via-transparent to-[#4d176e]/20 mix-blend-multiply" />
-            <div className="absolute inset-y-0 left-0 z-10 w-[16%] bg-gradient-to-r from-[#f6eef9]/70 via-[#f6eef9]/15 to-transparent" />
-            <div className="absolute right-8 top-8 z-30 hidden items-center gap-2 sm:flex"><span className="h-8 w-[3px] rotate-[28deg] bg-[#f47945]" /><span className="h-5 w-[3px] rotate-[115deg] bg-[#2e4768]" /><span className="rounded-sm bg-[#4d176e] px-2 py-1 text-[8px] font-black uppercase tracking-[0.16em] text-white">01 / Access</span></div>
-            <div className="absolute bottom-0 left-8 z-30 flex items-end sm:left-14"><div className="flex h-20 w-24 flex-col justify-center bg-[#4d176e] px-3 text-white sm:h-24 sm:w-28"><span className="text-[8px] font-black uppercase tracking-[0.16em]">LEA</span><span className="text-3xl font-black leading-none">01</span><span className="text-[8px] font-black uppercase tracking-[0.16em]">Move forward</span></div><svg className="h-20 w-[280px] text-[#f47945] sm:h-24" viewBox="0 0 280 72" fill="none" aria-hidden><path d="M0 56 C56 64 58 12 118 31 C168 47 182 8 229 26 C246 32 264 45 280 38" stroke="currentColor" strokeWidth="3" /></svg></div>
           </div>
         </section>
 
@@ -86,20 +79,20 @@ export default function LandingPage() {
           <div className="pointer-events-none absolute -right-24 top-12 h-72 w-72 rounded-full border border-[#4d176e]/10" />
           <div className="pointer-events-none absolute bottom-10 left-[8%] h-px w-24 bg-[#f47945]" />
           <div className="relative mx-auto max-w-[1440px]">
-            <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end"><div><h2 className="max-w-[620px] text-[clamp(2rem,3.1vw,3.25rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#151116]">Choose a practical path forward.</h2></div><p className="max-w-[390px] text-sm leading-7 text-[#6e6072]">Three practical starting points for building confidence, capability, and momentum in digital work.</p></div>
-            <div className="mt-8 grid gap-5 md:grid-cols-3 lg:mt-10">{programmes.map((programme) => <Link key={programme.title} href={`/programmes/${programme.slug}`} className="group overflow-hidden rounded-[26px] border border-[#f47945]/75 bg-white shadow-[0_18px_45px_rgba(77,23,110,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_60px_rgba(77,23,110,0.16)]"><div className="relative aspect-[1.45] overflow-hidden bg-[#4d176e]"><img src={programme.image} alt={`${programme.title} programme`} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-[#241027]/75 via-[#351039]/10 to-transparent" /><div className="absolute bottom-4 left-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#f47945] text-xs font-black text-[#351039]">{programme.number}</div><span className="absolute bottom-5 right-5 text-4xl font-semibold text-white/90">{programme.icon}</span></div><div className="flex min-h-[290px] flex-col p-5 sm:p-6"><h3 className="max-w-[270px] text-[clamp(1.35rem,1.8vw,1.8rem)] font-bold leading-[1.04] tracking-[-0.04em] text-[#f06d36]">{programme.title}</h3><p className="mt-3 text-sm leading-6 text-[#302434]">{programme.short}</p><p className="mt-2 text-xs leading-5 text-[#6e6072]">{programme.audience}</p><div className="mt-4 flex flex-wrap gap-2">{programme.bullets.map((bullet) => <span key={bullet} className="rounded-full border border-[#4d176e]/35 px-3 py-1.5 text-[10px] font-semibold text-[#4d176e]">{bullet}</span>)}</div><div className="mt-4 flex items-center justify-between border-t border-[#efcfc1] pt-4"><span className="text-xs text-[#6e6072]">Full programme</span><span className="text-sm font-black text-[#4d176e]">{programme.price}</span></div><span className="mt-4 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#f47945] text-xs font-black text-[#351039] transition group-hover:bg-[#ff8f57]">View programme <ArrowRight className="h-4 w-4" /></span></div></Link>)}</div>
+            <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end"><div><h2 className="max-w-[620px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#151116]">Choose a practical path forward.</h2></div><p className="max-w-[460px] text-sm leading-7 text-[#6e6072]">Choose between <span className="font-semibold text-[#4d176e]">Software Engineering</span>, <span className="font-semibold text-[#4d176e]">Applied AI</span>, and <span className="font-semibold text-[#4d176e]">Basic Computer Knowledge</span> for beginners, children, and families.</p></div>
+            <div className="mt-8 grid gap-5 md:grid-cols-3 lg:mt-10">{programmes.map((programme) => <Link key={programme.title} href={`/programmes/${programme.slug}`} className="group overflow-hidden rounded-[26px] border border-[#f47945]/75 bg-white shadow-[0_18px_45px_rgba(77,23,110,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_60px_rgba(77,23,110,0.16)]"><div className="relative aspect-[1.45] overflow-hidden bg-[#1f0d2e]"><img src={programme.image} alt={`${programme.title} programme`} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-[#241027]/75 via-[#351039]/10 to-transparent" /><div className="absolute bottom-4 left-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#f47945] text-xs font-black text-[#351039]">{programme.number}</div><span className="absolute bottom-5 right-5 text-4xl font-semibold text-white/90">{programme.icon}</span></div><div className="flex min-h-[290px] flex-col p-5 sm:p-6"><h3 className="max-w-[270px] text-[clamp(1.2rem,1.5vw,1.5rem)] font-bold leading-[1.04] tracking-[-0.04em] text-[#f06d36]">{programme.title}</h3><p className="mt-3 text-sm leading-6 text-[#302434]">{programme.short}</p><p className="mt-2 text-xs leading-5 text-[#6e6072]">{programme.audience}</p><div className="mt-4 flex flex-wrap gap-2">{programme.bullets.map((bullet) => <span key={bullet} className="rounded-full border border-[#4d176e]/35 px-3 py-1.5 text-[10px] font-semibold text-[#4d176e]">{bullet}</span>)}</div><div className="mt-4 flex items-center justify-between border-t border-[#efcfc1] pt-4"><span className="text-xs text-[#6e6072]">Full programme</span><span className="text-sm font-black text-[#4d176e]">{programme.price}</span></div><span className="mt-4 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#f47945] text-xs font-black text-[#351039] transition group-hover:bg-[#ff8f57]">View programme <ArrowRight className="h-4 w-4" /></span></div></Link>)}</div>
             <div className="mt-7 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-[#6e6072]"><span>Practical learning, whatever your starting point.</span><span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#f47945]" /> Three pathways. One clear next step.</span></div>
           </div>
         </section>
 
-        <section id="how-it-works" className="relative scroll-mt-20 overflow-hidden bg-[#4d176e] px-5 py-12 text-white sm:px-10 sm:py-14 lg:min-h-[560px] lg:px-[7vw] lg:py-16">
+        <section id="how-it-works" className="relative scroll-mt-20 overflow-hidden bg-[#1f0d2e] px-5 py-12 text-white sm:px-10 sm:py-14 lg:min-h-[560px] lg:px-[7vw] lg:py-16">
           <div className="pointer-events-none absolute -right-28 -top-20 h-64 w-[390px] rotate-[-18deg] rounded-[50%] border border-white/20 sm:-right-20 sm:-top-16" />
           <div className="pointer-events-none absolute right-[32%] top-[52%] h-1.5 w-1.5 rounded-full bg-[#f47945]" />
           <div className="pointer-events-none absolute bottom-0 left-0 h-px w-full bg-white/10" />
           <div className="relative mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10">
             <div className="flex flex-col justify-start lg:min-h-[410px]">
               <div>
-                <h2 className="mt-0 max-w-[450px] text-[clamp(2.05rem,3.5vw,3.75rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-white"><span className="text-white">Your next move</span><br /><span className="text-[#f47945]">is more than a</span><br /><span className="text-white">course.</span></h2>
+                <h2 className="mt-0 max-w-[450px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-white"><span className="text-white">Your next move</span><br /><span className="text-[#f47945]">is more than a</span><br /><span className="text-white">course.</span></h2>
                 <p className="mt-3 max-w-[450px] text-sm leading-7 text-[#ead9ed] sm:text-base">LEA is designed as a practical sequence: find a fit, make the work, gather feedback, and shape a direction you can carry beyond the classroom.</p>
                 <Link href="/register" className="mt-5 inline-flex h-10 items-center gap-4 rounded-full bg-white px-5 text-xs font-semibold text-[#26142f] transition hover:-translate-y-0.5 hover:bg-[#fff7ef] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#4d176e]">Start the conversation <ArrowRight className="h-4 w-4" /></Link>
               </div>
@@ -121,7 +114,7 @@ export default function LandingPage() {
               <div className="absolute left-0 top-0 h-24 w-24 border-l border-t border-[#f47945] sm:h-28 sm:w-28" />
               <img src={COLLABORATION_IMAGE} alt="LEA learners collaborating over a digital project" className="aspect-[1.58] w-full object-cover object-center" />
             </div>
-            <blockquote className="relative max-w-[390px] lg:pb-7"><span className="block text-7xl font-black leading-[0.6] text-[#f47945]">“</span><p className="mt-5 text-[clamp(1.7rem,2.45vw,2.75rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
+            <blockquote className="relative max-w-[390px] lg:pb-7"><span className="block text-7xl font-black leading-[0.6] text-[#f47945]">“</span><p className="mt-5 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
           </div>
         </section>
 
@@ -130,11 +123,11 @@ export default function LandingPage() {
           <div className="pointer-events-none absolute bottom-9 right-[15%] h-24 w-52 rotate-[7deg] rounded-[50%] border border-[#f47945]/60" />
           <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
             <div>
-              <h2 className="mt-4 max-w-[590px] text-[clamp(2rem,3.1vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">The work matters.</span> <span className="text-[#4d176e]">So does the person doing it.</span></h2>
+              <h2 className="mt-4 max-w-[590px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">The work matters.</span> <span className="text-[#4d176e]">So does the person doing it.</span></h2>
               <p className="mt-5 max-w-[620px] text-sm leading-7 text-[#6e6072] sm:text-base">Learning is more durable when someone can challenge your thinking, celebrate the progress, and help you connect a project to the direction you are building toward.</p>
               <div className="mt-9 grid gap-5 sm:grid-cols-3">{support.map(([number, title, text]) => <article key={number} className="border-t border-[#4d176e] pt-3"><div className="text-[10px] font-black text-[#f47945]">{number}</div><h3 className="mt-3 text-base font-semibold leading-tight text-[#151116]">{title}</h3><p className="mt-3 text-xs leading-6 text-[#6e6072]">{text}</p></article>)}</div>
             </div>
-            <div className="relative lg:pt-2"><div className="mx-auto max-w-[470px] overflow-hidden bg-[#f4dfd9]"><img src={MENTOR_IMAGE} alt="Mentor supporting a learner at a workstation" className="aspect-[0.88] h-full w-full object-cover object-center" /><div className="bg-[#4d176e] px-5 py-4 text-white"><div className="mt-1 text-base font-semibold">Feedback that moves work forward.</div></div></div></div>
+            <div className="relative lg:pt-2"><div className="mx-auto max-w-[470px] overflow-hidden bg-[#f4dfd9]"><img src={MENTOR_IMAGE} alt="Mentor supporting a learner at a workstation" className="aspect-[0.88] h-full w-full object-cover object-center" /><div className="bg-[#1f0d2e] px-5 py-4 text-white"><div className="mt-1 text-base font-semibold">Feedback that moves work forward.</div></div></div></div>
           </div>
         </section>
 
@@ -142,7 +135,7 @@ export default function LandingPage() {
           <div className="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full border border-[#4d176e]/15" />
           <div className="relative mx-auto grid max-w-[1440px] items-center gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-24">
             <div className="relative pt-8 sm:pt-10"><div className="absolute left-0 top-0 h-20 w-20 border-l border-t border-[#f47945]" /><img src={COMMUNITY_IMAGE} alt="Young professionals connecting after a LEA community event" className="aspect-[1.4] w-full object-cover object-center [clip-path:polygon(0_0,100%_0,100%_82%,82%_100%,0_88%)]" /></div>
-            <div className="max-w-[520px]"><h2 className="mt-4 text-[clamp(2rem,3.1vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">A place to learn from other people in</span> <span className="text-[#f47945]">motion.</span></h2><p className="mt-5 max-w-[480px] text-sm leading-7 text-[#6e6072] sm:text-base">The LEA community is for sharing questions, meeting collaborators, seeing what peers are building, and staying connected to a wider conversation about digital work.</p><div className="mt-6 flex flex-wrap gap-2">{["Peer exchange", "Guest sessions", "Studio events", "Open resources"].map((label) => <span key={label} className="border border-[#cdb7d5] bg-white/30 px-3 py-2 text-[10px] font-bold text-[#5c4566]">{label}</span>)}</div><Link href="/register" className="mt-6 inline-flex items-center gap-2 border-b border-[#4d176e] pb-2 text-xs font-black text-[#4d176e]">Ask about the LEA community <ExternalLink className="h-3.5 w-3.5" /></Link></div>
+            <div className="max-w-[520px]"><h2 className="mt-4 text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">A place to learn from other people in</span> <span className="text-[#f47945]">motion.</span></h2><p className="mt-5 max-w-[480px] text-sm leading-7 text-[#6e6072] sm:text-base">The LEA community is for sharing questions, meeting collaborators, seeing what peers are building, and staying connected to a wider conversation about digital work.</p><div className="mt-6 flex flex-wrap gap-2">{["Peer exchange", "Guest sessions", "Studio events", "Open resources"].map((label) => <span key={label} className="border border-[#cdb7d5] bg-white/30 px-3 py-2 text-[10px] font-bold text-[#5c4566]">{label}</span>)}</div><Link href="/register" className="mt-6 inline-flex items-center gap-2 border-b border-[#4d176e] pb-2 text-xs font-black text-[#4d176e]">Ask about the LEA community <ExternalLink className="h-3.5 w-3.5" /></Link></div>
           </div>
         </section>
 
@@ -150,19 +143,11 @@ export default function LandingPage() {
           <div className="pointer-events-none absolute right-[16%] top-16 hidden h-20 w-20 border-r border-t border-[#f47945] lg:block" />
           <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[0.76fr_1.24fr] lg:gap-16">
             <div className="max-w-[330px]">
-              <h2 className="mt-4 text-[clamp(2rem,3.1vw,3.45rem)] font-semibold leading-[0.96] tracking-[-0.055em] text-[#151116]">Questions are part of choosing well.</h2>
+              <h2 className="mt-4 text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.96] tracking-[-0.055em] text-[#151116]">Questions are part of choosing well.</h2>
               <p className="mt-5 text-sm leading-7 text-[#6e6072]">Here are a few practical starting points. If your question is more personal, the admissions team can help you think it through.</p>
-              <Link href="/register" className="mt-6 inline-flex items-center gap-3 rounded-full border border-[#4d176e] px-5 py-3 text-xs font-bold text-[#151116] transition hover:bg-[#4d176e] hover:text-white">Speak to admissions <ArrowRight className="h-3.5 w-3.5" /></Link>
+              <Link href="/register" className="mt-6 inline-flex items-center gap-3 rounded-full border border-[#4d176e] px-5 py-3 text-xs font-bold text-[#151116] transition hover:bg-[#1f0d2e] hover:text-white">Speak to admissions <ArrowRight className="h-3.5 w-3.5" /></Link>
             </div>
-            <div className="relative pt-2"><div className="pointer-events-none absolute -right-1 -top-1 h-16 w-16 border-r border-t border-[#f47945]" /><div className="border-t border-[#d9cfdc]">{faqs.map(([question, answer]) => <details key={question} className="group border-b border-[#d9cfdc] py-4 sm:py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 pr-4 text-base font-semibold tracking-[-0.02em] text-[#151116] marker:hidden sm:text-lg"><span>{question}</span><ChevronDown className="h-4 w-4 shrink-0 text-[#6e6072] transition group-open:rotate-180" /></summary><p className="max-w-2xl pt-4 text-sm leading-7 text-[#6e6072]">{answer}</p></details>)}</div></div>
-          </div>
-        </section>
-
-        <section className="relative overflow-hidden bg-[#4d176e] px-5 py-14 text-white sm:px-10 sm:py-17 lg:px-[7vw] lg:py-20">
-          <div className="pointer-events-none absolute -right-24 -top-48 h-[620px] w-[620px] rounded-full border border-white/20" /><div className="pointer-events-none absolute -right-2 -top-28 h-72 w-72 rotate-[18deg] border-l-[34px] border-b-[34px] border-white/10" />
-          <div className="relative mx-auto grid max-w-[1440px] items-center gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">
-            <div><h2 className="mt-4 max-w-[610px] text-[clamp(2.35rem,3.9vw,4.3rem)] font-semibold leading-[0.92] tracking-[-0.06em] text-white"><span className="text-white">The future is not</span> <span className="text-[#f47945]">a waiting room.</span></h2></div>
-            <div className="max-w-[330px]"><p className="text-sm leading-7 text-[#ead9ed] sm:text-base">Tell us where you are now. We will help you map a practical way forward.</p><Link href="/register" className="mt-5 inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-xs font-bold text-[#351039] transition hover:bg-[#f8e8f7]">Speak to admissions <ArrowRight className="h-3.5 w-3.5" /></Link></div>
+            <div className="relative pt-2"><div className="pointer-events-none absolute -right-1 -top-1 h-16 w-16 border-r border-t border-[#f47945]" /><div className="border-t border-[#d9cfdc]">{faqs.map(([question, answer]) => <details key={question} className="group border-b border-[#d9cfdc] py-4 sm:py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 pr-4 text-sm font-semibold tracking-[-0.02em] text-[#151116] marker:hidden sm:text-base"><span>{question}</span><ChevronDown className="h-4 w-4 shrink-0 text-[#6e6072] transition group-open:rotate-180" /></summary><p className="max-w-2xl pt-4 text-sm leading-7 text-[#6e6072]">{answer}</p></details>)}</div></div>
           </div>
         </section>
 
