@@ -12,6 +12,38 @@ import { ApiError, type ApiErrorBody } from "@/types/api";
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "/api/v1";
 
+let authHydrationPromise: Promise<void> | null = null;
+
+/**
+ * Zustand persist hydrates from localStorage after the first client render.
+ * Protected dashboard queries can otherwise fire without their bearer token,
+ * receive a 401, and clear a perfectly valid persisted session.
+ */
+function waitForAuthHydration(): Promise<void> {
+  if (typeof window === "undefined" || useAuthStore.persist.hasHydrated()) {
+    return Promise.resolve();
+  }
+
+  if (!authHydrationPromise) {
+    authHydrationPromise = new Promise<void>((resolve) => {
+      const unsubscribe = useAuthStore.persist.onFinishHydration(() => {
+        unsubscribe();
+        resolve();
+      });
+
+      // Close the small race between hasHydrated() and listener registration.
+      if (useAuthStore.persist.hasHydrated()) {
+        unsubscribe();
+        resolve();
+      }
+    }).finally(() => {
+      authHydrationPromise = null;
+    });
+  }
+
+  return authHydrationPromise;
+}
+
 interface RequestOptions extends Omit<RequestInit, "body"> {
   /** JSON-serializable body — automatically stringified and content-typed. */
   body?: unknown;
@@ -21,6 +53,10 @@ interface RequestOptions extends Omit<RequestInit, "body"> {
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { body, auth = true, headers: extraHeaders, ...rest } = options;
+
+  if (auth) {
+    await waitForAuthHydration();
+  }
 
   const headers = new Headers(extraHeaders);
   headers.set("Accept", "application/json");

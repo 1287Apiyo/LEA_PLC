@@ -49,24 +49,25 @@ export default function LandingPage() {
       <LandingNav />
 
       <main>
-        <section className="relative overflow-hidden border-b border-[#1f0d2e] bg-[#1f0d2e] lg:min-h-[calc(100svh-72px)]">
-          <div className="relative grid min-h-[650px] w-full lg:min-h-[calc(100svh-72px)] lg:grid-cols-2">
-            <div className="relative z-10 flex items-center px-5 py-16 sm:px-10 sm:py-20 lg:pl-[max(7vw,calc((100vw_-_1440px)_/_2))] lg:pr-[5vw] lg:py-24">
+        {/* HERO — taller again, still sized to content rather than forced to full viewport height */}
+        <section className="relative overflow-hidden border-b border-[#1f0d2e] bg-[#1f0d2e]">
+          <div className="relative grid w-full lg:grid-cols-2">
+            <div className="relative z-10 flex items-center px-5 py-22 sm:px-10 sm:py-26 lg:pl-[max(7vw,calc((100vw_-_1440px)_/_2))] lg:pr-[5vw] lg:py-34">
               <div className="max-w-[650px]">
-                <h1 className="max-w-[610px] text-[clamp(2.25rem,4.3vw,4.6rem)] font-semibold leading-[0.92] tracking-[-0.075em] text-[#fffdfb]">
+                <h1 className="max-w-[610px] text-[clamp(2.35rem,4.4vw,4.75rem)] font-semibold leading-[0.93] tracking-[-0.075em] text-[#fffdfb]">
                   <span>Build the skills</span><br />
                   <span>your next role will</span><br />
                   <span className="text-[#f47945]">ask for.</span>
                 </h1>
                 <p className="mt-6 max-w-[500px] text-sm leading-6 text-white/75 sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p>
                 <p className="mt-3 max-w-[470px] text-xs font-medium leading-6 text-[#f6eef9]/90 sm:text-sm">Learn by building, grow with guidance, and leave with work you can show.</p>
-                <div className="mt-7 flex flex-wrap items-center gap-4">
+                <div className="mt-8 flex flex-wrap items-center gap-4">
                   <Link href="#programmes" className="inline-flex h-11 items-center gap-3 rounded-md bg-[#f47945] px-5 text-xs font-semibold text-[#351039] transition hover:bg-[#e96836] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f0d2e]">Explore programmes <ArrowDownRight className="h-4 w-4" /></Link>
                   <Link href="#programmes" className="inline-flex items-center gap-1 border-b border-white/55 pb-1 text-xs font-semibold text-white transition hover:border-[#f47945] hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link>
                 </div>
               </div>
             </div>
-            <div className="relative min-h-[430px] overflow-hidden bg-transparent lg:min-h-[calc(100svh-72px)]">
+            <div className="relative min-h-[420px] overflow-hidden bg-transparent sm:min-h-[500px] lg:min-h-0">
               <img src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" className="absolute inset-0 h-full w-full object-cover object-[58%_center]" />
               <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(77,23,110,0.62)_0%,rgba(55,31,76,0.20)_46%,rgba(21,17,22,0.16)_100%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_25%,rgba(244,121,69,0.34),transparent_34%),linear-gradient(180deg,rgba(46,71,104,0.12),rgba(21,17,22,0.32))]" />
@@ -113,7 +114,7 @@ export default function LandingPage() {
               <div className="absolute left-0 top-0 h-24 w-24 border-l border-t border-[#f47945] sm:h-28 sm:w-28" />
               <img src={COLLABORATION_IMAGE} alt="LEA learners collaborating over a digital project" className="aspect-[1.58] w-full object-cover object-center" />
             </div>
-            <blockquote className="relative max-w-[390px] lg:pb-7"><span className="block text-7xl font-black leading-[0.6] text-[#f47945]">“</span><p className="mt-5 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
+            <blockquote className="relative max-w-[390px] lg:pb-7"><span className="block text-7xl font-black leading-[0.6] text-[#f47945]">"</span><p className="mt-5 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
           </div>
         </section>
 

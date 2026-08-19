@@ -27,6 +27,8 @@ backend/.env.backup
 backend/.env.production
 backend/.phpunit.result.cache
 backend/storage/*.key
+backend/storage/firebase/service-account.json
+
 backend/storage/logs/*
 !backend/storage/logs/.gitignore
 backend/storage/framework/cache/*
