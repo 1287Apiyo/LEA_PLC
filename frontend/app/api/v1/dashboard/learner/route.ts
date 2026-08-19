@@ -29,20 +29,42 @@ export async function GET(req: Request) {
     })
   );
 
-  // Submissions → assignments
+  // Submissions → assignments. Supports both legacy assignment records and lesson submissions.
   const subSnap = await db.collection("submissions").where("learnerId", "==", me).get();
   const submissions = rowsFrom(subSnap);
   const assignments = await Promise.all(
     submissions.map(async (s) => {
-      const aSnap = await db.collection("assignments").doc(String(s.assignmentId)).get();
-      const a = aSnap.exists ? aSnap.data()! : { title: "Assignment", courseId: "", due_at: new Date().toISOString() };
-      const info = a.courseId ? await courseInfo(String(a.courseId)) : { title: "" };
+      const legacyAssignmentId = String(s.assignmentId ?? "");
+      const courseId = String(s.courseId ?? s.course_id ?? "");
+      const lessonId = String(s.lessonId ?? s.lesson_id ?? "");
+      let title = "Assignment";
+      let dueAt = String(s.submitted_at ?? s.created_at ?? new Date().toISOString());
+      let resolvedCourseId = courseId;
+
+      if (legacyAssignmentId) {
+        const aSnap = await db.collection("assignments").doc(legacyAssignmentId).get();
+        if (aSnap.exists) {
+          const assignment = aSnap.data()!;
+          title = String(assignment.title ?? title);
+          dueAt = String(assignment.due_at ?? dueAt);
+          resolvedCourseId = String(assignment.courseId ?? resolvedCourseId);
+        }
+      } else if (courseId && lessonId) {
+        const courseSnap = await db.collection("courses").doc(courseId).get();
+        const course = courseSnap.exists ? courseSnap.data()! : {};
+        const lesson = Array.isArray(course.lessons)
+          ? (course.lessons as Record<string, unknown>[]).find((item) => String(item.id ?? "") === lessonId)
+          : null;
+        title = String(lesson?.title ?? title);
+      }
+
+      const info = resolvedCourseId ? await courseInfo(resolvedCourseId) : { title: "" };
       return {
-        id: String(s.assignmentId).toUpperCase(),
-        title: String(a.title),
+        id: (legacyAssignmentId || `${courseId}-${lessonId}`).toUpperCase(),
+        title,
         course: info.title || "Unassigned",
-        due_at: new Date(a.due_at).toISOString(),
-        status: (s.status ?? "open") as "open" | "submitted" | "graded" | "overdue",
+        due_at: new Date(dueAt).toISOString(),
+        status: (s.status ?? "submitted") as "open" | "submitted" | "graded" | "overdue",
         grade: s.grade !== null && s.grade !== undefined ? Number(s.grade) : null,
       };
     })
@@ -63,9 +85,26 @@ export async function GET(req: Request) {
     verified: Boolean(d.data().verified),
   }));
 
-  // Achievements
+  // Achievements and motivating progress signals.
   const achSnap = await db.collection("achievements").where("learnerId", "==", me).get();
   const achievements = achSnap.docs.map((d) => String(d.data().title));
+  const lessonsCompleted = enrolments.reduce(
+    (total, enrolment) => total + (Array.isArray(enrolment.completed_lessons) ? enrolment.completed_lessons.length : 0),
+    0
+  );
+  const assignmentsSubmitted = submissions.filter((submission) => ["submitted", "graded"].includes(String(submission.status ?? "submitted"))).length;
+  const badgeDefinitions = [
+    { id: "first-step", title: "First step", description: "Complete your first lesson.", icon: "sparkles", target: 1, progress: lessonsCompleted },
+    { id: "consistent-builder", title: "Consistent builder", description: "Complete five lessons across your learning path.", icon: "layers", target: 5, progress: lessonsCompleted },
+    { id: "evidence-maker", title: "Evidence maker", description: "Submit three pieces of assignment work.", icon: "file-check", target: 3, progress: assignmentsSubmitted },
+    { id: "pathfinder", title: "Pathfinder", description: "Make progress in two courses.", icon: "route", target: 2, progress: myCourses.filter((course) => course.progress > 0).length },
+  ];
+  const badges = badgeDefinitions.map((badge) => ({
+    ...badge,
+    earned: badge.progress >= badge.target,
+    earned_at: null,
+    progress: Math.min(badge.progress, badge.target),
+  }));
 
   // Next class today
   const todayKey = new Date().toISOString().slice(0, 10);
@@ -106,12 +145,16 @@ export async function GET(req: Request) {
       assignmentsDue: { label: "Assignments due", value: assignmentsDue, hint: "next 7 days" },
       attendanceRate: { label: "Attendance rate", value: `${attendanceRate}%` },
       certificates: { label: "Certificates earned", value: certificates.length },
+      lessonsCompleted: { label: "Lessons completed", value: lessonsCompleted },
+      assignmentsSubmitted: { label: "Assignments submitted", value: assignmentsSubmitted },
     },
     myCourses,
     nextClass,
     assignments,
     certificates,
     achievements,
+    badges,
+    currentStreak: history.filter((value) => value > 0).slice(-3).length,
     progressByWeek,
   };
 

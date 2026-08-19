@@ -116,17 +116,32 @@ export interface LearnerCertificate {
   verified: boolean;
 }
 
+export interface LearnerBadge {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  earned: boolean;
+  earned_at: string | null;
+  progress: number;
+  target: number;
+}
+
 export interface LearnerDashboard {
   stats: {
     coursesInProgress: DashboardStat;
     assignmentsDue: DashboardStat;
     attendanceRate: DashboardStat;
     certificates: DashboardStat;
+    lessonsCompleted: DashboardStat;
+    assignmentsSubmitted: DashboardStat;
   };
   myCourses: LearnerCourse[];
   nextClass: TodayClass | null;
   assignments: LearnerAssignment[];
   certificates: LearnerCertificate[];
   achievements: string[];
+  badges: LearnerBadge[];
+  currentStreak: number;
   progressByWeek: ChartPoint[];
 }

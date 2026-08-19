@@ -35,6 +35,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { CodingPlayground, type Language } from "@/components/modules/coding-playground";
 import { ScratchWorkspace } from "@/components/modules/scratch-workspace";
 import { LessonNotesBody } from "@/components/learner/lesson-notes";
+import { Textarea } from "@/components/ui/textarea";
 import { courseService } from "@/services/courses";
 import { cn } from "@/lib/utils";
 
@@ -110,7 +111,9 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
   const queryClient = useQueryClient();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
-  const [lessonMode, setLessonMode] = useState<"read" | "watch">("read");
+  const [lessonMode, setLessonMode] = useState<"read" | "watch">("watch");
+  const [submissionText, setSubmissionText] = useState("");
+  const [evidenceUrl, setEvidenceUrl] = useState("");
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["course", courseId],
@@ -142,8 +145,10 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
   // Reset the step tracker whenever the lesson changes.
   useEffect(() => {
     setStepIndex(0);
-    setLessonMode("read");
-  }, [selected?.id]);
+    setLessonMode("watch");
+    setSubmissionText(selected?.submission?.response_text ?? "");
+    setEvidenceUrl(selected?.submission?.evidence_url ?? "");
+  }, [selected?.id, selected?.submission?.evidence_url, selected?.submission?.response_text]);
 
   /* A learner sees the video and lesson notes together, followed by practice. */
   const steps = useMemo<StepDef[]>(() => {
@@ -183,6 +188,24 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
       }
     },
     onError: () => toast.error("Could not mark this lesson as complete."),
+  });
+
+  const submit = useMutation({
+    mutationFn: () => {
+      if (!selected) throw new Error("Select a lesson before submitting.");
+      return courseService.submitAssignment(courseId, selected.id, {
+        response_text: submissionText,
+        evidence_url: evidenceUrl || undefined,
+      });
+    },
+    onSuccess: () => {
+      toast.success("Assignment submitted. Your work is saved.");
+      void queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+      void queryClient.invalidateQueries({ queryKey: ["learner-dashboard"] });
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Could not submit this assignment.");
+    },
   });
 
   if (isLoading) {
@@ -578,26 +601,84 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                                             ) : null}
 
                       {currentStep?.id === "assignment" && selected.assignment ? (
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-2 rounded-xl border border-dashed border-primary/40 bg-primary/5 p-4">
-                            <PenLine className="h-4 w-4 shrink-0 text-primary" aria-hidden />
-                            <h3 className="text-sm font-semibold">Your assignment</h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-2 rounded-xl border border-[#f47945]/35 bg-[#fffaf7] p-4">
+                            <PenLine className="h-4 w-4 shrink-0 text-[#b94920]" aria-hidden />
+                            <div>
+                              <h3 className="text-sm font-semibold">Your assignment</h3>
+                              <p className="mt-0.5 text-xs text-muted-foreground">Complete the task, then save your work below so you can return to it later.</p>
+                            </div>
                           </div>
-                          <div className="rounded-xl border p-4">
+                          <div className="rounded-xl border border-border bg-background p-4">
                             <LessonNotesBody body={selected.assignment} />
                           </div>
                           {course.coding ? (
                             <div className="flex items-start gap-2 rounded-lg border-l-4 border-orange-400 bg-orange-50 px-3 py-2.5 text-sm text-orange-900">
                               <Sparkles className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                               <p>
-                                Build your answer in the coding workspace below — then come back
-                                and mark this lesson complete.
+                                Build your answer in the coding workspace below, then describe what you built and what you learned in the submission box.
                               </p>
+                            </div>
+                          ) : null}
+                          <div className="space-y-3 rounded-xl border border-[#4d176e]/15 bg-[#fbf8fd] p-4">
+                            <div>
+                              <label htmlFor={`submission-${selected.id}`} className="text-sm font-semibold text-foreground">Submit your work</label>
+                              <p className="mt-1 text-xs leading-5 text-muted-foreground">Write at least 20 characters describing your solution, process, or reflection. You can update your submission later.</p>
+                            </div>
+                            <Textarea
+                              id={`submission-${selected.id}`}
+                              value={submissionText}
+                              onChange={(event) => setSubmissionText(event.target.value)}
+                              placeholder="What did you build or discover? What would you improve next?"
+                              rows={6}
+                              disabled={submit.isPending}
+                              aria-describedby={`submission-help-${selected.id}`}
+                            />
+                            <div>
+                              <label htmlFor={`evidence-${selected.id}`} className="text-xs font-semibold text-foreground">Evidence link (optional)</label>
+                              <input
+                                id={`evidence-${selected.id}`}
+                                type="url"
+                                value={evidenceUrl}
+                                onChange={(event) => setEvidenceUrl(event.target.value)}
+                                placeholder="https://github.com/... or https://your-project.example"
+                                disabled={submit.isPending}
+                                className="mt-1 flex h-10 w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                              />
+                            </div>
+                            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#4d176e]/10 pt-3">
+                              <p id={`submission-help-${selected.id}`} className="text-xs text-muted-foreground">
+                                {selected.submission ? `Last saved ${new Date(selected.submission.submitted_at).toLocaleDateString()}` : `${submissionText.trim().length}/20 characters minimum`}
+                              </p>
+                              <Button
+                                type="button"
+                                onClick={() => submit.mutate()}
+                                disabled={submit.isPending || submissionText.trim().length < 20}
+                                className="bg-[#4d176e] text-white hover:bg-[#35104f]"
+                              >
+                                {submit.isPending ? "Saving…" : selected.submission ? "Update submission" : "Submit assignment"}
+                              </Button>
+                            </div>
+                          </div>
+                          {selected.submission ? (
+                            <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-4">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden />
+                                  <p className="text-sm font-semibold text-emerald-900">Assignment submitted</p>
+                                </div>
+                                <span className="text-xs text-emerald-800">{new Date(selected.submission.submitted_at).toLocaleString()}</span>
+                              </div>
+                              <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-emerald-950">{selected.submission.response_text}</p>
+                              {selected.submission.evidence_url ? (
+                                <a href={selected.submission.evidence_url} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-xs font-semibold text-[#4d176e] underline underline-offset-2 hover:text-[#b94920]">Open submitted evidence</a>
+                              ) : null}
+                              {selected.submission.feedback ? <p className="mt-3 border-t border-emerald-200 pt-3 text-xs leading-5 text-emerald-900"><strong>Feedback:</strong> {selected.submission.feedback}</p> : null}
                             </div>
                           ) : null}
                           <Button
                             size="lg"
-                            disabled={isLessonCompleted || complete.isPending}
+                            disabled={!selected.submission || isLessonCompleted || complete.isPending}
                             onClick={() => complete.mutate(selected.id)}
                             className="w-full sm:w-auto"
                           >
@@ -608,10 +689,15 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                               </>
                             ) : complete.isPending ? (
                               "Saving…"
+                            ) : !selected.submission ? (
+                              <>
+                                <ListChecks className="mr-1.5 h-4 w-4" aria-hidden />
+                                Submit work to complete lesson
+                              </>
                             ) : (
                               <>
                                 <ListChecks className="mr-1.5 h-4 w-4" aria-hidden />
-                                I finished my assignment
+                                Mark lesson complete
                               </>
                             )}
                           </Button>

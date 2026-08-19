@@ -26,6 +26,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
   }
 
   let enrolment: Record<string, unknown> | null = null;
+  const submissionsByLesson = new Map<string, Record<string, unknown>>();
   if (auth.user.role === "learner") {
     const enrSnap = await db
       .collection("enrolments")
@@ -36,6 +37,18 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
     if (!enrSnap.empty) {
       const doc = enrSnap.docs[0];
       enrolment = { id: doc.id, ...doc.data() };
+    }
+
+    const submissionSnap = await db
+      .collection("submissions")
+      .where("learnerId", "==", auth.user.id)
+      .limit(500)
+      .get();
+    for (const submissionDoc of submissionSnap.docs) {
+      const submission = submissionDoc.data();
+      if (String(submission.courseId ?? "") !== id) continue;
+      const lessonId = String(submission.lessonId ?? "");
+      if (lessonId) submissionsByLesson.set(lessonId, { id: submissionDoc.id, ...submission });
     }
   }
 
@@ -124,6 +137,22 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
               description: String(currentResource.description ?? ''),
             }))
           : [],
+        submission: submissionsByLesson.has(String(l.id ?? `lesson-${i + 1}`))
+          ? (() => {
+              const submission = submissionsByLesson.get(String(l.id ?? `lesson-${i + 1}`))!;
+              return {
+                id: String(submission.id ?? ""),
+                course_id: String(submission.courseId ?? id),
+                lesson_id: String(submission.lessonId ?? l.id ?? `lesson-${i + 1}`),
+                response_text: String(submission.response_text ?? ""),
+                evidence_url: submission.evidence_url ? String(submission.evidence_url) : null,
+                status: submission.status === "graded" ? "graded" : "submitted",
+                submitted_at: String(submission.submitted_at ?? submission.created_at ?? ""),
+                grade: submission.grade === null || submission.grade === undefined ? null : Number(submission.grade),
+                feedback: String(submission.feedback ?? ""),
+              };
+            })()
+          : null,
         order: Number(l.order ?? i + 1),
       })),
       enrolment: enrolment

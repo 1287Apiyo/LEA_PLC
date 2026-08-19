@@ -6,6 +6,7 @@ import Image from "next/image";
 import {
     Award,
   ArrowRight,
+  BadgeCheck,
   BookOpen,
 
   CalendarDays,
@@ -34,14 +35,7 @@ import { useLearnerDashboard } from "@/hooks/use-dashboard";
 import { useAuthStore } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 
-/** Flat, bright accents for the fun learner portal — no gradients. */
-const ACHIEVEMENT_COLORS = [
-  "bg-orange-500",
-  "bg-violet-500",
-  "bg-emerald-500",
-  "bg-sky-500",
-  "bg-pink-500",
-];
+
 
 /** Learner dashboard — greeting banner, courses, next class, progress and rewards. */
 export function LearnerDashboard() {
@@ -93,11 +87,41 @@ export function LearnerDashboard() {
         </div>
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
             <StatCard icon={BookOpen} {...data.stats.coursesInProgress} />
             <StatCard icon={FileCheck2} {...data.stats.assignmentsDue} />
             <StatCard icon={UserCheck} {...data.stats.attendanceRate} />
             <StatCard icon={Award} {...data.stats.certificates} />
+            <StatCard icon={BookOpen} {...data.stats.lessonsCompleted} />
+            <StatCard icon={BadgeCheck} {...data.stats.assignmentsSubmitted} />
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
+            <Card className="border-[#f47945]/35 bg-[#fffaf7]">
+              <CardContent className="flex flex-col justify-between gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#b94920]">Keep your momentum</p>
+                  <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-[#151116]">Small progress becomes a body of work.</h2>
+                  <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">You have submitted {data.stats.assignmentsSubmitted.value} assignment{Number(data.stats.assignmentsSubmitted.value) === 1 ? "" : "s"}. Keep showing your work and the next milestone will come into view.</p>
+                </div>
+                <div className="shrink-0 rounded-2xl bg-[#1f0d2e] px-5 py-4 text-white">
+                  <Flame className="h-5 w-5 text-[#f47945]" aria-hidden />
+                  <p className="mt-2 text-2xl font-semibold">{data.currentStreak}</p>
+                  <p className="text-xs text-white/70">active weeks</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-[#4d176e]/15">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-sm font-medium"><BadgeCheck className="h-4 w-4 text-[#f47945]" aria-hidden />Next badge</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {data.badges.find((badge) => !badge.earned) ? (() => {
+                  const badge = data.badges.find((item) => !item.earned)!;
+                  return <div><p className="font-semibold">{badge.title}</p><p className="mt-1 text-sm text-muted-foreground">{badge.description}</p><div className="mt-3 h-2 overflow-hidden rounded-full bg-muted"><div className="h-full rounded-full bg-[#f47945]" style={{ width: `${Math.round((badge.progress / badge.target) * 100)}%` }} /></div><p className="mt-2 text-xs text-muted-foreground">{badge.progress} of {badge.target} completed</p></div>;
+                })() : <div><p className="font-semibold">Every badge earned</p><p className="mt-1 text-sm text-muted-foreground">You are building a strong learning record. Keep going.</p></div>}
+              </CardContent>
+            </Card>
           </div>
 
           <Card className="group overflow-hidden rounded-[26px] border border-[#f47945]/45 bg-white shadow-[0_16px_40px_rgba(77,23,110,0.07)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_52px_rgba(77,23,110,0.12)]">
@@ -185,21 +209,19 @@ export function LearnerDashboard() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm font-medium">
                   <Sparkles className="h-4 w-4 text-muted-foreground" aria-hidden />
-                  Achievements
+                  Your badges
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-wrap gap-2">
-                {data.achievements.map((achievement, index) => (
-                  <span
-                    key={achievement}
-                    className={cn(
-                      "flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-white",
-                      ACHIEVEMENT_COLORS[index % ACHIEVEMENT_COLORS.length]
-                    )}
-                  >
-                    <Award className="h-4 w-4" aria-hidden />
-                    {achievement}
-                  </span>
+              <CardContent className="grid gap-3 sm:grid-cols-2">
+                {data.badges.map((badge) => (
+                  <div key={badge.id} className={cn("rounded-xl border p-3", badge.earned ? "border-[#f47945]/40 bg-[#fffaf7]" : "border-border bg-muted/20")}>
+                    <div className="flex items-start gap-3">
+                      <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", badge.earned ? "bg-[#f47945] text-[#351039]" : "bg-muted text-muted-foreground")}><Award className="h-4 w-4" aria-hidden /></div>
+                      <div className="min-w-0"><p className="text-sm font-semibold">{badge.title}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{badge.description}</p></div>
+                    </div>
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted"><div className={cn("h-full rounded-full", badge.earned ? "bg-[#f47945]" : "bg-[#4d176e]")} style={{ width: `${Math.round((badge.progress / badge.target) * 100)}%` }} /></div>
+                    <p className="mt-1.5 text-[11px] font-medium text-muted-foreground">{badge.earned ? "Earned" : `${badge.progress}/${badge.target} toward this badge`}</p>
+                  </div>
                 ))}
               </CardContent>
             </Card>

@@ -114,7 +114,7 @@ export default function LandingPage() {
               <div className="absolute left-0 top-0 h-24 w-24 border-l border-t border-[#f47945] sm:h-28 sm:w-28" />
               <img src={COLLABORATION_IMAGE} alt="LEA learners collaborating over a digital project" className="aspect-[1.58] w-full object-cover object-center" />
             </div>
-            <blockquote className="relative max-w-[390px] lg:pb-7"><span className="block text-7xl font-black leading-[0.6] text-[#f47945]">"</span><p className="mt-5 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
+            <blockquote className="relative max-w-[390px] lg:pb-7"><span className="block text-7xl font-black leading-[0.6] text-[#f47945]">&ldquo;</span><p className="mt-5 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
           </div>
         </section>
 

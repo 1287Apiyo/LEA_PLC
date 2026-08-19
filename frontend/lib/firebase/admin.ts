@@ -1,5 +1,6 @@
 import { cert, getApp, getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
+
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
@@ -35,3 +36,4 @@ export function getDb(): Firestore {
   getFirebaseApp();
   return getFirestore();
 }
+

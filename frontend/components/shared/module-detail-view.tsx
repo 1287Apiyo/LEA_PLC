@@ -140,7 +140,7 @@ function EnrolledLearnersCard({ row }: { row: ResourceRow }) {
 
 /** Learner detail — the courses they're enrolled in, with progress. */
 function EnrolledCoursesCard({ row }: { row: ResourceRow }) {
-  const enrolments = Array.isArray(row.enrolments) ? (row.enrolments as any[]) : [];
+  const enrolments = Array.isArray(row.enrolments) ? (row.enrolments as Array<Record<string, unknown>>) : [];
   const count = Number(row.courses_enrolled ?? enrolments.length);
   return (
     <Card>

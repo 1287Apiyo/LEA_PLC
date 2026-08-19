@@ -32,10 +32,33 @@ const COLLECTIONS: Record<string, string> = {
   bookmarks: "bookmarks",
   downloads: "downloads",
   finance: "payments",
+  payments: "payments",
+  invoices: "invoices",
+  expenses: "expenses",
   notifications: "notifications",
 };
 
 const SENSITIVE = new Set(["salt", "password_hash"]);
+const LEARNER_SCOPED_RESOURCES = new Set([
+  "classes",
+  "attendance",
+  "certificates",
+  "projects",
+  "submissions",
+  "messages",
+  "achievements",
+  "progress",
+  "bookmarks",
+  "downloads",
+  "notifications",
+  "assignments",
+]);
+const LEARNER_MUTABLE_RESOURCES = new Set(["projects", "messages", "bookmarks", "downloads"]);
+
+function hasLearnerOwner(row: Record<string, unknown>, learnerId: string) {
+  return ["learnerId", "learner_id", "userId", "user_id", "ownerId", "owner_id", "created_by", "recipientId", "recipient_id", "senderId", "sender_id"]
+    .some((key) => String(row[key] ?? "") === learnerId);
+}
 
 function sanitize(row: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {};
@@ -63,6 +86,9 @@ export async function GET(
   if (!snap.exists) return jsonError("Record not found.", 404);
 
   const data = sanitize({ id, ...snap.data() });
+  if (auth.user.role === "learner" && LEARNER_SCOPED_RESOURCES.has(resource) && !hasLearnerOwner(data, auth.user.id)) {
+    return jsonError("Record not found.", 404);
+  }
 
   // Ecosystem enrichment:
   // - User records (learners/instructors/staff) get their enrolled courses
@@ -104,16 +130,27 @@ export async function PATCH(
   const collection = COLLECTIONS[resource];
   if (!collection) return jsonError("Unknown resource.", 404);
 
+  if (auth.user.role === "learner" && !LEARNER_MUTABLE_RESOURCES.has(resource)) {
+    return jsonError("Learners cannot update this resource directly.", 403);
+  }
+
   const db = getDb();
   const docRef = db.collection(collection).doc(id);
   const snap = await docRef.get();
   if (!snap.exists) return jsonError("Record not found.", 404);
+  const existing = { id, ...snap.data() } as Record<string, unknown>;
+  if (auth.user.role === "learner" && LEARNER_SCOPED_RESOURCES.has(resource) && !hasLearnerOwner(existing, auth.user.id)) {
+    return jsonError("Record not found.", 404);
+  }
 
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return jsonError("Invalid payload.", 422);
 
   // Never allow the document id or sensitive auth fields to be overwritten.
-  const { id: _ignored, salt, password_hash, ...updates } = body;
+  const updates = { ...body };
+  delete updates.id;
+  delete updates.salt;
+  delete updates.password_hash;
   updates.updated_at = new Date().toISOString();
 
   await docRef.update(updates);
@@ -133,10 +170,18 @@ export async function DELETE(
   const collection = COLLECTIONS[resource];
   if (!collection) return jsonError("Unknown resource.", 404);
 
+  if (auth.user.role === "learner" && !LEARNER_MUTABLE_RESOURCES.has(resource)) {
+    return jsonError("Learners cannot delete this resource directly.", 403);
+  }
+
   const db = getDb();
   const docRef = db.collection(collection).doc(id);
   const snap = await docRef.get();
   if (!snap.exists) return jsonError("Record not found.", 404);
+  const existing = { id, ...snap.data() } as Record<string, unknown>;
+  if (auth.user.role === "learner" && LEARNER_SCOPED_RESOURCES.has(resource) && !hasLearnerOwner(existing, auth.user.id)) {
+    return jsonError("Record not found.", 404);
+  }
 
   await docRef.delete();
   return jsonOk({ message: "Deleted." });

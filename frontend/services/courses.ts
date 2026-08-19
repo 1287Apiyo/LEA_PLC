@@ -40,6 +40,18 @@ export interface CourseResource {
   description?: string;
 }
 
+export interface CourseAssignmentSubmission {
+  id: string;
+  course_id: string;
+  lesson_id: string;
+  response_text: string;
+  evidence_url?: string | null;
+  status: "submitted" | "graded";
+  submitted_at: string;
+  grade?: number | null;
+  feedback?: string;
+}
+
 export interface CourseLesson {
   id: string;
   title: string;
@@ -50,6 +62,7 @@ export interface CourseLesson {
   notes: string;
   assignment: string;
   resources?: CourseResource[];
+  submission?: CourseAssignmentSubmission | null;
   order: number;
 }
 
@@ -98,4 +111,13 @@ export const courseService = {
     api.post<{
       data: { progress: number; completed_lessons: string[]; next_lesson: string | null };
     }>(`/courses/${courseId}/lessons/${lessonId}/complete`),
+  submitAssignment: (
+    courseId: string,
+    lessonId: string,
+    payload: { response_text: string; evidence_url?: string }
+  ) =>
+    api.post<{ data: CourseAssignmentSubmission }>(
+      `/courses/${courseId}/lessons/${lessonId}/submission`,
+      payload
+    ),
 };
