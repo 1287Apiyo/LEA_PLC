@@ -17,7 +17,7 @@ import { LandingNav } from "@/components/landing/landing-nav";
 import { APP_NAME } from "@/lib/constants";
 import { PROGRAMMES as programmes } from "@/lib/programmes";
 
-const HERO_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-hero-learning-current_d35697f7.jpg";
+const HERO_IMAGE = "/lea-hero-purple-orange.png";
 const COLLABORATION_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-programme-collaboration_c9aa5e6b.jpg";
 const MENTOR_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-mentor-support_9d78971d.jpg";
 const COMMUNITY_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-community-launch_f1ae296d.jpg";
