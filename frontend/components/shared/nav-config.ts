@@ -50,7 +50,9 @@ export const NAV: Record<Role, NavSection[]> = {
       items: [
         { title: "Learners", href: "/admin/learners", icon: Users },
         { title: "Instructors", href: "/admin/instructors", icon: UserCog },
-        { title: "Staff", href: "/admin/hr", icon: Briefcase },
+                { title: "Staff", href: "/admin/hr", icon: Briefcase },
+        { title: "Tutor requests", href: "/admin/tutoring", icon: CalendarHeart },
+
       ],
     },
     {

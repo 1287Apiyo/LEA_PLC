@@ -199,7 +199,18 @@ export async function POST(req: Request, ctx: { params: Promise<{ resource: stri
     ...(auth.user.role === "learner" ? { learnerId: auth.user.id, created_by: auth.user.id } : {}),
     created_at: body.created_at ?? new Date().toISOString(),
   };
-  await db.collection(collection).doc(id).set(data);
+  try {
+    await db.collection(collection).doc(id).set(data);
+  } catch (error) {
+    console.error(`[resource POST] Failed to save ${resource}.`, error);
+    const reason = error instanceof Error ? error.message : "Unknown Firestore error.";
+    return jsonError(
+      process.env.NODE_ENV === "development"
+        ? `Could not save ${resource} record: ${reason}`
+        : "Could not save record.",
+      500,
+    );
+  }
   return jsonOk({ data: sanitize(data) }, 201);
 }
 

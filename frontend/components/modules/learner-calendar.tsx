@@ -21,6 +21,10 @@ type TutorRequest = {
   durationMinutes: number;
   quoted_price_kes: number | null;
   status: string;
+  admin_response?: string;
+  confirmedDate?: string;
+  confirmedTime?: string;
+  venue?: string;
 };
 
 type TutoringData = {
@@ -147,7 +151,7 @@ export function LearnerCalendar() {
       <Card>
         <CardHeader><CardTitle className="text-base">Your tutor requests</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {requests.length ? requests.map((request) => <div key={request.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3"><div><p className="font-medium">{request.course_title}</p><p className="text-xs text-muted-foreground">{request.mode === "in_person" ? "Face-to-face" : "Online"} · {request.preferredDate} at {request.preferredTime} · {kes(request.quoted_price_kes)}</p></div><span className={cn("rounded-full px-2.5 py-1 text-xs font-medium", request.status === "confirmed" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700")}>{request.status}</span></div>) : <p className="text-sm text-muted-foreground">No tutor requests yet.</p>}
+          {requests.length ? requests.map((request) => <div key={request.id} className="rounded-lg border p-3"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="font-medium">{request.course_title}</p><p className="text-xs text-muted-foreground">{request.mode === "in_person" ? "Face-to-face" : "Online"} · {request.preferredDate} at {request.preferredTime} · {kes(request.quoted_price_kes)}</p></div><span className={cn("rounded-full px-2.5 py-1 text-xs font-medium capitalize", request.status === "confirmed" ? "bg-emerald-100 text-emerald-700" : request.status === "declined" || request.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700")}>{request.status.replace(/_/g, " ")}</span></div>{request.admin_response ? <div className="mt-3 rounded-md bg-muted/40 p-3 text-sm"><p className="font-medium text-[#1f0d2e]">LEA response</p><p className="mt-1 text-muted-foreground">{request.admin_response}</p>{request.status === "confirmed" && request.confirmedDate ? <p className="mt-2 text-xs font-medium text-emerald-700">Confirmed: {request.confirmedDate} at {request.confirmedTime} · {request.venue}</p> : null}</div> : null}</div>) : <p className="text-sm text-muted-foreground">No tutor requests yet.</p>}
         </CardContent>
       </Card>
     </div>

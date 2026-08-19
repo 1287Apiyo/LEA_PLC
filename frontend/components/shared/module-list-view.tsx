@@ -201,13 +201,15 @@ export function ModuleListView({ role, slug, plural }: ModuleListViewProps) {
         </div>
       ) : null}
 
-      <CrudTable
+            <CrudTable
         resource={config.resource}
         columns={config.columns}
         searchPlaceholder={config.searchPlaceholder}
         title={singular}
         plural={plural}
+        canCreate={role !== "learner" || ["messages", "bookmarks", "downloads", "projects"].includes(config.resource)}
       />
+
     </div>
   );
 }
