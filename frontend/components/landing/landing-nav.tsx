@@ -21,7 +21,7 @@ export function LandingNav() {
       <div className="px-5 sm:px-10 lg:px-[7vw]">
         <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between">
         <Link href="/" className="-ml-2 inline-flex items-center gap-2.5 sm:-ml-3 lg:-ml-2" aria-label={`${APP_NAME} home`}>
-          <BrandMark className="h-10 w-12" />
+          <BrandMark className="h-10 w-10" />
           <span className="text-[15px] font-black tracking-[0.16em] text-[#241b42]">LEA LABS</span>
         </Link>
 

@@ -5,7 +5,7 @@ export function BrandMark({ className }: BrandMarkProps) {
     <img
       src="/lea-logo222.png"
       alt="LEA Learn Explore Achieve logo"
-      className={`object-contain ${className ?? ""}`}
+      className={`aspect-square rounded-full object-contain ${className ?? ""}`}
       loading="eager"
       draggable={false}
     />
