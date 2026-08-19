@@ -4,10 +4,25 @@ export interface CourseCatalogItem {
   id: string;
   title: string;
   description: string;
+  summary: string;
+  programme_id: string;
   programme: string;
+  programme_order: number;
+  sequence: number;
+  level: string;
+  track: string;
+  outcomes: string[];
+  skills: string[];
+  deliverable: string;
+  project: string;
+  trend_tags: string[];
   lessons_count: number;
   total_minutes: number;
+  duration_weeks: number;
+  resource_count?: number;
+  video_count?: number;
   coding: boolean;
+
   playground_language: string | null;
   workspace_type: "scratch" | "code" | null;
   status: string;
@@ -16,14 +31,25 @@ export interface CourseCatalogItem {
   enrolment_id: string | null;
 }
 
+export interface CourseResource {
+  id: string;
+  title: string;
+  type: string;
+  url: string;
+  download_url?: string;
+  description?: string;
+}
+
 export interface CourseLesson {
   id: string;
   title: string;
   duration_minutes: number;
   video_url: string;
+  video_source?: string;
   description: string;
   notes: string;
   assignment: string;
+  resources?: CourseResource[];
   order: number;
 }
 
@@ -39,7 +65,22 @@ export interface CourseDetail {
   id: string;
   title: string;
   description: string;
+  summary?: string;
   programme: string;
+  programme_id?: string;
+  sequence?: number;
+  level?: string;
+  track?: string;
+  outcomes?: string[];
+  skills?: string[];
+  deliverable?: string;
+  project?: string;
+  trend_tags?: string[];
+  duration_weeks?: number;
+  resource_count?: number;
+  video_count?: number;
+  resources?: CourseResource[];
+
   coding: boolean;
   playground_language: string | null;
   workspace_type: "scratch" | "code" | null;

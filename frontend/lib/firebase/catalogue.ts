@@ -8,6 +8,9 @@ export type LiveCatalogueCourse = {
   topics: string[];
   deliverable: string;
   price: string;
+  lessonCount: number;
+  lessonTitles: string[];
+  durationMinutes: number;
 };
 
 function text(value: unknown, fallback = "") {
@@ -21,6 +24,18 @@ function list(value: unknown) {
 
 function normalise(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function lessonItems(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      if (typeof item === "string") return item.trim();
+      if (!item || typeof item !== "object") return "";
+      const lesson = item as Record<string, unknown>;
+      return text(lesson.title ?? lesson.name ?? lesson.label);
+    })
+    .filter(Boolean);
 }
 
 /**
@@ -42,10 +57,20 @@ export async function loadLiveCatalogue(): Promise<LiveCatalogueCourse[]> {
     ])
   );
 
-  return courseSnap.docs.map((doc) => {
+  return courseSnap.docs
+    .filter((doc) => text(doc.data().status, "active") !== "archived")
+    .map((doc) => {
     const data = doc.data();
     const rawProgramme = text(data.programme ?? data.programmeId);
     const programme = programmeTitles.get(rawProgramme) ?? rawProgramme;
+    const lessonTitles = lessonItems(data.lessons);
+    const durationMinutes = Array.isArray(data.lessons)
+      ? data.lessons.reduce((total, item) => {
+          if (!item || typeof item !== "object") return total;
+          const lesson = item as Record<string, unknown>;
+          return total + Number(lesson.duration_minutes ?? lesson.duration ?? 0);
+        }, 0)
+      : 0;
     return {
       id: doc.id,
       title: text(data.title, doc.id),
@@ -54,8 +79,11 @@ export async function loadLiveCatalogue(): Promise<LiveCatalogueCourse[]> {
       topics: list(data.topics ?? data.modules ?? data.outcomes),
       deliverable: text(data.deliverable ?? data.project ?? data.outcome, "A completed project or practical learning outcome."),
       price: text(data.price ?? data.tuition, "Ask admissions"),
+      lessonCount: lessonTitles.length,
+      lessonTitles,
+      durationMinutes,
     };
-  });
+    });
 }
 
 export async function loadLiveCatalogueSafely() {
@@ -72,7 +100,8 @@ export async function loadLiveCatalogueSafely() {
 }
 
 /** Match a live course to a marketing programme using id, slug, or title. */
-export function courseBelongsToProgramme(course: LiveCatalogueCourse, programme: { slug: string; title: string }) {
+export function courseBelongsToProgramme(course: LiveCatalogueCourse, programme: { slug: string; title: string; catalogueKeys?: string[] }) {
   const key = normalise(course.programme);
-  return key === normalise(programme.slug) || key === normalise(programme.title) || key.includes(normalise(programme.slug));
+  const aliases = [programme.slug, programme.title, ...(programme.catalogueKeys ?? [])].map(normalise);
+  return aliases.some((alias) => key === alias || key.includes(alias) || alias.includes(key));
 }

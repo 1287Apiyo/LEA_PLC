@@ -1,0 +1,151 @@
+{
+  "projectId": "lea-labs-f9e16",
+  "programmes": [
+    {
+      "id": "prg-coding",
+      "title": "Coding Programme",
+      "status": "active",
+      "slug": null,
+      "description": "Programming courses for young and future-ready coders.",
+      "keys": [
+        "created_at",
+        "description",
+        "id",
+        "status",
+        "title"
+      ]
+    },
+    {
+      "id": "prg-dl",
+      "title": "Digital Literacy",
+      "status": "active",
+      "slug": null,
+      "description": "Foundational computer and digital skills for everyone.",
+      "keys": [
+        "created_at",
+        "description",
+        "id",
+        "status",
+        "title"
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": "crs-app",
+      "title": "App Development",
+      "programme": "prg-coding",
+      "status": "active",
+      "description": "Design and build mobile apps — screens, buttons, data and publishing.",
+      "lessonCount": 6,
+      "lessonTitles": [
+        "How apps are built",
+        "Designing your app's screens",
+        "Buttons, inputs and events",
+        "Making it talk to the web",
+        "Testing on your device",
+        "Publishing your app"
+      ],
+      "keys": [
+        "coding",
+        "created_at",
+        "description",
+        "id",
+        "lessons",
+        "playground_language",
+        "programme",
+        "status",
+        "title",
+        "updated_at",
+        "workspace_type"
+      ]
+    },
+    {
+      "id": "crs-computer",
+      "title": "Basic Computer Skills",
+      "programme": "prg-dl",
+      "status": "active",
+      "description": "Everything a first-time computer user needs — hardware, files, email and online safety.",
+      "lessonCount": 6,
+      "lessonTitles": [
+        "Parts of a computer",
+        "Using the keyboard and mouse",
+        "Files, folders and storage",
+        "Email essentials",
+        "Staying safe online",
+        "Connecting to the internet"
+      ],
+      "keys": [
+        "coding",
+        "created_at",
+        "description",
+        "id",
+        "lessons",
+        "playground_language",
+        "programme",
+        "status",
+        "title",
+        "updated_at",
+        "workspace_type"
+      ]
+    },
+    {
+      "id": "crs-scratch",
+      "title": "Scratch Programming",
+      "programme": "prg-coding",
+      "status": "active",
+      "description": "Learn to code by snapping blocks together — create animations, stories and games.",
+      "lessonCount": 6,
+      "lessonTitles": [
+        "Meet Scratch — your coding playground",
+        "Sprites, costumes and backdrops",
+        "Motion and looks blocks",
+        "Events and loops",
+        "My first animated story",
+        "Share your project"
+      ],
+      "keys": [
+        "coding",
+        "created_at",
+        "description",
+        "id",
+        "lessons",
+        "playground_language",
+        "programme",
+        "status",
+        "title",
+        "updated_at",
+        "workspace_type"
+      ]
+    },
+    {
+      "id": "crs-web",
+      "title": "Web Development",
+      "programme": "prg-coding",
+      "status": "active",
+      "description": "Build your own web pages with HTML and CSS — from your first heading to a published site.",
+      "lessonCount": 6,
+      "lessonTitles": [
+        "How the web works",
+        "Your first HTML page",
+        "Text, links and images",
+        "Styling with CSS",
+        "Layouts with Flexbox",
+        "Publishing your site"
+      ],
+      "keys": [
+        "coding",
+        "created_at",
+        "description",
+        "id",
+        "lessons",
+        "playground_language",
+        "programme",
+        "status",
+        "title",
+        "updated_at",
+        "workspace_type"
+      ]
+    }
+  ]
+}

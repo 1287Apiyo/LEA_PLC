@@ -60,14 +60,45 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
   }
 
   const lessons = (course.lessons ?? []) as Record<string, unknown>[];
+  const courseResources = new Map<string, Record<string, unknown>>();
+  for (const currentLesson of lessons) {
+    const lessonResources = Array.isArray(currentLesson.resources) ? currentLesson.resources : [];
+    for (const currentResource of lessonResources as Record<string, unknown>[]) {
+      const resourceId = String(currentResource.id ?? currentResource.url ?? 'resource');
+      if (!courseResources.has(resourceId)) courseResources.set(resourceId, currentResource);
+    }
+  }
+  const resources = [...courseResources.values()].map((currentResource, index) => ({
+    id: String(currentResource.id ?? `resource-${index + 1}`),
+    title: String(currentResource.title ?? 'Learning resource'),
+    type: String(currentResource.type ?? 'reference'),
+    url: String(currentResource.url ?? ''),
+    download_url: String(currentResource.download_url ?? ''),
+    description: String(currentResource.description ?? ''),
+  }));
 
   return jsonOk({
     data: {
       id,
-      title: String(course.title ?? "Untitled course"),
+            title: String(course.title ?? "Untitled course"),
       description: String(course.description ?? ""),
+      summary: String(course.summary ?? course.description ?? ""),
       programme,
+      programme_id: String(course.programme ?? ""),
+      sequence: Number(course.sequence ?? 99),
+      level: String(course.level ?? "Applied"),
+      track: String(course.track ?? "Core"),
+      outcomes: Array.isArray(course.outcomes) ? course.outcomes.map(String) : [],
+      skills: Array.isArray(course.skills) ? course.skills.map(String) : [],
+      deliverable: String(course.deliverable ?? course.project ?? ""),
+      project: String(course.project ?? course.deliverable ?? ""),
+      trend_tags: Array.isArray(course.trend_tags) ? course.trend_tags.map(String) : [],
+      duration_weeks: Number(course.duration_weeks ?? 0),
+      resource_count: Number(course.resource_count ?? resources.length),
+      video_count: Number(course.video_count ?? new Set(lessons.map((lesson) => String(lesson.video_url ?? '')).filter(Boolean)).size),
+      resources,
       coding: Boolean(course.coding),
+
       playground_language: course.playground_language ?? null,
       workspace_type: course.workspace_type ?? (course.coding ? "code" : null),
       status: course.status ?? "active",
@@ -79,9 +110,20 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
         title: String(l.title ?? `Lesson ${i + 1}`),
         duration_minutes: Number(l.duration_minutes ?? 0),
         video_url: String(l.video_url ?? ""),
+        video_source: String(l.video_source ?? ""),
         description: String(l.description ?? ""),
         notes: String(l.notes ?? ""),
         assignment: String(l.assignment ?? ""),
+        resources: Array.isArray(l.resources)
+          ? (l.resources as Record<string, unknown>[]).map((currentResource, resourceIndex) => ({
+              id: String(currentResource.id ?? `resource-${resourceIndex + 1}`),
+              title: String(currentResource.title ?? 'Learning resource'),
+              type: String(currentResource.type ?? 'reference'),
+              url: String(currentResource.url ?? ''),
+              download_url: String(currentResource.download_url ?? ''),
+              description: String(currentResource.description ?? ''),
+            }))
+          : [],
         order: Number(l.order ?? i + 1),
       })),
       enrolment: enrolment

@@ -16,6 +16,7 @@ export type Programme = {
   price: string;
   priceNote: string;
   modules: Array<{ number: string; title: string; summary: string; price: string }>;
+  catalogueKeys?: string[];
   faqs: Array<{ question: string; answer: string }>;
 };
 
@@ -38,7 +39,8 @@ export const PROGRAMMES: Programme[] = [
     duration: "16 weeks",
     format: "Guided practice, mentor feedback, and project work",
     price: "KES 45,000",
-    priceNote: "Full programme tuition covers all four modules, guided projects, mentor feedback, and the final capstone review.",
+    priceNote: "Full programme tuition covers the live course catalogue, guided projects, mentor feedback, and the final capstone review.",
+    catalogueKeys: ["prg-coding", "coding", "coding-programme"],
     modules: [
       { number: "01", title: "Digital foundations", summary: "Understand how the web works, work confidently with tools, and build a reliable learning workflow.", price: "KES 11,250" },
       { number: "02", title: "Interface and frontend", summary: "Turn ideas into clear, responsive interfaces with accessible HTML, CSS, and modern frontend practice.", price: "KES 11,250" },

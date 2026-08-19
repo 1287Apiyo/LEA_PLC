@@ -20,7 +20,16 @@ export async function GET(req: Request) {
 
   const courseSnap = await db.collection("courses").limit(200).get();
   const prgSnap = await db.collection("programmes").get();
-  const prgTitles = new Map(prgSnap.docs.map((d) => [d.id, String(d.data().title ?? d.id)]));
+  const programmeMap = new Map(
+    prgSnap.docs.map((d) => [
+      d.id,
+      {
+        id: d.id,
+        title: String(d.data().title ?? d.data().name ?? d.id),
+        order: Number(d.data().order ?? 99),
+      },
+    ])
+  );
 
   const courses = rowsFrom(courseSnap);
 
@@ -37,23 +46,40 @@ export async function GET(req: Request) {
   let data = courses
     .filter((c) => (c.status ?? "active") !== "archived")
     .map((c) => {
-      const lessons = (c.lessons as any[]) ?? [];
+            const lessons = Array.isArray(c.lessons) ? (c.lessons as Record<string, unknown>[]) : [];
+      const programmeId = String(c.programme ?? "");
+      const programme = programmeMap.get(programmeId);
       return {
         id: String(c.id),
         title: String(c.title ?? "Untitled course"),
         description: String(c.description ?? ""),
-        programme: prgTitles.get(String(c.programme)) ?? "",
+        summary: String(c.summary ?? c.description ?? ""),
+        programme_id: programmeId,
+        programme: programme?.title ?? programmeId,
+        programme_order: programme?.order ?? 99,
+        sequence: Number(c.sequence ?? 99),
+        level: String(c.level ?? "Applied"),
+        track: String(c.track ?? "Core"),
+        outcomes: Array.isArray(c.outcomes) ? c.outcomes.map(String) : [],
+        skills: Array.isArray(c.skills) ? c.skills.map(String) : [],
+        deliverable: String(c.deliverable ?? c.project ?? ""),
+        project: String(c.project ?? c.deliverable ?? ""),
+        trend_tags: Array.isArray(c.trend_tags) ? c.trend_tags.map(String) : [],
         lessons: lessons.length,
         lessons_count: lessons.length,
-        total_minutes: lessons.reduce((s, l) => s + Number(l?.duration_minutes ?? 0), 0),
+        total_minutes: lessons.reduce((s, l) => s + Number(l.duration_minutes ?? 0), 0),
+        resource_count: Number(c.resource_count ?? lessons.reduce((count, l) => count + (Array.isArray(l.resources) ? l.resources.length : 0), 0)),
+        video_count: Number(c.video_count ?? new Set(lessons.map((l) => String(l.video_url ?? '')).filter(Boolean)).size),
         coding: Boolean(c.coding),
         playground_language: c.playground_language ?? null,
         workspace_type: c.workspace_type ?? (c.coding ? "code" : null),
         trainer: c.trainer ? String(c.trainer) : null,
         price: c.price ?? null,
+        duration_weeks: Number(c.duration_weeks ?? 0),
         learners: enrolmentCounts.get(String(c.id)) ?? 0,
         status: c.status ?? "active",
       };
+
     });
 
   // Resolve the trainer id into a display name (admin "Trainer" column).

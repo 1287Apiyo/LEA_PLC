@@ -1,14 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+
 import {
-  Award,
+    Award,
+  ArrowRight,
   BookOpen,
+
   CalendarDays,
   FileCheck2,
   Flame,
-  MapPin,
+    MapPin,
+  Layers3,
   Sparkles,
+
   UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -93,6 +99,36 @@ export function LearnerDashboard() {
             <StatCard icon={UserCheck} {...data.stats.attendanceRate} />
             <StatCard icon={Award} {...data.stats.certificates} />
           </div>
+
+          <Card className="group overflow-hidden rounded-[26px] border border-[#f47945]/45 bg-white shadow-[0_16px_40px_rgba(77,23,110,0.07)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_52px_rgba(77,23,110,0.12)]">
+            <CardContent className="grid gap-0 p-0 lg:grid-cols-[minmax(0,1fr)_220px]">
+              <div className="flex flex-col justify-between gap-5 p-5 sm:p-7">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f47945] text-[#351039]">
+                    <Layers3 className="h-5 w-5" aria-hidden />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#b94920]">Your learning path</p>
+                    <h2 className="mt-1 max-w-xl text-xl font-semibold leading-tight tracking-[-0.03em] text-[#151116]">Choose a programme, then move through its courses.</h2>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">Explore the full LEA Labs curriculum, see the project each course builds toward, and continue from your current progress.</p>
+                  </div>
+                </div>
+                <div>
+                  <Button asChild className="rounded-full bg-[#f47945] text-[#351039] hover:bg-[#ff8f57]">
+                    <Link href="/learner/courses">
+                      Explore programmes
+                      <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+              <div className="relative min-h-[180px] overflow-hidden bg-[#1f0d2e]">
+                <Image src="/lea-hero-purple-orange.png" alt="Learner building practical digital skills" fill sizes="(max-width: 1024px) 100vw, 220px" className="object-cover transition duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#1f0d2e]/75 via-[#351039]/20 to-transparent lg:bg-gradient-to-l" />
+                <span className="absolute bottom-4 right-4 rounded-full bg-[#f47945] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-[#351039]">Build forward</span>
+              </div>
+            </CardContent>
+          </Card>
 
           <div className="grid gap-4 lg:grid-cols-3">
             <div className="lg:col-span-2">
