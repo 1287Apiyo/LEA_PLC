@@ -1,9 +1,13 @@
 "use client";
 
-import { Fragment, useRef, useState, type ButtonHTMLAttributes, type DragEvent } from "react";
+import { Fragment, useEffect, useRef, useState, type ButtonHTMLAttributes, type DragEvent } from "react";
+import Link from "next/link";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import {
   ChevronDown,
   Flag,
+  FolderOpen,
   Maximize2,
   Move,
   MousePointer2,
@@ -13,6 +17,7 @@ import {
   Radar,
   Redo2,
   Repeat,
+  Save,
   Sigma,
   Square,
   Star,
@@ -23,6 +28,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { resourceService, type ResourceRow } from "@/services/resources";
 
 /**
  * Mini Scratch studio — a faithful take on the Scratch 3.0 editor layout:
@@ -32,15 +38,17 @@ import { cn } from "@/lib/utils";
  */
 
 type BlockId =
-  | "when" | "move" | "turn" | "goto"
-  | "say" | "think" | "grow"
-  | "pop" | "meow" | "drum"
-  | "broadcast"
-  | "wait" | "repeat"
-  | "edge" | "mouse" | "loudness"
-  | "random" | "math"
-  | "set" | "change"
-  | "jump" | "spin";
+  | "when" | "when-key" | "when-clicked" | "when-backdrop" | "when-loudness" | "when-receive"
+  | "move" | "turn" | "turn-left" | "goto" | "goto-random" | "goto-xy" | "glide" | "point-direction" | "point-mouse" | "change-x" | "set-x" | "change-y" | "set-y" | "bounce" | "rotation-style" | "x-position" | "y-position" | "direction"
+  | "say" | "say-short" | "think" | "think-short" | "grow" | "change-size" | "set-size" | "next-costume" | "switch-costume" | "clear-effects" | "change-effect" | "set-effect" | "front-layer" | "back-layer" | "show" | "hide"
+  | "pop" | "meow" | "drum" | "play-sound" | "stop-sounds" | "change-volume" | "set-volume" | "rest-beats" | "change-tempo" | "set-tempo"
+  | "broadcast" | "broadcast-wait"
+  | "wait" | "repeat" | "forever" | "if" | "if-else" | "wait-until" | "repeat-until" | "stop-all" | "create-clone" | "delete-clone" | "start-clone"
+  | "edge" | "touch-color" | "color-touch" | "ask" | "answer" | "key" | "mouse" | "mouse-y" | "mouse-down" | "loudness" | "timer" | "reset-timer" | "current-date" | "days-since" | "username"
+  | "random" | "math" | "subtract" | "multiply" | "divide" | "compare" | "and" | "or" | "not" | "join" | "letter" | "length" | "contains" | "mod" | "round" | "abs"
+  | "set" | "change" | "show-variable" | "hide-variable" | "add-list" | "delete-list" | "delete-all-list" | "insert-list" | "replace-list" | "item-list" | "length-list" | "contains-list" | "show-list" | "hide-list"
+  | "jump" | "spin" | "dance" | "celebrate" | "reset-player";
+
 type CategoryId =
   | "motion" | "looks" | "sound" | "events" | "control"
   | "sensing" | "operators" | "variables" | "myblocks";
@@ -73,28 +81,128 @@ interface BlockDef {
 }
 
 const BLOCKS: BlockDef[] = [
+  // Events
   { id: "when", label: "when flag clicked", category: "events", hat: true },
-  { id: "move", label: "move 10 steps", category: "motion" },
-  { id: "turn", label: "turn 15 degrees", category: "motion" },
-  { id: "goto", label: "go to start", category: "motion" },
-  { id: "say", label: "say Hello! for 2 sec", category: "looks" },
-  { id: "think", label: "think Hmm… for 2 sec", category: "looks" },
-  { id: "grow", label: "change size by 10", category: "looks" },
-  { id: "pop", label: "play pop sound", category: "sound" },
-  { id: "meow", label: "play meow sound", category: "sound" },
-  { id: "drum", label: "play drum beat", category: "sound" },
+  { id: "when-key", label: "when space key pressed", category: "events", hat: true },
+  { id: "when-clicked", label: "when this sprite clicked", category: "events", hat: true },
+  { id: "when-backdrop", label: "when backdrop switches to Meadow", category: "events", hat: true },
+  { id: "when-loudness", label: "when loudness > 10", category: "events", hat: true },
+  { id: "when-receive", label: "when I receive message1", category: "events", hat: true },
   { id: "broadcast", label: "broadcast message1", category: "events" },
+  { id: "broadcast-wait", label: "broadcast message1 and wait", category: "events" },
+  // Motion
+  { id: "move", label: "move 10 steps", category: "motion" },
+  { id: "turn", label: "turn clockwise 15 degrees", category: "motion" },
+  { id: "turn-left", label: "turn counterclockwise 15 degrees", category: "motion" },
+  { id: "goto", label: "go to mouse-pointer", category: "motion" },
+  { id: "goto-random", label: "go to random position", category: "motion" },
+  { id: "goto-xy", label: "go to x: 0 y: 0", category: "motion" },
+  { id: "glide", label: "glide 1 secs to random position", category: "motion" },
+  { id: "point-direction", label: "point in direction 90", category: "motion" },
+  { id: "point-mouse", label: "point towards mouse-pointer", category: "motion" },
+  { id: "change-x", label: "change x by 10", category: "motion" },
+  { id: "set-x", label: "set x to 0", category: "motion" },
+  { id: "change-y", label: "change y by 10", category: "motion" },
+  { id: "set-y", label: "set y to 0", category: "motion" },
+  { id: "bounce", label: "if on edge, bounce", category: "motion" },
+  { id: "rotation-style", label: "set rotation style left-right", category: "motion" },
+  { id: "x-position", label: "x position", category: "motion" },
+  { id: "y-position", label: "y position", category: "motion" },
+  { id: "direction", label: "direction", category: "motion" },
+  // Looks
+  { id: "say", label: "say Hello! for 2 seconds", category: "looks" },
+  { id: "say-short", label: "say Hello!", category: "looks" },
+  { id: "think", label: "think Hmm… for 2 seconds", category: "looks" },
+  { id: "think-short", label: "think Hmm…", category: "looks" },
+  { id: "grow", label: "change size by 10", category: "looks" },
+  { id: "change-size", label: "change size by 10", category: "looks" },
+  { id: "set-size", label: "set size to 100%", category: "looks" },
+  { id: "next-costume", label: "next costume", category: "looks" },
+  { id: "switch-costume", label: "switch costume to costume1", category: "looks" },
+  { id: "clear-effects", label: "clear graphic effects", category: "looks" },
+  { id: "change-effect", label: "change color effect by 25", category: "looks" },
+  { id: "set-effect", label: "set color effect to 0", category: "looks" },
+  { id: "front-layer", label: "go to front layer", category: "looks" },
+  { id: "back-layer", label: "go back 1 layers", category: "looks" },
+  { id: "show", label: "show", category: "looks" },
+  { id: "hide", label: "hide", category: "looks" },
+  // Sound
+  { id: "pop", label: "start sound pop", category: "sound" },
+  { id: "meow", label: "start sound meow", category: "sound" },
+  { id: "drum", label: "play drum 1 for 0.25 beats", category: "sound" },
+  { id: "play-sound", label: "play sound pop until done", category: "sound" },
+  { id: "stop-sounds", label: "stop all sounds", category: "sound" },
+  { id: "change-volume", label: "change volume by -10", category: "sound" },
+  { id: "set-volume", label: "set volume to 100%", category: "sound" },
+  { id: "rest-beats", label: "rest for 0.25 beats", category: "sound" },
+  { id: "change-tempo", label: "change tempo by 20", category: "sound" },
+  { id: "set-tempo", label: "set tempo to 60 bpm", category: "sound" },
+  // Control
   { id: "wait", label: "wait 1 seconds", category: "control" },
   { id: "repeat", label: "repeat 3 times", category: "control" },
+  { id: "forever", label: "forever", category: "control" },
+  { id: "if", label: "if then", category: "control" },
+  { id: "if-else", label: "if then else", category: "control" },
+  { id: "wait-until", label: "wait until touching edge?", category: "control" },
+  { id: "repeat-until", label: "repeat until touching edge?", category: "control" },
+  { id: "stop-all", label: "stop all", category: "control" },
+  { id: "create-clone", label: "create clone of myself", category: "control" },
+  { id: "delete-clone", label: "delete this clone", category: "control" },
+  { id: "start-clone", label: "when I start as a clone", category: "control", hat: true },
+  // Sensing
   { id: "edge", label: "touching edge?", category: "sensing" },
+  { id: "touch-color", label: "touching color?", category: "sensing" },
+  { id: "color-touch", label: "color is touching?", category: "sensing" },
+  { id: "ask", label: "ask What's your name? and wait", category: "sensing" },
+  { id: "answer", label: "answer", category: "sensing" },
+  { id: "key", label: "key space pressed?", category: "sensing" },
   { id: "mouse", label: "mouse x", category: "sensing" },
+  { id: "mouse-y", label: "mouse y", category: "sensing" },
+  { id: "mouse-down", label: "mouse down?", category: "sensing" },
   { id: "loudness", label: "loudness", category: "sensing" },
+  { id: "timer", label: "timer", category: "sensing" },
+  { id: "reset-timer", label: "reset timer", category: "sensing" },
+  { id: "current-date", label: "current year", category: "sensing" },
+  { id: "days-since", label: "days since 2000", category: "sensing" },
+  { id: "username", label: "username", category: "sensing" },
+  // Operators
   { id: "random", label: "pick random 1 to 10", category: "operators" },
-  { id: "math", label: "add 2 + 3", category: "operators" },
+  { id: "math", label: "2 + 3", category: "operators" },
+  { id: "subtract", label: "5 - 2", category: "operators" },
+  { id: "multiply", label: "2 * 3", category: "operators" },
+  { id: "divide", label: "6 / 2", category: "operators" },
+  { id: "compare", label: "2 > 1", category: "operators" },
+  { id: "and", label: "touching edge? and mouse down?", category: "operators" },
+  { id: "or", label: "touching edge? or mouse down?", category: "operators" },
+  { id: "not", label: "not touching edge?", category: "operators" },
+  { id: "join", label: "join hello world", category: "operators" },
+  { id: "letter", label: "letter 1 of hello", category: "operators" },
+  { id: "length", label: "length of hello", category: "operators" },
+  { id: "contains", label: "hello contains h?", category: "operators" },
+  { id: "mod", label: "10 mod 3", category: "operators" },
+  { id: "round", label: "round 3.14", category: "operators" },
+  { id: "abs", label: "abs of -10", category: "operators" },
+  // Variables and lists
   { id: "set", label: "set score to 0", category: "variables" },
   { id: "change", label: "change score by 1", category: "variables" },
-  { id: "jump", label: "jump", category: "myblocks" },
-  { id: "spin", label: "spin 90 degrees", category: "myblocks" },
+  { id: "show-variable", label: "show variable score", category: "variables" },
+  { id: "hide-variable", label: "hide variable score", category: "variables" },
+  { id: "add-list", label: "add thing to my list", category: "variables" },
+  { id: "delete-list", label: "delete 1 of my list", category: "variables" },
+  { id: "delete-all-list", label: "delete all of my list", category: "variables" },
+  { id: "insert-list", label: "insert thing at 1 of my list", category: "variables" },
+  { id: "replace-list", label: "replace item 1 of my list", category: "variables" },
+  { id: "item-list", label: "item 1 of my list", category: "variables" },
+  { id: "length-list", label: "length of my list", category: "variables" },
+  { id: "contains-list", label: "my list contains thing?", category: "variables" },
+  { id: "show-list", label: "show list my list", category: "variables" },
+  { id: "hide-list", label: "hide list my list", category: "variables" },
+  // Custom blocks
+  { id: "jump", label: "define jump", category: "myblocks" },
+  { id: "spin", label: "define spin", category: "myblocks" },
+  { id: "dance", label: "define dance", category: "myblocks" },
+  { id: "celebrate", label: "define celebrate", category: "myblocks" },
+  { id: "reset-player", label: "define reset player", category: "myblocks" },
 ];
 
 const BLOCK_IDS = BLOCKS.map((b) => b.id);
@@ -102,6 +210,45 @@ const REPEAT_TIMES = 3;
 const isBlock = (value: string): value is BlockId => (BLOCK_IDS as string[]).includes(value);
 
 const DEFAULT_SCRIPT: BlockId[] = ["when", "say", "move", "pop", "turn"];
+
+export interface ScratchWorkspaceProps {
+  /** Existing saved project to hydrate when the editor is opened from Projects. */
+  projectId?: string | null;
+}
+
+function storedBlockIds(value: unknown): BlockId[] {
+  const candidate = Array.isArray(value)
+    ? value
+    : typeof value === "string"
+      ? (() => {
+          try {
+            const parsed = JSON.parse(value) as unknown;
+            return Array.isArray(parsed) ? parsed : [];
+          } catch {
+            return [];
+          }
+        })()
+      : [];
+  const valid = candidate.filter((item): item is BlockId => typeof item === "string" && isBlock(item));
+  return valid.length ? valid : DEFAULT_SCRIPT;
+}
+
+function storedSpriteId(value: unknown): SpriteId {
+  return SPRITES.some((item) => item.id === value) ? (value as SpriteId) : "cat";
+}
+
+function storedBackdropId(value: unknown): BackdropId {
+  return BACKDROPS.some((item) => item.id === value) ? (value as BackdropId) : "meadow";
+}
+
+function projectTimestamp(row: ResourceRow) {
+  const value = row.updated_at ?? row.created_at;
+  if (!value) return "Not saved yet";
+  const date = new Date(String(value));
+  return Number.isNaN(date.getTime()) ? "Saved recently" : `Saved ${date.toLocaleString("en-KE", { dateStyle: "medium", timeStyle: "short" })}`;
+}
+
+
 
 const SPEECH_LINES: Record<string, string[]> = {
   when: ["Let's code!", "Here we go…"],
@@ -374,24 +521,89 @@ function ScratchBlock({
 
 /* ------------------------------ component ------------------------------ */
 
-export function ScratchWorkspace() {
+export function ScratchWorkspace({ projectId = null }: ScratchWorkspaceProps) {
+  const queryClient = useQueryClient();
   const [category, setCategory] = useState<CategoryId>("motion");
   const [script, setScript] = useState<BlockId[]>(DEFAULT_SCRIPT);
   const [running, setRunning] = useState(false);
   const [spriteId, setSpriteId] = useState<SpriteId>("cat");
   const [backdropId, setBackdropId] = useState<BackdropId>("meadow");
+  const [projectTitle, setProjectTitle] = useState("My Scratch project");
+  const [savedProjectId, setSavedProjectId] = useState<string | null>(projectId);
+  const [saveMessage, setSaveMessage] = useState("Not saved yet");
+  const [saveNotice, setSaveNotice] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [hydratedProjectId, setHydratedProjectId] = useState<string | null>(null);
   const [sprite, setSprite] = useState<SpriteState>({ x: 0, rotation: 0, speech: null, bounce: false, scale: 1, thinking: false });
 
   const runningRef = useRef(false);
+
   const dragIndexRef = useRef<number | null>(null);
   const xRef = useRef(0);
   const mouseXRef = useRef(0);
   const scoreRef = useRef(0);
   const [dragActive, setDragActive] = useState(false);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
+    const [score, setScore] = useState(0);
+
+  const projectQuery = useQuery({
+    queryKey: ["scratch-project", projectId],
+    queryFn: () => resourceService.get("projects", projectId as string),
+    enabled: Boolean(projectId),
+  });
+
+  const saveProject = useMutation({
+    mutationFn: () => {
+      const payload: ResourceRow = {
+        title: projectTitle.trim() || "My Scratch project",
+        kind: "scratch_project",
+        status: "draft",
+        script,
+        sprite_id: spriteId,
+        backdrop_id: backdropId,
+        score: scoreRef.current,
+        preview_asset: "/lesson-art/block_explorer_hero.png",
+        editor: "scratch",
+      };
+      return savedProjectId
+        ? resourceService.update("projects", savedProjectId, payload)
+        : resourceService.create("projects", payload);
+    },
+    onMutate: () => setSaveNotice("saving"),
+    onSuccess: (result) => {
+      const saved = result.data as ResourceRow;
+      const nextId = String(saved.id ?? savedProjectId ?? "");
+      if (nextId) setSavedProjectId(nextId);
+      setSaveMessage(projectTimestamp(saved));
+      setSaveNotice("saved");
+      queryClient.invalidateQueries({ queryKey: ["learner-scratch-projects"] });
+      queryClient.invalidateQueries({ queryKey: ["scratch-project", nextId] });
+    },
+    onError: () => {
+      setSaveNotice("error");
+      setSaveMessage("Save failed — try again");
+    },
+  });
+
+  useEffect(() => {
+    if (!projectId || !projectQuery.data?.data || hydratedProjectId === projectId) return;
+    const saved = projectQuery.data.data as ResourceRow;
+    setProjectTitle(String(saved.title ?? "My Scratch project"));
+    setScript(storedBlockIds(saved.script));
+    setSpriteId(storedSpriteId(saved.sprite_id));
+    setBackdropId(storedBackdropId(saved.backdrop_id));
+    scoreRef.current = Number(saved.score ?? 0);
+    setScore(scoreRef.current);
+    setSavedProjectId(projectId);
+    setSaveMessage(projectTimestamp(saved));
+    setHydratedProjectId(projectId);
+  }, [hydratedProjectId, projectId, projectQuery.data?.data]);
+
+  useEffect(() => {
+    if (!projectId) setHydratedProjectId("new");
+  }, [projectId]);
 
   const addBlock = (type: BlockId) => setScript((s) => [...s, type]);
+
   const removeBlock = (index: number) =>
     setScript((s) => (s.length > 1 ? s.filter((_, i) => i !== index) : s));
   const resetSprite = () => {
@@ -527,9 +739,224 @@ export function ScratchWorkspace() {
         await sleep(450);
         setSprite((s) => ({ ...s, speech: null }));
         break;
+            case "turn-left":
+        setSprite((s) => ({ ...s, rotation: (s.rotation - 15 + 360) % 360 }));
+        await sleep(420);
+        break;
+      case "goto-random": {
+        const randomX = Math.round((Math.random() * 2 - 1) * 105);
+        xRef.current = randomX;
+        setSprite((s) => ({ ...s, x: randomX, speech: "New place!" }));
+        await sleep(520);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      }
+      case "goto-xy":
+        xRef.current = 0;
+        setSprite((s) => ({ ...s, x: 0, speech: "At x: 0, y: 0" }));
+        await sleep(500);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "glide": {
+        const randomX = Math.round((Math.random() * 2 - 1) * 105);
+        xRef.current = randomX;
+        setSprite((s) => ({ ...s, x: randomX }));
+        await sleep(900);
+        break;
+      }
+      case "point-direction":
+        setSprite((s) => ({ ...s, rotation: 90, speech: "Pointing east!" }));
+        await sleep(500);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "point-mouse":
+        setSprite((s) => ({ ...s, rotation: mouseXRef.current >= 0 ? 90 : 270, speech: "I see you!" }));
+        await sleep(500);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "change-x": {
+        const nx = clamp(xRef.current + 22, -110, 110);
+        xRef.current = nx;
+        setSprite((s) => ({ ...s, x: nx }));
+        await sleep(350);
+        break;
+      }
+      case "set-x":
+        xRef.current = 0;
+        setSprite((s) => ({ ...s, x: 0 }));
+        await sleep(300);
+        break;
+      case "change-y":
+      case "set-y":
+        setSprite((s) => ({ ...s, bounce: true, speech: block === "change-y" ? "Up we go!" : "Y reset!" }));
+        await sleep(420);
+        setSprite((s) => ({ ...s, bounce: false, speech: null }));
+        break;
+      case "bounce":
+        xRef.current = xRef.current >= 0 ? -Math.abs(xRef.current) : Math.abs(xRef.current);
+        setSprite((s) => ({ ...s, x: xRef.current, rotation: (s.rotation + 180) % 360, speech: "Boing!" }));
+        await sleep(450);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "x-position":
+        setSprite((s) => ({ ...s, speech: `x: ${Math.round(xRef.current)}` }));
+        await sleep(550);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "y-position":
+      case "direction":
+        setSprite((s) => ({ ...s, speech: block === "direction" ? `Direction: ${s.rotation}°` : "y: 0" }));
+        await sleep(550);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "say-short":
+        setSprite((s) => ({ ...s, speech: pick(SPEECH_LINES.say) }));
+        await sleep(900);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "think-short":
+        setSprite((s) => ({ ...s, thinking: true, speech: pick(SPEECH_LINES.think) }));
+        await sleep(900);
+        setSprite((s) => ({ ...s, thinking: false, speech: null }));
+        break;
+      case "change-size":
+        setSprite((s) => ({ ...s, scale: clamp(s.scale + 0.15, 0.5, 2.5), speech: "Bigger!" }));
+        await sleep(420);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "set-size":
+        setSprite((s) => ({ ...s, scale: 1, speech: "Back to 100%!" }));
+        await sleep(420);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "next-costume":
+      case "switch-costume":
+        setSprite((s) => ({ ...s, bounce: true, speech: "New costume!" }));
+        await sleep(420);
+        setSprite((s) => ({ ...s, bounce: false, speech: null }));
+        break;
+      case "clear-effects":
+      case "set-effect":
+      case "set-volume":
+      case "set-tempo":
+      case "show":
+      case "front-layer":
+        setSprite((s) => ({ ...s, speech: "Done!" }));
+        await sleep(400);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "hide":
+        setSprite((s) => ({ ...s, speech: "Now you see me…" }));
+        await sleep(400);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "change-effect":
+      case "back-layer":
+      case "stop-sounds":
+      case "rest-beats":
+      case "change-tempo":
+      case "play-sound":
+        setSprite((s) => ({ ...s, bounce: true, speech: "Action!" }));
+        await sleep(400);
+        setSprite((s) => ({ ...s, bounce: false, speech: null }));
+        break;
+      case "broadcast-wait":
+        setSprite((s) => ({ ...s, speech: "Message sent!" }));
+        await sleep(1000);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "forever":
+      case "if":
+      case "if-else":
+      case "wait-until":
+      case "repeat-until":
+      case "stop-all":
+      case "create-clone":
+      case "delete-clone":
+      case "start-clone":
+        setSprite((s) => ({ ...s, speech: block === "forever" ? "Looping!" : "Control block" }));
+        await sleep(450);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "touch-color":
+      case "color-touch":
+      case "key":
+      case "mouse-y":
+      case "mouse-down":
+      case "timer":
+      case "reset-timer":
+      case "current-date":
+      case "days-since":
+      case "username":
+      case "answer":
+      case "ask":
+        setSprite((s) => ({ ...s, speech: block === "ask" ? "What's your name?" : "Sensing!" }));
+        await sleep(600);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "subtract":
+      case "multiply":
+      case "divide":
+      case "compare":
+      case "and":
+      case "or":
+      case "not":
+      case "join":
+      case "letter":
+      case "length":
+      case "contains":
+      case "mod":
+      case "round":
+      case "abs":
+        setSprite((s) => ({ ...s, speech: "Operators calculate!" }));
+        await sleep(650);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "show-variable":
+      case "hide-variable":
+      case "add-list":
+      case "delete-list":
+      case "delete-all-list":
+      case "insert-list":
+      case "replace-list":
+      case "item-list":
+      case "length-list":
+      case "contains-list":
+      case "show-list":
+      case "hide-list":
+        setSprite((s) => ({ ...s, speech: "Data updated!" }));
+        await sleep(550);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "dance":
+      case "celebrate":
+      case "jump":
+      case "spin":
+      case "reset-player":
+        setSprite((s) => ({ ...s, bounce: true, rotation: (s.rotation + 90) % 360, speech: block === "reset-player" ? "Reset!" : "Let's dance!" }));
+        await sleep(550);
+        setSprite((s) => ({ ...s, bounce: false, speech: null }));
+        break;
+      case "when-key":
+      case "when-clicked":
+      case "when-backdrop":
+      case "when-loudness":
+      case "when-receive":
+        setSprite((s) => ({ ...s, speech: "Event ready!" }));
+        await sleep(650);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
+      case "rotation-style":
+        setSprite((s) => ({ ...s, speech: "Left-right mode" }));
+        await sleep(400);
+        setSprite((s) => ({ ...s, speech: null }));
+        break;
       case "repeat":
         break; // handled by the run loop below
+      default:
+        break;
     }
+
   };
 
   const run = async () => {
@@ -653,16 +1080,41 @@ export function ScratchWorkspace() {
 
       <div className="border-b border-[#d2d8de] bg-white px-3 py-2">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-[13px] font-semibold text-[#39434e]">Untitled project</span>
+          <label className="flex min-w-[190px] flex-1 items-center gap-2">
+            <span className="sr-only">Project name</span>
+            <input
+              value={projectTitle}
+              onChange={(event) => setProjectTitle(event.target.value)}
+              aria-label="Project name"
+              maxLength={80}
+              className="min-w-0 flex-1 border-b border-transparent bg-transparent px-1 py-1 text-[13px] font-semibold text-[#39434e] outline-none hover:border-[#cbd2d9] focus:border-[#4c97ff]"
+            />
+          </label>
           <button type="button" className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium text-[#67717d] hover:bg-[#f0f2f4]">
             File <ChevronDown className="h-3 w-3" aria-hidden />
           </button>
           <button type="button" className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium text-[#67717d] hover:bg-[#f0f2f4]">
             Edit <ChevronDown className="h-3 w-3" aria-hidden />
           </button>
-          <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] font-medium text-[#8a949f]">
-            <MousePointer2 className="h-3 w-3" aria-hidden /> Drag blocks to build an idea
+          <Link href="/learner/projects" className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-semibold text-[#4d176e] hover:bg-[#f5eff8]">
+            <FolderOpen className="h-3.5 w-3.5" aria-hidden /> Projects
+          </Link>
+          <button
+            type="button"
+            onClick={() => saveProject.mutate()}
+            disabled={running || saveProject.isPending || !projectTitle.trim()}
+            className="inline-flex items-center gap-1.5 rounded-md bg-[#f47945] px-3 py-1.5 text-[11px] font-bold text-white shadow-sm hover:bg-[#d95d2e] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Save className="h-3.5 w-3.5" aria-hidden />
+            {saveProject.isPending ? "Saving…" : "Save project"}
+          </button>
+          <span role={saveNotice === "error" ? "alert" : "status"} aria-live="polite" className={cn("ml-auto inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[10px] font-semibold", saveNotice === "saved" && "bg-emerald-50 text-emerald-700", saveNotice === "saving" && "bg-[#f6eef9] text-[#4d176e]", saveNotice === "error" && "bg-rose-50 text-rose-700", saveNotice === "idle" && "text-[#8a949f]")}>
+            <span className={cn("h-2 w-2 rounded-full", saveNotice === "error" ? "bg-rose-400" : saveNotice === "saved" ? "bg-emerald-400" : saveNotice === "saving" ? "bg-[#f47945]" : "bg-[#b9c1c9]")} />
+            <span>{saveNotice === "saving" ? "Saving…" : saveNotice === "saved" ? "Saved to Projects" : saveNotice === "error" ? "Save failed — try again" : saveMessage}</span>
           </span>
+        </div>
+        <div className="mt-1 flex items-center gap-1.5 text-[10px] font-medium text-[#8a949f]">
+          <MousePointer2 className="h-3 w-3" aria-hidden /> Drag blocks to build an idea. Save it when you want to come back later.
         </div>
       </div>
 

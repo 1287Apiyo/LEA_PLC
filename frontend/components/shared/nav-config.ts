@@ -119,8 +119,10 @@ export const NAV: Record<Role, NavSection[]> = {
     {
       title: "My Space",
       items: [
+                { title: "Projects", href: "/learner/projects", icon: FolderOpen },
         { title: "Portfolio", href: "/learner/portfolio", icon: MonitorSmartphone },
         { title: "Achievements", href: "/learner/achievements", icon: Award },
+
         { title: "Progress", href: "/learner/progress", icon: BarChart3 },
         { title: "Bookmarks", href: "/learner/bookmarks", icon: BookOpen },
         { title: "Downloads", href: "/learner/downloads", icon: FolderOpen },

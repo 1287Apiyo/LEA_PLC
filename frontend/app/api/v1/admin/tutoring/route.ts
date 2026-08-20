@@ -27,12 +27,21 @@ export async function GET(req: Request) {
 
   const learnerIds = Array.from(new Set(requests.map((row) => String(row.learnerId ?? "")).filter(Boolean)));
   const courseIds = Array.from(new Set(requests.map((row) => String(row.courseId ?? "")).filter(Boolean)));
-  const [learners, courses] = await Promise.all([
+  const [learners, courses, instructors] = await Promise.all([
     Promise.all(learnerIds.map((id) => db.collection("users").doc(id).get())),
     Promise.all(courseIds.map((id) => db.collection("courses").doc(id).get())),
+    db.collection("users").where("role", "==", "instructor").limit(100).get(),
   ]);
   const learnerMap = new Map<string, UserRow>(learners.filter((doc) => doc.exists).map((doc) => [doc.id, doc.data() as UserRow]));
   const courseMap = new Map<string, CourseRow>(courses.filter((doc) => doc.exists).map((doc) => [doc.id, doc.data() as CourseRow]));
+  const instructorOptions = instructors.docs.map((doc) => {
+    const instructor = doc.data() as UserRow;
+    return {
+      id: doc.id,
+      name: String(instructor.name ?? instructor.fullName ?? instructor.email ?? doc.id),
+      email: String(instructor.email ?? ""),
+    };
+  });
 
   return jsonOk({
     data: requests.map((row) => {
@@ -45,6 +54,7 @@ export async function GET(req: Request) {
         course_title: String(row.course_title ?? course?.title ?? row.courseId ?? "Course"),
       };
     }),
+    instructors: instructorOptions,
   });
 }
 
@@ -62,17 +72,24 @@ export async function PATCH(req: Request) {
   const confirmedDate = String(body.confirmedDate ?? "").trim();
   const confirmedTime = String(body.confirmedTime ?? "").trim();
   const venue = String(body.venue ?? "").trim();
+  const meetingLink = String(body.meetingLink ?? "").trim();
+  const meetingPlatform = String(body.meetingPlatform ?? "").trim();
+  const instructorId = String(body.instructorId ?? "").trim();
+  const instructorName = String(body.instructorName ?? "").trim();
+  const instructorEmail = String(body.instructorEmail ?? "").trim();
   const allowedStatuses = new Set(["requested", "under_review", "quoted", "confirmed", "declined", "cancelled"]);
   if (!requestId || !allowedStatuses.has(status)) return jsonError("Choose a valid request and response status.", 422);
   if (status === "confirmed" && (!confirmedDate || !confirmedTime || !venue)) {
     return jsonError("Confirmed requests require a date, time, and venue or meeting link.", 422);
   }
-
   const db = getDb();
   const requestRef = db.collection("tutor_requests").doc(requestId);
   const requestSnap = await requestRef.get();
   if (!requestSnap.exists) return jsonError("Tutor request not found.", 404);
   const request = requestSnap.data() as Record<string, unknown>;
+  if (status === "confirmed" && String(request.mode ?? "") === "online" && !meetingLink) {
+    return jsonError("Confirmed online requests require an online meeting link.", 422);
+  }
   const now = new Date().toISOString();
   let classId = String(request.classId ?? "");
 
@@ -87,6 +104,11 @@ export async function PATCH(req: Request) {
       start_time: confirmedTime,
       venue,
       mode: String(request.mode ?? "in_person"),
+      meetingLink,
+      meetingPlatform,
+      instructorId,
+      instructorName,
+      instructorEmail,
       status: "scheduled",
       tutor_request_id: requestId,
       updated_at: now,
@@ -103,6 +125,11 @@ export async function PATCH(req: Request) {
     ...(confirmedDate ? { confirmedDate } : {}),
     ...(confirmedTime ? { confirmedTime } : {}),
     ...(venue ? { venue } : {}),
+    ...(meetingLink ? { meetingLink } : {}),
+    ...(meetingPlatform ? { meetingPlatform } : {}),
+    ...(instructorId ? { instructorId } : {}),
+    ...(instructorName ? { instructorName } : {}),
+    ...(instructorEmail ? { instructorEmail } : {}),
     ...(classId ? { classId } : {}),
     updated_at: now,
   };
