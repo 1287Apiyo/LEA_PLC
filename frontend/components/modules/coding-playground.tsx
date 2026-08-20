@@ -91,6 +91,10 @@ const LANGUAGE_DOTS: Record<Language, string> = {
   kotlin: "bg-indigo-500",
 };
 
+function isLanguage(value: unknown): value is Language {
+  return typeof value === "string" && LANGUAGES.some((item) => item.id === value);
+}
+
 function languageLabel(language: Language) {
   return LANGUAGES.find((item) => item.id === language)?.label ?? language;
 }
@@ -113,9 +117,10 @@ function projectPreviewAsset(language: Language, title: string) {
 /** General coding playground — a polished editor with live preview and persisted learner projects. */
 export function CodingPlayground({ initialLanguage = "html", initialProjectId = null }: { initialLanguage?: Language; initialProjectId?: string | null }) {
   const queryClient = useQueryClient();
-  const [language, setLanguage] = useState<Language>(initialLanguage);
-  const [code, setCode] = useState(STARTER_CODE[initialLanguage]);
-  const [title, setTitle] = useState(projectTitle(initialLanguage));
+  const safeInitialLanguage = isLanguage(initialLanguage) ? initialLanguage : "html";
+  const [language, setLanguage] = useState<Language>(safeInitialLanguage);
+  const [code, setCode] = useState<string>(STARTER_CODE[safeInitialLanguage]);
+  const [title, setTitle] = useState(projectTitle(safeInitialLanguage));
   const [previewHtml, setPreviewHtml] = useState("");
   const [projectId, setProjectId] = useState<string | null>(initialProjectId);
   const [hydrated, setHydrated] = useState(false);
@@ -132,8 +137,10 @@ export function CodingPlayground({ initialLanguage = "html", initialProjectId = 
     const selected = initialProjectId
       ? rows.find((row) => String(row.id) === initialProjectId)
       : rows.find((row) => row.kind === "workspace_snippet" && row.language === language);
-    const selectedLanguage = String(selected?.language ?? language) as Language;
-    const safeLanguage = LANGUAGES.some((item) => item.id === selectedLanguage) ? selectedLanguage : language;
+    const selectedLanguage = String(selected?.language ?? language);
+    const safeLanguage: Language = isLanguage(selectedLanguage)
+      ? selectedLanguage
+      : (isLanguage(language) ? language : "html");
     setProjectId(selected?.id ? String(selected.id) : initialProjectId);
     setLanguage(safeLanguage);
     setTitle(String(selected?.title ?? projectTitle(safeLanguage)));
@@ -182,13 +189,14 @@ export function CodingPlayground({ initialLanguage = "html", initialProjectId = 
   };
 
   const run = () => {
+    const source = String(code ?? "");
     if (language === "html") {
-      setPreviewHtml(code);
+      setPreviewHtml(source);
       return;
     }
     if (language === "css" || language === "javascript") {
-      const css = language === "css" ? code : "";
-      const js = language === "javascript" ? code : "";
+      const css = language === "css" ? source : "";
+      const js = language === "javascript" ? source : "";
       setPreviewHtml(`<!DOCTYPE html><html><head><style>${css}</style></head><body><main class="welcome"><h1>Live preview</h1><p>Your ${languageLabel(language)} runs here.</p></main><script>${js}\\u003c/script></body></html>`);
     }
   };
@@ -206,7 +214,7 @@ export function CodingPlayground({ initialLanguage = "html", initialProjectId = 
         <CardContent className="p-0">
           <div className="border-b bg-[#f7f3f8] px-4 py-3"><Tabs value={language} onValueChange={(value) => switchLanguage(value as Language)}><TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0"><>{LANGUAGES.map((item) => <TabsTrigger key={item.id} value={item.id} className="gap-2 rounded-lg border border-transparent bg-white px-3 py-2 text-xs data-[state=active]:border-[#d9c6e1] data-[state=active]:bg-[#4d176e] data-[state=active]:text-white"><span aria-hidden className={cn("h-2 w-2 rounded-full", LANGUAGE_DOTS[item.id])} />{item.label}<span className="hidden text-[10px] opacity-60 sm:inline">{item.description}</span></TabsTrigger>)}</></TabsList></Tabs></div>
           <div className="grid min-h-[760px] lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="min-w-0 border-b lg:border-b-0 lg:border-r"><div className="flex items-center justify-between border-b bg-[#21152a] px-4 py-2.5 text-xs text-white/75"><span className="flex items-center gap-2"><FileCode2 className="h-3.5 w-3.5" aria-hidden />{languageLabel(language)} source</span><span className="font-mono text-[10px] text-white/45">{code.split("\\n").length} lines</span></div><textarea value={code} onChange={(event) => setCode(event.target.value)} spellCheck={false} aria-label={`${languageLabel(language)} code editor`} className="h-[700px] w-full resize-none bg-[#120b17] p-5 font-mono text-sm leading-7 text-[#f4eafa] outline-none placeholder:text-white/30 focus-visible:ring-0" /></div>
+            <div className="min-w-0 border-b lg:border-b-0 lg:border-r"><div className="flex items-center justify-between border-b bg-[#21152a] px-4 py-2.5 text-xs text-white/75"><span className="flex items-center gap-2"><FileCode2 className="h-3.5 w-3.5" aria-hidden />{languageLabel(language)} source</span><span className="font-mono text-[10px] text-white/45">{String(code ?? "").split("\n").length} lines</span></div><textarea value={String(code ?? "")} onChange={(event) => setCode(event.target.value)} spellCheck={false} aria-label={`${languageLabel(language)} code editor`} className="h-[700px] w-full resize-none bg-[#120b17] p-5 font-mono text-sm leading-7 text-[#f4eafa] outline-none placeholder:text-white/30 focus-visible:ring-0" /></div>
             <div className="flex min-h-[700px] flex-col bg-[#fffdfb]"><div className="flex items-center justify-between border-b px-4 py-2.5"><span className="flex items-center gap-2 text-xs font-medium text-[#4d176e]"><Terminal className="h-3.5 w-3.5" aria-hidden />{isConsole ? "Language workspace" : "Live preview"}</span>{!isConsole ? <Button type="button" size="sm" onClick={run} className="h-8 gap-1.5 rounded-full bg-emerald-500 px-3 text-xs text-white hover:bg-emerald-600"><Play className="h-3.5 w-3.5" aria-hidden /> Run</Button> : <Badge variant="secondary" className="bg-[#f6eef9] text-[#4d176e]">Saved for coursework</Badge>}</div><div className="min-h-0 flex-1 p-4">{previewHtml && !isConsole ? <iframe title="Live preview" srcDoc={previewHtml} className="h-full min-h-[630px] w-full rounded-xl border border-[#eadcf0] bg-white" sandbox="allow-scripts" /> : <div className={cn("flex h-full min-h-[630px] items-center justify-center rounded-xl border border-dashed border-[#d9c6e1] bg-[#fbf8fc] p-6 text-center", isConsole && "border-[#261635] bg-[#0f0a14] font-mono text-xs text-slate-300")}><div className="max-w-sm"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f6eef9] text-[#4d176e]"><Terminal className="h-5 w-5" aria-hidden /></div><p className="mt-4 font-medium text-foreground">{isConsole ? `${languageLabel(language)} is ready to explore.` : "Press Run to preview your creation."}</p><p className="mt-2 text-sm leading-6 text-muted-foreground">{isConsole ? `${languageLabel(language)} projects are saved to your learner account for coursework and later continuation. You can run them in the appropriate local development environment.` : "HTML, CSS, and JavaScript preview directly in the browser."}</p></div></div>}</div></div>
           </div>
         </CardContent>
