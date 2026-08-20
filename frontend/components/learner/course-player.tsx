@@ -37,6 +37,7 @@ import { ScratchWorkspace } from "@/components/modules/scratch-workspace";
 import { LessonAlignedContent, LessonNotesBody } from "@/components/learner/lesson-notes";
 import { Textarea } from "@/components/ui/textarea";
 import { courseService } from "@/services/courses";
+import { resourceService } from "@/services/resources";
 import { cn } from "@/lib/utils";
 
 /** Extract a YouTube video id from watch / youtu.be / shorts / embed URLs. */
@@ -104,6 +105,15 @@ function VideoStage({
 interface StepDef {
   id: string;
   label: string;
+}
+
+interface DownloadRecordInput {
+  materialId: string;
+  title: string;
+  description?: string;
+  href: string;
+  courseTitle: string;
+  courseId: string;
 }
 
 /** Single-course player — lessons broken into digestible steps with navigation. */
@@ -186,6 +196,30 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
       }
     },
     onError: () => toast.error("Could not mark this lesson as complete."),
+  });
+
+  const recordDownload = useMutation({
+    mutationFn: ({ materialId, title, description, href, courseTitle, courseId: downloadedCourseId }: DownloadRecordInput) =>
+      resourceService.create("downloads", {
+        title,
+        name: title,
+        description: description || `Course material from ${courseTitle}.`,
+        preview: `Downloaded from ${courseTitle}`,
+        type: "course-material",
+        status: "downloaded",
+        material_id: materialId,
+        course_id: downloadedCourseId,
+        course: courseTitle,
+        url: href,
+        downloaded_at: new Date().toISOString(),
+      }),
+    onSuccess: () => {
+      toast.success("Added to Downloads");
+      void queryClient.invalidateQueries({ queryKey: ["learner-resource", "downloads"] });
+    },
+    onError: () => {
+      toast.error("The file downloaded, but it could not be added to Downloads history.");
+    },
   });
 
   const submit = useMutation({
@@ -299,6 +333,16 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                     <a
                       key={material.id}
                       href={href}
+                      onClick={() => {
+                        recordDownload.mutate({
+                          materialId: material.id,
+                          title: material.title,
+                          description: material.description,
+                          href,
+                          courseTitle: course.title,
+                          courseId,
+                        });
+                      }}
                       download={!isExternal}
                       target={isExternal ? "_blank" : undefined}
                       rel={isExternal ? "noreferrer" : undefined}
