@@ -646,53 +646,491 @@ const topicGuidance = [
   },
 ];
 
+const slideDeckByCourse = {
+  'crs-web': { deck: 'LEA Web Development — HTML and CSS series', refs: ['HTML foundations', 'CSS layout', 'responsive capstone'] },
+  'crs-api': { deck: 'LEA API Integration & Data Products', refs: ['API foundations', 'data fetching', 'resilient product states'] },
+  'crs-app': { deck: 'LEA App Development — Android projects and state', refs: ['Android foundations', 'Campus Tasks project', 'state and Room'] },
+  'crs-ai-dev': { deck: 'LEA AI-Assisted Engineering', refs: ['AI-assisted workflow', 'tests and refactoring', 'security review'] },
+  'crs-capstone': { deck: 'LEA Software Product Studio Capstone', refs: ['problem framing', 'iteration sprint', 'demo and handover'] },
+  'crs-ai-foundations': { deck: 'LEA Applied AI Foundations & Literacy', refs: ['what AI means', 'prompting', 'evaluation and responsible AI'] },
+  'crs-ai-workflows': { deck: 'LEA AI Workflows & Automation', refs: ['workflow patterns', 'prompt pipelines', 'human checkpoints'] },
+  'crs-computer': { deck: 'LEA Basic Computer Skills', refs: ['desktop and files', 'communication and search', 'online safety and backups'] },
+  'crs-scratch': { deck: 'LEA Scratch series', refs: ['starter lab', 'game makers', 'block explorer'] },
+};
+
+function contentSectionKind(title) {
+  const value = title.toLowerCase();
+  if (value.includes('mistake') || value.includes('risk')) return 'warning';
+  if (value.includes('practice') || value.includes('project') || value.includes('activity')) return 'practice';
+  if (value.includes('check') || value.includes('quiz')) return 'checklist';
+  if (value.includes('example') || value.includes('worked')) return 'example';
+  if (value.includes('code')) return 'code';
+  return 'concept';
+}
+
+function buildLessonContent(course, currentLesson, notes) {
+  const deck = slideDeckByCourse[course.id] ?? { deck: 'LEA course slide sequence', refs: [] };
+  const sections = [];
+  let current = null;
+  for (const line of String(notes ?? '').split('\n')) {
+    if (line.startsWith('## ')) {
+      if (current) sections.push(current);
+      current = {
+        id: line.slice(3).trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        title: line.slice(3).trim(),
+        kind: contentSectionKind(line.slice(3).trim()),
+        body: [],
+      };
+    } else if (current && !line.startsWith('# ')) {
+      current.body.push(line);
+    }
+  }
+  if (current) sections.push(current);
+  return {
+    version: 1,
+    eyebrow: 'Slide-aligned notes',
+    learning_goal: currentLesson.description,
+    deck: deck.deck,
+    slide_topic: currentLesson.title,
+    slide_refs: deck.refs,
+    sections: sections
+      .map((section) => ({ ...section, body: section.body.join('\n').trim() }))
+      .filter((section) => section.body),
+  };
+}
+
+function lessonTeachingExample(course, currentLesson, topic) {
+  const title = String(currentLesson.title ?? '').toLowerCase();
+  const base = {
+    code: '',
+    walkthrough: [
+      `Read the first sentence as the problem this idea solves: ${currentLesson.description}`,
+      'Identify the input, the change made to it, and the result a learner or user should be able to observe.',
+      'Change one small part of the example and predict what will happen before testing it.',
+      'Compare the prediction with the result, then explain the difference using the vocabulary from this lesson.',
+    ],
+    takeaway: topic.example,
+  };
+
+  if (course.id === 'crs-web' && (title.includes('html') || title.includes('page') || title.includes('semantic') || title.includes('landmark'))) {
+    return {
+      ...base,
+      code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>LEA Study Circle</title>
+  </head>
+  <body>
+    <header>
+      <a href="/">LEA Study Circle</a>
+      <nav aria-label="Primary navigation">
+        <a href="/about">About</a>
+        <a href="/events">Events</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Learn by building</h1>
+      <p>Short projects, thoughtful feedback, and a place to share progress.</p>
+      <button type="button">Join the next session</button>
+    </main>
+  </body>
+</html>`,
+      walkthrough: [
+        'The `header` identifies the top area of the page and contains the site identity and navigation.',
+        'The `nav` landmark gives assistive technology a named way to find the main links.',
+        'The `main` element contains the page\'s unique purpose, so a visitor can understand the page without seeing the styling.',
+        'The heading and paragraph create a readable content hierarchy before any CSS is added.',
+        'The button represents an action; a link would be better if the control only navigated to another page.',
+      ],
+      takeaway: 'Semantic HTML is the meaning layer of a web page. CSS can change the appearance, but the structure should still make sense when the styles are removed.',
+    };
+  }
+
+  if (course.id === 'crs-web' && (title.includes('css') || title.includes('style') || title.includes('flex') || title.includes('grid') || title.includes('responsive') || title.includes('layout'))) {
+    return {
+      ...base,
+      code: `:root {
+  --brand: #4d176e;
+  --accent: #f47945;
+  --space: 1rem;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space);
+  color: #151116;
+}
+
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space);
+}
+
+.card {
+  border-top: 4px solid var(--accent);
+  padding: var(--space);
+}
+
+@media (min-width: 48rem) {
+  .page { grid-template-columns: 2fr 1fr; }
+}`,
+      walkthrough: [
+        'The custom properties create a small design language so repeated values have one source of truth.',
+        'The first grid starts with one column, which keeps the narrow-screen reading order simple.',
+        'The card list uses `minmax()` and `auto-fit`, so cards wrap when the content needs more room instead of relying on many fixed breakpoints.',
+        'The media query adds a two-column page only after the screen is wide enough for both columns to remain readable.',
+        'The orange top border gives each card a visual anchor without turning every element into a heavy box.',
+      ],
+      takeaway: 'Good CSS describes relationships between content. Start with readable flow, then add layout rules when the content—not a device name—requires them.',
+    };
+  }
+
+  if (course.id === 'crs-api' && (title.includes('fetch') || title.includes('request') || title.includes('response') || title.includes('data'))) {
+    return {
+      ...base,
+      code: `async function loadCourses(query) {
+  setState({ status: 'loading', data: [] });
+
+  try {
+    const response = await fetch(
+      "/api/courses?query=" + encodeURIComponent(query)
+    );
+    if (!response.ok) throw new Error("The course service is unavailable");
+
+    const data = await response.json();
+    if (data.length === 0) setState({ status: 'empty', data: [] });
+    else setState({ status: 'success', data });
+  } catch (error) {
+    setState({ status: 'error', data: [], message: error.message });
+  }
+}`, 
+      walkthrough: [
+        'The interface enters a loading state before the request begins, so the learner receives immediate feedback.',
+        'The URL encodes the search text instead of placing raw user input into the request.',
+        'The `response.ok` guard turns an HTTP failure into an error that the interface can explain.',
+        'An empty array is a valid result, so it receives its own empty state rather than looking like a broken screen.',
+        'The catch block handles network, parsing, and deliberately thrown errors in one recovery path.',
+      ],
+      takeaway: 'A data request is not only a successful payload. Loading, empty, error, and retry states are part of the API feature itself.',
+    };
+  }
+
+  if (course.id === 'crs-api' && (title.includes('schema') || title.includes('type-safe') || title.includes('validation') || title.includes('model'))) {
+    return {
+      ...base,
+      code: `type Course = {
+  id: string;
+  title: string;
+  durationMinutes: number;
+};
+
+function parseCourse(input: unknown): Course {
+  if (!input || typeof input !== "object") {
+    throw new Error("Course must be an object");
+  }
+
+  const value = input as Record<string, unknown>;
+  if (typeof value.id !== "string" || typeof value.title !== "string") {
+    throw new Error("Course identity is incomplete");
+  }
+  if (typeof value.durationMinutes !== "number" || value.durationMinutes < 1) {
+    throw new Error("Course duration is invalid");
+  }
+
+  return {
+    id: value.id,
+    title: value.title,
+    durationMinutes: value.durationMinutes,
+  };
+}`, 
+      walkthrough: [
+        'The `Course` type documents the shape the rest of the product expects after validation.',
+        'The input still arrives as `unknown` because a TypeScript type cannot protect the application from runtime JSON.',
+        'The boundary checks identity and duration before the value enters the trusted part of the application.',
+        'The returned object has a predictable shape, which makes rendering and testing easier.',
+      ],
+      takeaway: 'Types help a developer reason about known data; runtime validation protects the product at the moment untrusted data enters it.',
+    };
+  }
+
+  if (course.id === 'crs-app' && (title.includes('button') || title.includes('input') || title.includes('event') || title.includes('state'))) {
+    return {
+      ...base,
+      code: `@Composable
+fun StudyTask() {
+    var completed by rememberSaveable { mutableStateOf(false) }
+
+    Column {
+        Text(if (completed) "Task complete" else "Practice one small step")
+        Button(onClick = { completed = true }) {
+            Text(if (completed) "Completed" else "Mark complete")
+        }
+    }
+}`, 
+      walkthrough: [
+        'The state variable remembers whether the task is complete.',
+        'The text reads the state, so the screen explains the current condition instead of showing a static label.',
+        'The button changes state through an event; it does not directly manipulate the displayed text.',
+        'When state changes, the composable is recomposed and the learner sees the new result.',
+      ],
+      takeaway: 'A mobile interaction is a loop: the user acts, state changes, and the interface renders feedback that makes the new state clear.',
+    };
+  }
+
+  if (course.id === 'crs-app' && (title.includes('data') || title.includes('persistence') || title.includes('local'))) {
+    return {
+      ...base,
+      code: `@Entity
+data class StudyTask(
+    @PrimaryKey val id: Int,
+    val title: String,
+    val completed: Boolean = false
+)
+
+@Dao
+interface StudyTaskDao {
+    @Query("SELECT * FROM StudyTask ORDER BY id")
+    fun observeTasks(): Flow<List<StudyTask>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun save(task: StudyTask)
+}`, 
+      walkthrough: [
+        'The entity describes the fields that must survive after the app screen closes.',
+        'The primary key gives each record a stable identity for updates and retrieval.',
+        'The DAO defines the operations the app is allowed to perform without mixing database details into the interface.',
+        'A `Flow` lets the screen observe changes and update when stored data changes.',
+      ],
+      takeaway: 'Local persistence is useful when a learner needs the app to remember progress even when the network is unavailable.',
+    };
+  }
+
+  if (course.id === 'crs-ai-dev' && (title.includes('prompt') || title.includes('task') || title.includes('context'))) {
+    return {
+      ...base,
+      code: `Task: Add an empty state to the course list.
+
+Context:
+- The component receives courses from an API.
+- A successful response may contain an empty array.
+
+Constraints:
+- Keep the existing loading and error states.
+- Use the current design tokens.
+- Do not change the API contract.
+
+Acceptance criteria:
+- A learner sees a useful message when no courses match.
+- The message includes a next action.
+- A test covers the empty array case.`,
+      walkthrough: [
+        'The task names one bounded change instead of asking the tool to redesign the whole feature.',
+        'The context tells the tool where the data comes from and which states already exist.',
+        'The constraints protect existing decisions and prevent unnecessary changes.',
+        'The acceptance criteria describe evidence that another engineer can verify.',
+      ],
+      takeaway: 'A strong AI coding prompt is a small technical specification. It reduces ambiguity before any code is generated.',
+    };
+  }
+
+  if (course.id === 'crs-ai-dev' && (title.includes('test') || title.includes('debug') || title.includes('security') || title.includes('dependency'))) {
+    return {
+      ...base,
+      code: `it("shows an empty state when the API returns no courses", async () => {
+  mockCoursesApi.mockResolvedValue([]);
+
+  render(<CourseList />);
+
+  expect(await screen.findByText("No courses yet")).toBeVisible();
+  expect(screen.getByRole("link", { name: "Explore programmes" })).toBeVisible();
+});`,
+      walkthrough: [
+        'The test controls the input so the result is repeatable instead of depending on a live service.',
+        'The component is rendered in the same way a learner would encounter it.',
+        'The assertion checks the user-visible outcome, not an internal implementation detail.',
+        'If an AI-generated change breaks this state, the test provides evidence before the change is shipped.',
+      ],
+      takeaway: 'Verification turns an AI suggestion into an engineering decision. The test is a small, repeatable argument that the behavior is correct.',
+    };
+  }
+
+  if (course.id === 'crs-ai-foundations' && (title.includes('prompt') || title.includes('generative'))) {
+    return {
+      ...base,
+      code: `Goal: Explain a lesson concept to a beginner.
+Context: The learner knows HTML but not machine learning.
+Constraints: Use one analogy, no unexplained jargon, and fewer than 120 words.
+Example: Explain one idea, then give a tiny real-world example.
+Checks: Label uncertainty and state what the learner should verify.`,
+      walkthrough: [
+        'The goal tells the model what successful communication should accomplish.',
+        'The context prevents an answer pitched at the wrong level.',
+        'Constraints make the output easier to compare and revise.',
+        'An example demonstrates the shape of a useful answer without forcing a copy.',
+        'Checks protect the learner from treating fluent language as proof.',
+      ],
+      takeaway: 'Prompting works best when it behaves like a specification: clear purpose, relevant context, boundaries, an example, and a way to check the result.',
+    };
+  }
+
+  if (course.id === 'crs-ai-workflows' && (title.includes('prompt') || title.includes('workflow') || title.includes('tool') || title.includes('human'))) {
+    return {
+      ...base,
+      code: `1. Receive a support question.
+2. Search only approved LEA documents.
+3. Draft an answer with quoted evidence.
+4. If evidence is missing, route to a human.
+5. A tutor approves sensitive or high-impact replies.
+6. Record the outcome for evaluation.`,
+      walkthrough: [
+        'The input is defined before automation begins, so the team knows what the workflow is designed to handle.',
+        'The retrieval step limits the source material and makes grounding possible.',
+        'The draft is not the final action; evidence and approval remain visible.',
+        'The unknown path is part of the design, not an exception hidden after launch.',
+        'The record of outcomes creates evidence for improving the workflow later.',
+      ],
+      takeaway: 'A responsible AI workflow is a visible chain of steps with a defined handoff when the system lacks evidence or authority.',
+    };
+  }
+
+  if (course.id === 'crs-capstone' && (title.includes('scope') || title.includes('product') || title.includes('build') || title.includes('deploy'))) {
+    return {
+      ...base,
+      code: `User story:
+As a campus learner,
+I want to find a quiet study room,
+so that I can plan my study session.
+
+Acceptance criteria:
+- I can filter rooms by date and capacity.
+- I can see when a room is available.
+- I receive a clear message when no room matches.
+- The product works on a narrow mobile screen.`,
+      walkthrough: [
+        'The user story names a person, a need, and the outcome that gives the feature meaning.',
+        'The acceptance criteria turn the idea into observable behavior rather than a vague promise.',
+        'The empty-state criterion protects the experience when the ideal data is not available.',
+        'The mobile criterion keeps the product grounded in the context where it will be used.',
+      ],
+      takeaway: 'A capstone becomes credible when the product promise, scope, and evidence all point to the same user problem.',
+    };
+  }
+
+  if (course.id === 'crs-computer' && (title.includes('file') || title.includes('folder') || title.includes('storage'))) {
+    return {
+      ...base,
+      code: `Good file name: Budget_March_2026.pdf
+Weak file name: Document1.pdf
+
+Folder structure:
+LEA-Study/
+  Notes/
+  Assignments/
+  Resources/
+
+Before sharing:
+1. Open the file and confirm it is the correct version.
+2. Check who can access it.
+3. Use a clear message that explains the attachment.`,
+      walkthrough: [
+        'A file is one item, such as a document or image; a folder is the container that groups related items.',
+        'A descriptive name answers what the file is and when or why it matters.',
+        'Folders reduce search time because the storage location carries meaning.',
+        'Checking the file and its permissions before sharing prevents a small mistake from becoming a privacy problem.',
+      ],
+      takeaway: 'Digital organisation is a thinking skill. Good names and folders make future work easier for you and safer for other people.',
+    };
+  }
+
+  if (course.id === 'crs-scratch' && (title.includes('event') || title.includes('loop') || title.includes('motion') || title.includes('story') || title.includes('sprite'))) {
+    return {
+      ...base,
+      code: `when green flag clicked
+set [score v] to (0)
+forever
+  if <key [right arrow v] pressed?> then
+    change x by (10)
+  end
+  if <touching [star v]?> then
+    change [score v] by (1)
+    play sound [pop v]
+  end
+end`,
+      walkthrough: [
+        'The green-flag event starts the script when the project begins.',
+        'The variable is reset so a new run begins with a predictable score.',
+        'The forever loop keeps checking for input and collisions while the game is running.',
+        'The condition turns a moment of contact into a visible change in the score and sound.',
+      ],
+      takeaway: 'Scratch programs become interactive by connecting events, repeated checks, decisions, and visible feedback into one small loop.',
+    };
+  }
+
+  return base;
+}
+
 function buildDetailedNotes(course, currentLesson) {
   const guide = noteGuidance[course.id] ?? noteGuidance['crs-web'];
   const originalNote = String(currentLesson.notes ?? '').replace(/\s+/g, ' ').trim();
   const haystack = `${currentLesson.title} ${currentLesson.description}`.toLowerCase();
   const topic = topicGuidance.find((item) => item.matches.some((match) => haystack.includes(match))) ?? {
-    explain: 'Connect the idea to the current project, make the smallest useful example, and test what happens when the input or context changes.',
-    example: `Apply “${currentLesson.title}” to the current project and explain the result to another learner.`,
-    mistakes: ['Trying to solve the whole problem before testing a small part.', 'Ignoring the difference between an expected result and an observed result.', 'Moving on without recording what still feels uncertain.'],
-    questions: ['What is the main idea?', 'What evidence shows that it works?', 'What would you investigate next?'],
+    explain: 'This lesson introduces a small idea that becomes useful when it is connected to a real learner or user need. The goal is to understand the relationship between the inputs, the decisions made, and the result that people can observe.',
+    example: `In the ${course.title} project, use “${currentLesson.title}” to solve one clearly defined problem. Start with a small example, observe the result, and only then extend it.`,
+    mistakes: ['Jumping to the task before understanding the idea.', 'Changing several things at once and losing the evidence of what caused the result.', 'Assuming a successful first attempt proves the solution works in other situations.'],
+    questions: ['What problem does this idea solve?', 'What should a learner or user observe when it works?', 'Which assumption would you test next?'],
   };
+  const example = lessonTeachingExample(course, currentLesson, topic);
+  const principles = guide.principles.join(' ');
+  const vocabulary = guide.vocabulary.map((term) => `- **${term}** — a word for an idea you should be able to recognise and explain in this lesson.`);
+  const mistakes = topic.mistakes.map((mistake) => `- ${mistake} This matters because a learner can mistake a quick result for reliable understanding.`);
   return [
     `# ${currentLesson.title}`,
     '',
-    '## Lesson focus',
+    '## What this lesson is about',
     currentLesson.description,
+    `This lesson belongs to ${course.title}. ${principles}`,
+    originalNote ? `The slide lesson emphasises this starting idea: ${originalNote}` : '',
     '',
-    '## Core notes',
-    ...guide.principles.map((point) => `- ${point}`),
-    originalNote ? `- Starting takeaway: ${originalNote}` : '',
-    '',
-    '## Understand the idea',
+    '## The concept in plain language',
     topic.explain,
     '',
+    '## Why the idea matters',
+    `${example.takeaway} In a real project, this is the difference between following a set of steps and understanding why those steps produce a useful result.`,
+    '',
     '## Worked example',
-    topic.example,
+    example.code ? 'Read the following example as a small, complete model of the idea before changing it.' : topic.example,
+    example.code ? '```\n' + example.code + '\n```' : '',
+    example.code ? '' : `The important detail is not only what to do: ${topic.example} Notice which part of the example is the input, which part is the decision, and which part is the result.`,
     '',
-    '## A practical way to learn it',
-    `1. ${guide.practice}`,
-    '2. Name the expected result before you run the example or complete the task.',
-    '3. Test one normal case and one case that could fail, confuse a user, or produce an unexpected result.',
-    '4. Compare what you expected with what actually happened and write down the difference.',
-    `5. Complete the lesson activity: ${currentLesson.assignment}`,
+    '## Read the example step by step',
+    ...example.walkthrough.map((step, index) => `${index + 1}. ${step}`),
     '',
-    '## Common mistakes to avoid',
-    ...topic.mistakes.map((mistake) => `- ${mistake}`),
+    '## What to notice',
+    `When the idea works, you should be able to describe the result in observable terms. For this lesson, look for evidence such as a clearer page structure, a predictable screen state, a verified data response, a safer decision, a better organised file, or a Scratch project that responds as intended.`,
     '',
-    '## Terms to remember',
-    ...guide.vocabulary.map((term) => `- **${term}** — explain this term in your own words and connect it to today\'s task.`),
+    '## Common mistakes and why they happen',
+    ...mistakes,
+    '',
+    '## Key vocabulary',
+    ...vocabulary,
     '',
     '## Check your understanding',
-    '- [ ] I can explain the main idea without copying the lesson description.',
-    '- [ ] I can demonstrate the idea in the current project or activity.',
-    '- [ ] I can name one limitation, risk, or question I still have.',
-    ...topic.questions.map((question) => `- [ ] ${question}`),
+    ...topic.questions.map((question) => `- ${question}`),
+    `- Can you explain the worked example without looking back at the code or diagram?`,
+    `- What would change if the input were empty, incorrect, delayed, or used by a different person?`,
+    '',
+    '## Practice after reading',
+    `Now complete the activity: ${currentLesson.assignment}`,
+    `Use this learning sequence: ${guide.practice} First explain the expected result, then make one small change, test it, and record what you observed.`,
+    '',
+    '## Extension',
+    `Make one thoughtful improvement to the example or activity. Explain what you changed, why you changed it, and what evidence shows that the result is better.`,
     '',
     `> ${guide.reminder}`,
-  ].join('\n');
+  ].filter((line, index, lines) => line !== '' || (index > 0 && lines[index - 1] !== '')).join('\n');
 }
 
 for (const course of courses) {
@@ -703,6 +1141,7 @@ for (const course of courses) {
   course.lessons = course.lessons.map((currentLesson, index) => ({
     ...currentLesson,
     notes: buildDetailedNotes(course, currentLesson),
+    lesson_content: buildLessonContent(course, currentLesson, buildDetailedNotes(course, currentLesson)),
     video_url: currentLesson.video_url || media.videos[index % media.videos.length],
     video_source: currentLesson.video_source || 'Curated external learning video',
     resources: currentLesson.resources?.length

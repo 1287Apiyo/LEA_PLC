@@ -16,6 +16,16 @@ function asText(value: unknown) {
   return clean(value) || "Not provided yet.";
 }
 
+function lessonNotesForPdf(lesson: Record<string, unknown>) {
+  const content = lesson.lesson_content as Record<string, unknown> | undefined;
+  const sections = Array.isArray(content?.sections) ? content.sections as Record<string, unknown>[] : [];
+  if (!sections.length) return lesson.notes;
+  return [
+    content?.learning_goal,
+    ...sections.flatMap((section) => [section.title, section.body]),
+  ].filter(Boolean).join("\n\n");
+}
+
 function renderPdf(course: Record<string, unknown>, lessons: Record<string, unknown>[], origin: string) {
   return new Promise<Buffer>((resolve, reject) => {
     const document = new PDFDocument({
@@ -89,7 +99,7 @@ function renderPdf(course: Record<string, unknown>, lessons: Record<string, unkn
       body(lesson.description);
 
       heading("Notes", 12);
-      body(lesson.notes, { color: ink, size: 10, gap: 4 });
+      body(lessonNotesForPdf(lesson), { color: ink, size: 10, gap: 4 });
 
       heading("Practice assignment", 12);
       body(lesson.assignment, { color: ink, size: 10, gap: 4 });

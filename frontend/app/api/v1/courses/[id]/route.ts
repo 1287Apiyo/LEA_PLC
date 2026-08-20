@@ -4,7 +4,31 @@ import { learnerNames } from "@/lib/firebase/enrich";
 
 export const runtime = "nodejs";
 
+function serialiseLessonContent(raw: unknown) {
+  if (!raw || typeof raw !== "object") return null;
+  const value = raw as Record<string, unknown>;
+  const sections = Array.isArray(value.sections) ? value.sections : [];
+  if (!sections.length) return null;
+  return {
+    version: Number(value.version ?? 1),
+    eyebrow: String(value.eyebrow ?? "Slide-aligned lesson"),
+    learning_goal: String(value.learning_goal ?? ""),
+    deck: String(value.deck ?? ""),
+    slide_topic: String(value.slide_topic ?? ""),
+    slide_refs: Array.isArray(value.slide_refs) ? value.slide_refs.map(String) : [],
+    sections: sections
+      .filter((section): section is Record<string, unknown> => Boolean(section) && typeof section === "object")
+      .map((section, index) => ({
+        id: String(section.id ?? `section-${index + 1}`),
+        title: String(section.title ?? `Section ${index + 1}`),
+        kind: String(section.kind ?? "concept"),
+        body: String(section.body ?? ""),
+      })),
+  };
+}
+
 /**
+
  * Course detail — GET returns the course with its lessons and the current
  * learner's enrolment (progress, completed lessons, next lesson). PATCH/DELETE
  * mirror the generic resource route (admin editing).
@@ -124,9 +148,11 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
         duration_minutes: Number(l.duration_minutes ?? 0),
         video_url: String(l.video_url ?? ""),
         video_source: String(l.video_source ?? ""),
-        description: String(l.description ?? ""),
+                description: String(l.description ?? ""),
         notes: String(l.notes ?? ""),
+        lesson_content: serialiseLessonContent(l.lesson_content),
         assignment: String(l.assignment ?? ""),
+
         resources: Array.isArray(l.resources)
           ? (l.resources as Record<string, unknown>[]).map((currentResource, resourceIndex) => ({
               id: String(currentResource.id ?? `resource-${resourceIndex + 1}`),

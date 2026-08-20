@@ -1,4 +1,5 @@
 import { api } from "@/lib/api-client";
+import type { LessonContent } from "@/components/learner/lesson-notes";
 
 export interface CourseCatalogItem {
   id: string;
@@ -60,6 +61,7 @@ export interface CourseLesson {
   video_source?: string;
   description: string;
   notes: string;
+  lesson_content?: LessonContent | null;
   assignment: string;
   resources?: CourseResource[];
   submission?: CourseAssignmentSubmission | null;

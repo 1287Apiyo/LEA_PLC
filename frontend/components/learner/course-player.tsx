@@ -34,7 +34,7 @@ import {
 import { PageHeader } from "@/components/shared/page-header";
 import { CodingPlayground, type Language } from "@/components/modules/coding-playground";
 import { ScratchWorkspace } from "@/components/modules/scratch-workspace";
-import { LessonNotesBody } from "@/components/learner/lesson-notes";
+import { LessonAlignedContent, LessonNotesBody } from "@/components/learner/lesson-notes";
 import { Textarea } from "@/components/ui/textarea";
 import { courseService } from "@/services/courses";
 import { cn } from "@/lib/utils";
@@ -111,7 +111,6 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
   const queryClient = useQueryClient();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
-  const [lessonMode, setLessonMode] = useState<"read" | "watch">("watch");
   const [submissionText, setSubmissionText] = useState("");
   const [evidenceUrl, setEvidenceUrl] = useState("");
 
@@ -145,7 +144,6 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
   // Reset the step tracker whenever the lesson changes.
   useEffect(() => {
     setStepIndex(0);
-    setLessonMode("watch");
     setSubmissionText(selected?.submission?.response_text ?? "");
     setEvidenceUrl(selected?.submission?.evidence_url ?? "");
   }, [selected?.id, selected?.submission?.evidence_url, selected?.submission?.response_text]);
@@ -442,103 +440,61 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                       </div>
 
                       {/* Step body */}
-                                            {currentStep?.id === "watch" ? (
-                        <div className="space-y-4">
+                      {currentStep?.id === "watch" ? (
+                        <div className="space-y-5">
                           <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                               <div className="flex items-center gap-2">
-                                {lessonMode === "read" ? (
-                                  <BookOpen className="h-4 w-4 text-[#4d176e]" aria-hidden />
-                                ) : (
-                                  <PlayCircle className="h-4 w-4 text-[#b94920]" aria-hidden />
-                                )}
-                                <h3 className="text-sm font-semibold text-foreground">
-                                  {lessonMode === "read" ? "Read this lesson" : "Watch this lesson"}
-                                </h3>
+                                <BookOpen className="h-4 w-4 text-[#4d176e]" aria-hidden />
+                                <h3 className="text-sm font-semibold text-foreground">Slide lesson</h3>
                               </div>
                               <p className="mt-1 text-xs text-muted-foreground">
-                                Choose the format that helps you learn best, then move to practice when you are ready.
+                                The teaching content comes first. Use the smaller video companion only when it helps you understand the lesson.
                               </p>
                             </div>
-                            <div className="flex shrink-0 rounded-lg border border-[#4d176e]/15 bg-[#fbf8fd] p-1" role="tablist" aria-label="Choose lesson format">
-                              <button
-                                type="button"
-                                role="tab"
-                                aria-selected={lessonMode === "read"}
-                                onClick={() => setLessonMode("read")}
-                                className={cn(
-                                  "inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold transition-colors",
-                                  lessonMode === "read" ? "bg-white text-[#4d176e] shadow-sm" : "text-muted-foreground hover:text-foreground"
-                                )}
-                              >
-                                <BookOpen className="h-3.5 w-3.5" aria-hidden /> Read lesson
-                              </button>
-                              <button
-                                type="button"
-                                role="tab"
-                                aria-selected={lessonMode === "watch"}
-                                onClick={() => setLessonMode("watch")}
-                                className={cn(
-                                  "inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold transition-colors",
-                                  lessonMode === "watch" ? "bg-white text-[#b94920] shadow-sm" : "text-muted-foreground hover:text-foreground"
-                                )}
-                              >
-                                <PlayCircle className="h-3.5 w-3.5" aria-hidden /> Watch video
-                              </button>
-                            </div>
+                            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#f6eef9] px-3 py-1.5 text-xs font-semibold text-[#4d176e]">
+                              <Clock className="h-3.5 w-3.5" aria-hidden /> {selected.duration_minutes} min lesson
+                            </span>
                           </div>
 
-                          {lessonMode === "read" ? (
-                            <div className="rounded-xl border border-[#4d176e]/10 bg-[#fbf8fd] px-4 py-3 sm:px-6 sm:py-5">
-                              <div className="mb-4 flex items-center justify-between gap-3 border-b border-[#4d176e]/10 pb-3">
-                                <div>
-                                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#4d176e]">Lesson notes</p>
-                                  <p className="mt-1 text-xs text-muted-foreground">Read the ideas, examples, terms, and checks in your own time.</p>
-                                </div>
-                                <span className="hidden text-xs text-muted-foreground sm:block">{selected.duration_minutes} min</span>
-                              </div>
-                              <LessonNotesBody body={selected.notes} />
+                          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start">
+                            <div className="min-w-0 border border-[#4d176e]/15 bg-[#fffdfb] px-4 py-4 sm:px-7 sm:py-7">
+                              <LessonAlignedContent content={selected.lesson_content} fallbackNotes={selected.notes} />
                             </div>
-                          ) : (
-                            <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(20rem,1.1fr)] lg:items-start">
-                              <div className="space-y-3 lg:sticky lg:top-6">
-                                <div className="max-w-xl">
+
+                            <aside className="space-y-3 xl:sticky xl:top-6">
+                              <div className="border border-[#4d176e]/15 bg-[#fbf8fd] p-3">
+                                <div className="mb-3 flex items-start justify-between gap-3">
+                                  <div>
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#4d176e]">Optional companion</p>
+                                    <h4 className="mt-1 text-sm font-semibold text-foreground">Watch the video</h4>
+                                  </div>
+                                  <PlayCircle className="h-4 w-4 shrink-0 text-[#b94920]" aria-hidden />
+                                </div>
+                                <div className="overflow-hidden border border-black/10 bg-black">
                                   <VideoStage lesson={selected} completed={isLessonCompleted} />
                                 </div>
-                                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                                  <span className="inline-flex items-center gap-1">
-                                    <Clock className="h-3.5 w-3.5" aria-hidden />
-                                    {selected.duration_minutes} min
-                                  </span>
-                                  <span className="rounded-full border px-2 py-0.5">
-                                    {getYouTubeId(selected.video_url) ? "YouTube lesson" : "Lesson"}
-                                  </span>
+                                <div className="mt-3 space-y-2">
+                                  <p className="text-xs leading-5 text-muted-foreground">Watch a short explanation, then return to the slide lesson to work through the examples and checks.</p>
                                   {selected.video_url ? (
                                     <a
                                       href={selected.video_url}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className="inline-flex items-center gap-1 text-[#4d176e] hover:text-[#b94920]"
+                                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#4d176e] hover:text-[#b94920]"
                                     >
                                       <ExternalLink className="h-3.5 w-3.5" aria-hidden />
                                       Open source video
                                     </a>
                                   ) : null}
                                 </div>
-                                <p className="text-sm leading-6 text-muted-foreground">{selected.description}</p>
                               </div>
-                              <div className="max-h-[42rem] overflow-y-auto rounded-xl border border-[#4d176e]/10 bg-[#fbf8fd] px-4 py-3 sm:px-6 sm:py-5">
-                                <div className="mb-4 flex items-center justify-between gap-3 border-b border-[#4d176e]/10 pb-3">
-                                  <div>
-                                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#4d176e]">Lesson notes</p>
-                                    <p className="mt-1 text-xs text-muted-foreground">Read along while you watch, or pause the video and work through the examples.</p>
-                                  </div>
-                                  <BookOpen className="hidden h-4 w-4 shrink-0 text-[#4d176e] sm:block" aria-hidden />
-                                </div>
-                                <LessonNotesBody body={selected.notes} />
+                              <div className="border-l-4 border-[#f47945] bg-[#fff8f4] px-3 py-2.5 text-xs leading-5 text-[#7b3218]">
+                                <p className="font-semibold">Learn actively</p>
+                                <p className="mt-1">Pause after each section and try the example before moving to practice.</p>
                               </div>
-                            </div>
-                          )}
+                            </aside>
+                          </div>
 
                           {selected.resources?.length ? (
                             <div className="rounded-2xl border border-[#4d176e]/10 bg-[#fbf8fd] p-3">
