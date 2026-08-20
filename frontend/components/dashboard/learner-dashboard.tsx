@@ -4,18 +4,20 @@ import Link from "next/link";
 import Image from "next/image";
 
 import {
-    Award,
   ArrowRight,
+  Award,
   BadgeCheck,
+  Bell,
   BookOpen,
-
   CalendarDays,
+  Download,
   FileCheck2,
   Flame,
-    MapPin,
+  FolderKanban,
+  MapPin,
+  MessageCircle,
   Layers3,
   Sparkles,
-
   UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,14 +35,26 @@ import {
 } from "@/components/dashboard/dashboard-lists";
 import { useLearnerDashboard } from "@/hooks/use-dashboard";
 import { useAuthStore } from "@/lib/auth-store";
+import { resourceService, type ResourceRow } from "@/services/resources";
+import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 
-
+function useLearnerResource(resource: string, sort: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["learner-dashboard", resource],
+    queryFn: () => resourceService.list(resource, { per_page: 5, sort, order: "desc" }),
+    enabled,
+    staleTime: 60 * 1000,
+  });
+}
 
 /** Learner dashboard — greeting banner, courses, next class, progress and rewards. */
 export function LearnerDashboard() {
   const { data, isLoading, isError, refetch } = useLearnerDashboard();
   const user = useAuthStore((s) => s.user);
+  const projectsQuery = useLearnerResource("projects", "updated_at", Boolean(user?.id));
+  const downloadsQuery = useLearnerResource("downloads", "downloaded_at", Boolean(user?.id));
+  const messagesQuery = useLearnerResource("messages", "created_at", Boolean(user?.id));
 
   const firstName = user?.name.split(" ")[0] ?? "Learner";
   const avgProgress =
@@ -50,6 +64,20 @@ export function LearnerDashboard() {
             data.myCourses.length
         )
       : null;
+  const projects = (projectsQuery.data?.data ?? []) as ResourceRow[];
+  const downloads = (downloadsQuery.data?.data ?? []) as ResourceRow[];
+  const messages = (messagesQuery.data?.data ?? []) as ResourceRow[];
+  const nextAssignment = data?.assignments.find((item) => item.status === "open" || item.status === "overdue");
+  const nextCourse = data?.myCourses.find((course) => course.progress < 100);
+  const latestProject = projects[0];
+  const nextAction = nextAssignment
+    ? { label: "Submit your next assignment", detail: `${nextAssignment.title} · ${nextAssignment.course}`, href: "/learner/assignments", icon: FileCheck2 }
+    : nextCourse
+      ? { label: `Continue ${nextCourse.title}`, detail: `${nextCourse.progress}% complete · next lesson: ${nextCourse.next_lesson || "Choose your next lesson"}`, href: `/learner/courses/${nextCourse.id}`, icon: BookOpen }
+      : latestProject
+        ? { label: "Keep building your project", detail: String(latestProject.title ?? "Open your latest saved project"), href: "/learner/projects", icon: FolderKanban }
+        : { label: "Choose your next course", detail: "Explore the LEA Labs curriculum and find a practical place to begin.", href: "/learner/courses", icon: Layers3 };
+  const NextActionIcon = nextAction.icon;
 
   return (
     <div className="space-y-6">
@@ -94,6 +122,27 @@ export function LearnerDashboard() {
             <StatCard icon={Award} {...data.stats.certificates} />
             <StatCard icon={BookOpen} {...data.stats.lessonsCompleted} />
             <StatCard icon={BadgeCheck} {...data.stats.assignmentsSubmitted} />
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
+            <Card className="overflow-hidden border-[#4d176e] bg-[#1f0d2e] text-white">
+              <CardContent className="flex h-full flex-col justify-between gap-6 p-5 sm:p-6">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#f6b39a]"><NextActionIcon className="h-4 w-4" aria-hidden />Next action</div>
+                  <h2 className="mt-3 max-w-xl text-2xl font-semibold tracking-[-0.04em]">{nextAction.label}</h2>
+                  <p className="mt-2 max-w-xl text-sm leading-6 text-white/70">{nextAction.detail}</p>
+                </div>
+                <Button asChild className="w-fit rounded-full bg-[#f47945] text-[#351039] hover:bg-[#ff8f57]"><Link href={nextAction.href}>Open next step <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden /></Link></Button>
+              </CardContent>
+            </Card>
+            <Card className="border-[#d9c6e1] bg-[#fffdfb]">
+              <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-sm font-medium"><Bell className="h-4 w-4 text-[#f47945]" aria-hidden />Your learning pulse</CardTitle></CardHeader>
+              <CardContent className="grid grid-cols-3 gap-2">
+                <Link href="/learner/projects" className="rounded-xl bg-[#f6eef9] p-3 transition hover:bg-[#efe2f7]"><FolderKanban className="h-4 w-4 text-[#4d176e]" aria-hidden /><p className="mt-2 text-lg font-semibold text-[#151116]">{projects.length}</p><p className="text-[11px] text-muted-foreground">Projects</p></Link>
+                <Link href="/learner/downloads" className="rounded-xl bg-[#fff4ee] p-3 transition hover:bg-[#ffe8dc]"><Download className="h-4 w-4 text-[#b94920]" aria-hidden /><p className="mt-2 text-lg font-semibold text-[#151116]">{downloads.length}</p><p className="text-[11px] text-muted-foreground">Downloads</p></Link>
+                <Link href="/learner/messages" className="rounded-xl bg-[#f6eef9] p-3 transition hover:bg-[#efe2f7]"><MessageCircle className="h-4 w-4 text-[#4d176e]" aria-hidden /><p className="mt-2 text-lg font-semibold text-[#151116]">{messages.length}</p><p className="text-[11px] text-muted-foreground">Updates</p></Link>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">

@@ -152,6 +152,7 @@ export function CodingPlayground({ initialLanguage = "html", initialProjectId = 
     mutationFn: () => {
       const payload = {
         title: title.trim() || projectTitle(language),
+        kind: "coding_project",
         editor: "coding",
         language,
         code,
