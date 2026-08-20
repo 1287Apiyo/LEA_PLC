@@ -95,6 +95,7 @@ export interface CourseDetail {
   resource_count?: number;
   video_count?: number;
   resources?: CourseResource[];
+  course_materials?: CourseResource[];
 
   coding: boolean;
   playground_language: string | null;

@@ -111,6 +111,7 @@ export const NAV: Record<Role, NavSection[]> = {
         { title: "Certificates", href: "/learner/certificates", icon: Award },
         { title: "Attendance", href: "/learner/attendance", icon: ClipboardList },
         { title: "Calendar", href: "/learner/calendar", icon: CalendarDays },
+        { title: "Tutor Sessions", href: "/learner/tutor-sessions", icon: CalendarHeart },
         { title: "Messages", href: "/learner/messages", icon: MessageSquare },
         { title: "Coding Workspace", href: "/learner/playground", icon: Code2 },
       ],

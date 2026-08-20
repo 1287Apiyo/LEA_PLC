@@ -260,15 +260,7 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                 {course.trend_tags?.slice(0, 2).map((tag) => <span key={tag} className="text-[#b94920]">{tag}</span>)}
               </div>
             </div>
-            <div className="flex flex-col items-start gap-2 lg:items-end">
-              <Button variant="outline" size="sm" asChild>
-                <a href={`/api/v1/courses/${course.id}/lesson-pack`} download>
-                  <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden />
-                  Download PDF notes
-                </a>
-              </Button>
-              <span className="text-xs text-muted-foreground">PDF · {lessons.length} lessons</span>
-            </div>
+
           </div>
 
           <div className="mt-6 grid gap-6 border-t border-border pt-5 md:grid-cols-2">
@@ -289,6 +281,41 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
               {course.skills?.length ? <p className="mt-2 text-xs leading-5 text-muted-foreground">Skills: {course.skills.slice(0, 5).join(" · ")}</p> : null}
             </div>
           </div>
+
+          {course.course_materials?.length ? (
+            <div className="mt-6 border-t border-border pt-5">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#4d176e]">Course files</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Download the materials attached to this course.</p>
+                </div>
+                <FileText className="h-4 w-4 text-[#f47945]" aria-hidden />
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {course.course_materials.map((material) => {
+                  const href = material.download_url || material.url;
+                  const isExternal = href.startsWith("http");
+                  return (
+                    <a
+                      key={material.id}
+                      href={href}
+                      download={!isExternal}
+                      target={isExternal ? "_blank" : undefined}
+                      rel={isExternal ? "noreferrer" : undefined}
+                      className="group flex min-w-0 items-start gap-2 border border-border bg-background px-3 py-2.5 hover:border-[#f47945]/60 hover:bg-[#fffaf7]"
+                    >
+                      <Download className="mt-0.5 h-4 w-4 shrink-0 text-[#f47945]" aria-hidden />
+                      <span className="min-w-0">
+                        <span className="block truncate text-xs font-semibold text-foreground group-hover:text-[#b94920]">{material.title}</span>
+                        {material.description ? <span className="mt-0.5 block line-clamp-2 text-[11px] leading-4 text-muted-foreground">{material.description}</span> : null}
+                        <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#4d176e]">PDF download</span>
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
 

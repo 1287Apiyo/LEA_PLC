@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/firebase/admin";
 import { jsonError, jsonOk, requireUser } from "@/lib/firebase/api-helpers";
 import { learnerNames } from "@/lib/firebase/enrich";
+import { courseMaterialsFor } from "@/lib/course-materials";
 
 export const runtime = "nodejs";
 
@@ -134,6 +135,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       resource_count: Number(course.resource_count ?? resources.length),
       video_count: Number(course.video_count ?? new Set(lessons.map((lesson) => String(lesson.video_url ?? '')).filter(Boolean)).size),
       resources,
+      course_materials: courseMaterialsFor(id),
       coding: Boolean(course.coding),
 
       playground_language: course.playground_language ?? null,

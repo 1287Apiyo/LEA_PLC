@@ -49,7 +49,7 @@ function isUpcoming(row: Record<string, unknown>): boolean {
 }
 
 /** Learner calendar — schedule, tutor requests, and transparent learning support pricing. */
-export function LearnerCalendar() {
+export function LearnerCalendar({ focus = "calendar" }: { focus?: "calendar" | "tutor" }) {
   const queryClient = useQueryClient();
   const [courseId, setCourseId] = useState("");
   const [mode, setMode] = useState<"in_person" | "online">("in_person");
@@ -90,8 +90,8 @@ export function LearnerCalendar() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Calendar & tutor support"
-        description="Plan your classes, request focused help, and keep your next learning step visible."
+        title={focus === "tutor" ? "Tutor Sessions" : "Calendar & tutor support"}
+        description={focus === "tutor" ? "Request one-to-one support, choose a session format, and track the LEA team’s response." : "Plan your classes, request focused help, and keep your next learning step visible."}
       />
 
       <Card className="border-[#f47945]/25 bg-[#fff8f4]">

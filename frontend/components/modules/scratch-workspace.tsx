@@ -1,23 +1,27 @@
 "use client";
 
-import { Fragment, useRef, useState, type DragEvent } from "react";
+import { Fragment, useRef, useState, type ButtonHTMLAttributes, type DragEvent } from "react";
 import {
-  Eraser,
+  ChevronDown,
   Flag,
+  Maximize2,
   Move,
+  MousePointer2,
+  MoreHorizontal,
   Plus,
   Puzzle,
   Radar,
+  Redo2,
   Repeat,
   Sigma,
   Square,
   Star,
+  Trash2,
+  Undo2,
   Variable,
   Volume2,
   type LucideIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 /**
@@ -322,20 +326,20 @@ type BackdropId = (typeof BACKDROPS)[number]["id"];
 
 /* --------------------------- block shape bits --------------------------- */
 
-/** The puzzle-piece notches that make blocks look like Scratch blocks. */
+/** The connector tabs that make blocks read like chunky Scratch puzzle pieces. */
 function Notches({ color, hat }: { color: string; hat?: boolean }) {
   return (
     <>
       {!hat && (
         <span
           aria-hidden
-          className="absolute -top-[7px] left-1/2 z-10 h-[10px] w-5 -translate-x-1/2 rounded-t-[5px]"
+          className="absolute -top-[9px] left-1/2 z-10 h-[14px] w-7 -translate-x-1/2 rounded-t-[7px] border-x-2 border-t-2 border-white/20 shadow-[0_-2px_0_rgba(0,0,0,0.12)]"
           style={{ backgroundColor: color }}
         />
       )}
       <span
         aria-hidden
-        className="absolute -bottom-[7px] left-1/2 z-10 h-[10px] w-5 -translate-x-1/2 rounded-b-[5px]"
+        className="absolute -bottom-[9px] left-1/2 z-10 h-[14px] w-7 -translate-x-1/2 rounded-b-[7px] border-x-2 border-b-2 border-black/10 shadow-[0_2px_0_rgba(0,0,0,0.12)]"
         style={{ backgroundColor: color }}
       />
     </>
@@ -343,6 +347,30 @@ function Notches({ color, hat }: { color: string; hat?: boolean }) {
 }
 
 const categoryOf = (id: BlockId) => CATEGORIES.find((c) => c.id === BLOCKS.find((b) => b.id === id)!.category)!;
+
+function ScratchBlock({
+  def,
+  className,
+  ...props
+}: { def: BlockDef; className?: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
+  const cat = categoryOf(def.id);
+  return (
+    <button
+      {...props}
+      type="button"
+      className={cn(
+        "relative isolate block min-h-11 w-full overflow-visible rounded-[9px] px-4 py-2.5 text-left text-[13px] font-semibold leading-tight tracking-[-0.01em] shadow-[0_2px_0_rgba(0,0,0,0.18),0_5px_10px_rgba(0,0,0,0.08)] ring-1 ring-black/10 transition-transform duration-150 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60",
+        def.hat && "rounded-t-[18px] pt-3",
+        className,
+      )}
+      style={{ backgroundColor: cat.color, color: cat.ink }}
+    >
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1 rounded-t-[inherit] bg-white/20" />
+      <Notches color={cat.color} hat={def.hat} />
+      <span className="relative z-20">{def.label}</span>
+    </button>
+  );
+}
 
 /* ------------------------------ component ------------------------------ */
 
@@ -591,89 +619,138 @@ export function ScratchWorkspace() {
   const ActiveBackdrop = BACKDROPS.find((b) => b.id === backdropId)!.render;
 
   const paletteBlocks = BLOCKS.filter((b) => b.category === category);
+  const activeCategory = CATEGORIES.find((cat) => cat.id === category)!;
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b bg-muted/30 pb-3">
-        <CardTitle className="text-sm font-medium">Scratch workspace</CardTitle>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={clearScript}
-          className="h-8 gap-1.5 text-xs"
-          disabled={running}
-        >
-          <Eraser className="h-3.5 w-3.5" aria-hidden />
-          Clear
-        </Button>
-      </CardHeader>
-
-      <CardContent className="grid gap-4 p-4 lg:grid-cols-[210px_minmax(0,1fr)_290px]">
-        {/* ---------------- left: block palette ---------------- */}
-        <div className="flex gap-2 lg:flex-col">
-          {/* category rail */}
-          <div className="flex flex-wrap gap-1 lg:flex-col" role="tablist" aria-label="Block categories">
-            {CATEGORIES.map((cat) => {
-              const Icon = cat.icon;
-              const active = category === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  title={cat.label}
-                  onClick={() => setCategory(cat.id)}
-                  className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
-                    active ? "text-white shadow-sm" : "text-muted-foreground hover:bg-muted"
-                  )}
-                  style={active ? { backgroundColor: cat.color } : undefined}
-                >
-                  <Icon className="h-4 w-4" aria-hidden />
-                </button>
-              );
-            })}
+    <section
+      aria-label="Scratch coding workspace"
+      className="overflow-hidden rounded-[18px] border border-[#cbd2d9] bg-[#eef1f4] shadow-[0_18px_45px_rgba(43,56,70,0.16)]"
+    >
+      {/* Scratch's familiar project chrome */}
+      <div className="flex h-12 items-center justify-between bg-[#59636e] px-3 text-white">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f47945] text-[11px] font-black tracking-tight shadow-inner">
+            LEA
           </div>
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-bold leading-none">Scratch studio</p>
+            <p className="mt-1 text-[10px] leading-none text-white/65">Create · test · share</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <button type="button" aria-label="Undo" title="Undo" className="rounded-md p-1.5 text-white/80 hover:bg-white/10 hover:text-white">
+            <Undo2 className="h-4 w-4" aria-hidden />
+          </button>
+          <button type="button" aria-label="Redo" title="Redo" className="rounded-md p-1.5 text-white/80 hover:bg-white/10 hover:text-white">
+            <Redo2 className="h-4 w-4" aria-hidden />
+          </button>
+          <span className="mx-1 h-5 w-px bg-white/20" />
+          <button type="button" aria-label="More project options" title="More options" className="rounded-md p-1.5 text-white/80 hover:bg-white/10 hover:text-white">
+            <MoreHorizontal className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
+      </div>
 
-          {/* blocks of the active category */}
-          <div className="flex-1 rounded-xl border bg-muted/30 p-2.5">
-            <p className="px-1 pb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              {CATEGORIES.find((c) => c.id === category)!.label}
-            </p>
-            <div className="space-y-3">
-              {paletteBlocks.map((def) => {
-                const cat = categoryOf(def.id);
+      <div className="border-b border-[#d2d8de] bg-white px-3 py-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-1 text-[13px] font-semibold text-[#39434e]">Untitled project</span>
+          <button type="button" className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium text-[#67717d] hover:bg-[#f0f2f4]">
+            File <ChevronDown className="h-3 w-3" aria-hidden />
+          </button>
+          <button type="button" className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium text-[#67717d] hover:bg-[#f0f2f4]">
+            Edit <ChevronDown className="h-3 w-3" aria-hidden />
+          </button>
+          <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] font-medium text-[#8a949f]">
+            <MousePointer2 className="h-3 w-3" aria-hidden /> Drag blocks to build an idea
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-0 lg:grid-cols-[minmax(238px,0.9fr)_minmax(360px,1.3fr)_minmax(330px,0.95fr)]">
+        {/* ---------------- left: category rail + block palette ---------------- */}
+        <aside className="min-w-0 border-b border-[#cbd2d9] bg-[#edf0f3] lg:border-b-0 lg:border-r">
+          <div className="border-b border-[#d2d8de] px-3 py-3">
+            <p className="text-[13px] font-bold text-[#39434e]">Code blocks</p>
+            <p className="mt-1 text-[10px] leading-relaxed text-[#7d8791]">Choose a category, then drag a block into your script.</p>
+          </div>
+          <div className="flex min-h-[535px] lg:min-h-[650px]">
+            <div className="w-[104px] shrink-0 space-y-1.5 border-r border-[#d2d8de] bg-[#e1e5e9] p-2" role="tablist" aria-label="Block categories">
+              {CATEGORIES.map((cat) => {
+                const Icon = cat.icon;
+                const active = category === cat.id;
                 return (
                   <button
-                    key={def.id}
+                    key={cat.id}
                     type="button"
-                    draggable={!running}
-                    onDragStart={(e) => handlePaletteDragStart(e, def.id)}
-                    onClick={() => addBlock(def.id)}
-                    disabled={running}
-                    title={running ? undefined : "Drag into the workspace or click to add"}
+                    role="tab"
+                    aria-selected={active}
+                    title={cat.label}
+                    onClick={() => setCategory(cat.id)}
                     className={cn(
-                      "relative block w-full rounded-[10px] px-3 py-2 text-left text-xs font-semibold shadow-sm transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-60",
-                      def.hat && "rounded-t-[16px]"
+                      "flex min-h-[42px] w-full items-center gap-2 rounded-[7px] px-2 text-left text-[11px] font-bold leading-tight shadow-sm ring-1 ring-black/10 transition duration-150",
+                      active ? "scale-[1.02] opacity-100 ring-2 ring-white/80" : "opacity-75 hover:opacity-100"
                     )}
                     style={{ backgroundColor: cat.color, color: cat.ink }}
                   >
-                    <Notches color={cat.color} hat={def.hat} />
-                    {def.label}
+                    <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                    <span>{cat.label}</span>
                   </button>
                 );
               })}
             </div>
-            <p className="px-1 pt-3 text-[11px] leading-snug text-muted-foreground">
-              Drag a block into the workspace, or tap it to add.
-            </p>
-          </div>
-        </div>
 
-        {/* ---------------- center: scripts area ---------------- */}
-        <div className="flex flex-col gap-2 lg:col-start-2">
-          <p className="px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Scripts</p>
+            <div className="min-w-0 flex-1 bg-[#f8f9fa] p-3">
+              <div className="mb-4 flex items-start justify-between gap-2">
+                <div>
+                  <p className="text-[13px] font-bold text-[#39434e]">{activeCategory.label}</p>
+                  <p className="mt-1 text-[10px] text-[#8a949f]">Click to add · drag to use</p>
+                </div>
+                <span className="mt-0.5 h-3 w-3 shrink-0 rounded-full ring-2 ring-white" style={{ backgroundColor: activeCategory.color }} aria-hidden />
+              </div>
+              <div className="space-y-4">
+                {paletteBlocks.map((def) => (
+                  <ScratchBlock
+                    key={def.id}
+                    def={def}
+                    draggable={!running}
+                    onDragStart={(e) => handlePaletteDragStart(e, def.id)}
+                    onClick={() => addBlock(def.id)}
+                    disabled={running}
+                    title={running ? undefined : "Drag into the scripts area or click to add"}
+                  />
+                ))}
+              </div>
+              <div className="mt-7 border-t border-dashed border-[#cdd3da] pt-3 text-[10px] leading-relaxed text-[#8a949f]">
+                <span className="inline-flex items-center gap-1.5 font-semibold text-[#67717d]"><MousePointer2 className="h-3 w-3" aria-hidden /> Build your story</span>
+                <p className="mt-1">Blocks snap together when you drop them into the script.</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* ---------------- center: scripts canvas ---------------- */}
+        <main className="min-w-0 border-b border-[#cbd2d9] bg-[#eef1f4] lg:border-b-0 lg:border-r">
+          <div className="flex min-h-[62px] items-center justify-between gap-3 border-b border-[#d2d8de] bg-[#f8f9fa] px-4 py-3">
+            <div>
+              <p className="text-[13px] font-bold text-[#39434e]">Scripts</p>
+              <p className="mt-1 text-[10px] text-[#8a949f]">Snap blocks together to make the sprite move.</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="hidden items-center gap-1.5 text-[10px] font-semibold text-[#8a949f] sm:inline-flex">
+                <span className={cn("h-2 w-2 rounded-full", running ? "bg-emerald-500" : "bg-[#b9c1c9]")} />
+                {running ? "Running" : `${script.length} blocks`}
+              </span>
+              <button
+                type="button"
+                onClick={clearScript}
+                disabled={running}
+                title="Clear script"
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[10px] font-bold text-[#6d7782] hover:bg-[#e9edf0] disabled:opacity-50"
+              >
+                <Trash2 className="h-3.5 w-3.5" aria-hidden /> Clear
+              </button>
+            </div>
+          </div>
           <div
             onDragEnter={() => setDragActive(true)}
             onDragOver={handleScriptDragOver}
@@ -685,179 +762,187 @@ export function ScratchWorkspace() {
             }}
             onDrop={handleScriptDrop}
             className={cn(
-              "flex-1 rounded-xl bg-white p-3 ring-1 transition-shadow",
-              "[background-image:radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:18px_18px]",
-              dragActive ? "ring-2 ring-orange-400" : "ring-black/5"
+              "relative min-h-[535px] overflow-auto p-5 lg:min-h-[650px]",
+              "[background-color:#ffffff] [background-image:linear-gradient(#e5e9ed_1px,transparent_1px),linear-gradient(90deg,#e5e9ed_1px,transparent_1px)] [background-size:24px_24px]",
+              dragActive ? "ring-2 ring-inset ring-[#f47945]" : ""
             )}
           >
-            {script.length <= 1 ? (
-              <div className="flex h-full min-h-[220px] items-center justify-center text-center text-sm text-muted-foreground">
-                <p className="max-w-[220px]">
-                  Drag blocks from the palette to build your script, then press the green flag.
-                </p>
-              </div>
-            ) : null}
-
-            {script.map((id, index) => (
-              <Fragment key={`${id}-${index}`}>
-                {dropIndex === index && <DropMarker />}
-                <button
-                  type="button"
-                  data-index={index}
-                  draggable={!running}
-                  onDragStart={(e) => handleScriptDragStart(e, index, id)}
-                  onDragEnd={() => {
-                    dragIndexRef.current = null;
-                    setDropIndex(null);
-                  }}
-                  onClick={() => removeBlock(index)}
-                  disabled={running}
-                  title="Drag to reorder · click to remove"
-                  className={cn(
-                    "relative block w-full rounded-[10px] px-3 py-2 text-left text-xs font-semibold shadow-sm transition-transform hover:scale-[1.01] disabled:opacity-70",
-                    id === "when" && "rounded-t-[16px]"
-                  )}
-                  style={{ backgroundColor: categoryOf(id).color, color: categoryOf(id).ink }}
-                >
-                  <Notches color={categoryOf(id).color} hat={id === "when"} />
-                  {BLOCKS.find((b) => b.id === id)!.label}
-                </button>
-              </Fragment>
-            ))}
-            {dropIndex === script.length && <DropMarker />}
+            <div className="pointer-events-none absolute right-4 top-4 rounded bg-white/75 px-2 py-1 text-[10px] font-medium text-[#a0a8b0] shadow-sm">
+              {dragActive ? "Drop to snap" : "Scripts canvas"}
+            </div>
+            <div className="relative z-10 w-full max-w-[375px]">
+              {script.length <= 1 ? (
+                <div className="mb-3 flex min-h-[130px] items-center justify-center rounded-lg border-2 border-dashed border-[#cbd2d9] bg-white/55 px-5 text-center text-[12px] leading-relaxed text-[#8a949f]">
+                  Drag blocks from the palette to start your script.
+                </div>
+              ) : null}
+              {script.map((id, index) => {
+                const def = BLOCKS.find((b) => b.id === id)!;
+                return (
+                  <Fragment key={`${id}-${index}`}>
+                    {dropIndex === index && <DropMarker />}
+                    <ScratchBlock
+                      def={def}
+                      data-index={index}
+                      draggable={!running}
+                      onDragStart={(e) => handleScriptDragStart(e, index, id)}
+                      onDragEnd={() => {
+                        dragIndexRef.current = null;
+                        setDropIndex(null);
+                      }}
+                      onClick={() => removeBlock(index)}
+                      disabled={running}
+                      title="Drag to reorder · click to remove"
+                    />
+                  </Fragment>
+                );
+              })}
+              {dropIndex === script.length && <DropMarker />}
+            </div>
           </div>
-        </div>
+        </main>
 
-        {/* ---------------- right: stage + sprite + backdrop ---------------- */}
-        <div className="flex flex-col gap-3 lg:col-start-3">
-          {/* stage */}
-          <div>
-            <div className="mb-1.5 flex items-center gap-2 px-0.5">
+        {/* ---------------- right: stage and asset trays ---------------- */}
+        <aside className="min-w-0 bg-white">
+          <div className="flex min-h-[62px] items-center justify-between border-b border-[#d2d8de] bg-[#f8f9fa] px-3 py-3">
+            <div>
+              <p className="text-[13px] font-bold text-[#39434e]">Stage</p>
+              <p className="mt-1 text-[10px] text-[#8a949f]">Preview your project</p>
+            </div>
+            <button type="button" aria-label="Full screen stage" title="Full screen stage" className="rounded-md p-1.5 text-[#7d8791] hover:bg-[#e9edf0] hover:text-[#39434e]">
+              <Maximize2 className="h-4 w-4" aria-hidden />
+            </button>
+          </div>
+          <div className="p-3">
+            <div className="mb-2 flex items-center gap-2 border-b border-[#d9dee3] pb-2">
               <button
                 type="button"
                 onClick={() => void run()}
                 disabled={running}
                 aria-label="Run script"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 shadow-sm transition-transform hover:scale-110 active:scale-95 disabled:opacity-60"
+                title="Run script"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#4cbf56] shadow-[0_2px_0_#36933f] transition-transform hover:scale-105 active:translate-y-0.5 disabled:opacity-60"
               >
-                <Flag className="h-3.5 w-3.5 text-white" aria-hidden />
+                <Flag className="h-4 w-4 text-white" aria-hidden />
               </button>
               <button
                 type="button"
                 onClick={stop}
                 aria-label="Stop script"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-rose-500 shadow-sm transition-transform hover:scale-110 active:scale-95"
+                title="Stop script"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ed4c5c] shadow-[0_2px_0_#ba3542] transition-transform hover:scale-105 active:translate-y-0.5"
               >
-                <Square className="h-3 w-3 fill-white text-white" aria-hidden />
+                <Square className="h-3.5 w-3.5 fill-white text-white" aria-hidden />
               </button>
-              <span className="text-xs font-medium text-muted-foreground">Stage</span>
+              <span className="ml-auto text-[10px] font-semibold text-[#8a949f]">{running ? "Playing" : "Ready"}</span>
             </div>
 
-            <div
-              onPointerMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                mouseXRef.current = clamp(e.clientX - (rect.left + rect.width / 2), -110, 110);
-              }}
-              className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-white ring-1 ring-black/5"
-            >
-              <ActiveBackdrop />
-              {score > 0 ? (
-                <div className="absolute right-2 top-2 z-10 rounded-md border border-orange-300 bg-orange-50 px-2 py-0.5 text-[11px] font-semibold text-orange-700 shadow-sm">
-                  Score: {score}
-                </div>
-              ) : null}
-              <div className="pointer-events-none absolute bottom-7 left-1/2">
-                <div
-                  className="transition-transform duration-300 ease-in-out"
-                  style={{
-                    transform: `translateX(${sprite.x}px) scale(${(sprite.bounce ? 1.18 : 1) * sprite.scale})`,
-                  }}
-                >
-                  <div className="relative">
-                    {sprite.speech ? (
+            <div className="overflow-hidden rounded-[7px] border-[6px] border-[#d7dde2] bg-white shadow-[0_2px_0_#aeb7c0,0_6px_16px_rgba(54,65,76,0.12)]">
+              <div
+                onPointerMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  mouseXRef.current = clamp(e.clientX - (rect.left + rect.width / 2), -110, 110);
+                }}
+                className="relative aspect-[4/3] min-h-[300px] w-full overflow-hidden bg-white"
+              >
+                <ActiveBackdrop />
+                {score > 0 ? (
+                  <div className="absolute right-2 top-2 z-10 rounded-md bg-white/90 px-2 py-0.5 text-[11px] font-bold text-[#ef7e28] shadow-sm">
+                    Score: {score}
+                  </div>
+                ) : null}
+                <div className="pointer-events-none absolute bottom-7 left-1/2">
+                  <div
+                    className="transition-transform duration-300 ease-in-out"
+                    style={{
+                      transform: `translateX(${sprite.x}px) scale(${(sprite.bounce ? 1.18 : 1) * sprite.scale})`,
+                    }}
+                  >
+                    <div className="relative">
+                      {sprite.speech ? (
+                        <div
+                          className={cn(
+                            "absolute -top-14 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-2xl border border-[#cad1d8] bg-white px-3.5 py-1.5 text-xs font-medium text-[#39434e] shadow-md",
+                            sprite.thinking ? "rounded-full border-dashed" : "rounded-bl-sm"
+                          )}
+                        >
+                          {sprite.speech}
+                        </div>
+                      ) : null}
                       <div
-                        className={cn(
-                          "absolute -top-14 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-2xl border bg-white px-3.5 py-1.5 text-xs font-medium shadow-md",
-                          sprite.thinking ? "rounded-full border-dashed" : "rounded-bl-sm"
-                        )}
+                        className="transition-transform duration-300 ease-in-out"
+                        style={{ transform: `rotate(${sprite.rotation}deg)` }}
                       >
-                        {sprite.speech}
+                        <ActiveSprite className="h-20 w-20 drop-shadow-md" />
                       </div>
-                    ) : null}
-                    <div
-                      className="transition-transform duration-300 ease-in-out"
-                      style={{ transform: `rotate(${sprite.rotation}deg)` }}
-                    >
-                      <ActiveSprite className="h-16 w-16 drop-shadow-sm" />
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* sprite picker */}
-          <div>
-            <p className="mb-1.5 px-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Sprite
-            </p>
-            <div className="grid grid-cols-4 gap-2">
-              {SPRITES.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setSpriteId(item.id)}
-                  title={`Use ${item.name}`}
-                  className={cn(
-                    "flex flex-col items-center gap-0.5 rounded-xl border bg-white p-1.5 transition-colors",
-                    spriteId === item.id
-                      ? "border-sky-400 ring-1 ring-sky-300"
-                      : "border-border hover:border-sky-300"
-                  )}
-                >
-                  <item.render className="h-9 w-9" />
-                  <span className="text-[10px] text-muted-foreground">{item.name}</span>
-                </button>
-              ))}
-              <div
-                title="More sprites coming soon"
-                className="flex aspect-[4/5] items-center justify-center rounded-xl border border-dashed text-muted-foreground"
-              >
-                <Plus className="h-4 w-4" aria-hidden />
+              <div className="flex items-center justify-between border-t border-[#d7dde2] bg-white px-2 py-1.5 text-[10px] text-[#8a949f]">
+                <span>Stage</span>
+                <span>{backdropId}</span>
               </div>
             </div>
           </div>
 
-          {/* backdrop picker */}
-          <div>
-            <p className="mb-1.5 px-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Backdrop
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {BACKDROPS.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setBackdropId(item.id)}
-                  title={`Use ${item.name}`}
-                  className={cn(
-                    "group relative aspect-[4/3] overflow-hidden rounded-lg transition-all",
-                    backdropId === item.id
-                      ? "ring-2 ring-sky-400"
-                      : "ring-1 ring-black/10 hover:ring-sky-300"
-                  )}
-                >
-                  <item.render />
-                  <span className="absolute bottom-1 left-1 rounded bg-black/45 px-1.5 py-0.5 text-[10px] font-medium text-white">
-                    {item.name}
-                  </span>
-                </button>
-              ))}
+          <div className="grid gap-4 border-t border-[#d2d8de] bg-[#f1f3f5] p-3 sm:grid-cols-[1.08fr_0.92fr] lg:grid-cols-1 xl:grid-cols-[1.08fr_0.92fr]">
+            {/* sprite picker */}
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#68737e]">Sprites</p>
+                <button type="button" title="Add sprite" className="rounded-md bg-white p-1 text-[#7d8791] ring-1 ring-[#d2d8de] hover:text-[#f47945]"><Plus className="h-3.5 w-3.5" aria-hidden /></button>
+              </div>
+              <div className="grid grid-cols-4 gap-1.5">
+                {SPRITES.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setSpriteId(item.id)}
+                    title={`Use ${item.name}`}
+                    className={cn(
+                      "flex min-h-[70px] flex-col items-center justify-center gap-0.5 rounded-md border bg-white p-1 transition-colors",
+                      spriteId === item.id ? "border-[#4c97ff] bg-[#eef7ff] ring-2 ring-[#4c97ff]/30" : "border-[#d2d8de] hover:border-[#4c97ff]"
+                    )}
+                  >
+                    <item.render className="h-9 w-9" />
+                    <span className="text-[10px] font-medium text-[#68737e]">{item.name}</span>
+                  </button>
+                ))}
+                <div title="More sprites coming soon" className="flex min-h-[70px] items-center justify-center rounded-md border border-dashed border-[#c4cbd2] bg-white/60 text-[#8a949f]">
+                  <Plus className="h-4 w-4" aria-hidden />
+                </div>
+              </div>
+            </div>
+
+            {/* backdrop picker */}
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#68737e]">Backdrops</p>
+                <button type="button" title="Add backdrop" className="rounded-md bg-white p-1 text-[#7d8791] ring-1 ring-[#d2d8de] hover:text-[#f47945]"><Plus className="h-3.5 w-3.5" aria-hidden /></button>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                {BACKDROPS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setBackdropId(item.id)}
+                    title={`Use ${item.name}`}
+                    className={cn(
+                      "group relative aspect-[4/3] overflow-hidden rounded-md transition-all",
+                      backdropId === item.id ? "ring-2 ring-[#4c97ff]" : "ring-1 ring-black/10 hover:ring-[#4c97ff]"
+                    )}
+                  >
+                    <item.render />
+                    <span className="absolute bottom-1 left-1 rounded bg-black/55 px-1.5 py-0.5 text-[9px] font-semibold text-white">{item.name}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </aside>
+      </div>
+    </section>
   );
 }
 
