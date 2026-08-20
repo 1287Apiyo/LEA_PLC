@@ -242,44 +242,39 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
         }
       />
 
-      <Card className="overflow-hidden rounded-[1.5rem] border-black/[0.06] shadow-sm">
-        <div className="h-1.5 bg-gradient-to-r from-[#f47945] via-[#e69a72] to-[#4d176e]" />
-        <CardContent className="space-y-5 p-5 sm:p-6">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+      <Card className="overflow-hidden rounded-[1rem] border-black/[0.06] shadow-none">
+        <div className="h-1 bg-[#4d176e]" />
+        <CardContent className="p-5 sm:p-6">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#b94920]">Course brief</p>
-              <p className="mt-1 max-w-3xl text-sm leading-6 text-muted-foreground">{course.summary ?? course.description}</p>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#b94920]">Course brief</p>
+                <span className="text-xs text-muted-foreground">{course.level ?? "Applied"}</span>
+              </div>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{course.summary ?? course.description}</p>
+              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                <span>{course.resource_count ?? lessons.length} learning resources</span>
+                <span className="text-[#f47945]" aria-hidden>•</span>
+                <span>{course.video_count ?? 0} videos</span>
+                {course.duration_weeks ? <><span className="text-[#f47945]" aria-hidden>•</span><span>{course.duration_weeks} weeks</span></> : null}
+                {course.trend_tags?.slice(0, 2).map((tag) => <span key={tag} className="text-[#b94920]">{tag}</span>)}
+              </div>
             </div>
-            <div className="flex flex-wrap items-center justify-end gap-2">
-              {course.resource_count ? (
-                <span className="rounded-full bg-[#fbf8fd] px-2.5 py-1 text-xs text-[#4d176e]">
-                  {course.resource_count} learning resources
-                </span>
-              ) : null}
-              {course.video_count ? (
-                <span className="rounded-full bg-[#fff0e9] px-2.5 py-1 text-xs text-[#b94920]">
-                  {course.video_count} videos
-                </span>
-              ) : null}
+            <div className="flex flex-col items-start gap-2 lg:items-end">
               <Button variant="outline" size="sm" asChild>
                 <a href={`/api/v1/courses/${course.id}/lesson-pack`} download>
                   <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden />
-                  Download PDF course pack
+                  Download PDF notes
                 </a>
               </Button>
-            </div>
-            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-              <span className="rounded-full bg-muted px-2.5 py-1">{course.level ?? "Applied"}</span>
-              {course.duration_weeks ? <span className="rounded-full bg-muted px-2.5 py-1">{course.duration_weeks} weeks</span> : null}
-              {course.trend_tags?.slice(0, 2).map((tag) => (
-                <span key={tag} className="rounded-full bg-[#fff0e9] px-2.5 py-1 text-[#b94920]">{tag}</span>
-              ))}
+              <span className="text-xs text-muted-foreground">PDF · {lessons.length} lessons</span>
             </div>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+
+          <div className="mt-6 grid gap-6 border-t border-border pt-5 md:grid-cols-2">
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">By the end, you can</p>
-              <ul className="space-y-2">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">By the end, you can</p>
+              <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
                 {(course.outcomes ?? []).slice(0, 4).map((outcome) => (
                   <li key={outcome} className="flex gap-2 text-sm leading-5 text-muted-foreground">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
@@ -288,9 +283,9 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                 ))}
               </ul>
             </div>
-            <div className="rounded-xl border border-[#4d176e]/10 bg-[#fbf8fd] p-4">
+            <div className="border-t border-[#f47945]/40 pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#4d176e]">Evidence of work</p>
-              <p className="mt-2 text-sm font-medium">{course.project ?? course.deliverable ?? "A practical project you can explain and improve."}</p>
+              <p className="mt-2 text-sm font-medium leading-6">{course.project ?? course.deliverable ?? "A practical project you can explain and improve."}</p>
               {course.skills?.length ? <p className="mt-2 text-xs leading-5 text-muted-foreground">Skills: {course.skills.slice(0, 5).join(" · ")}</p> : null}
             </div>
           </div>
@@ -452,9 +447,12 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                                 The teaching content comes first. Use the smaller video companion only when it helps you understand the lesson.
                               </p>
                             </div>
-                            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#f6eef9] px-3 py-1.5 text-xs font-semibold text-[#4d176e]">
-                              <Clock className="h-3.5 w-3.5" aria-hidden /> {selected.duration_minutes} min lesson
-                            </span>
+                              <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                                <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-[#4d176e]" aria-hidden /> {selected.duration_minutes} min</span>
+                                <a href={`/api/v1/courses/${course.id}/lesson-pack`} download className="inline-flex items-center gap-1.5 font-semibold text-[#4d176e] hover:text-[#b94920]">
+                                  <Download className="h-3.5 w-3.5" aria-hidden /> Download notes
+                                </a>
+                              </div>
                           </div>
 
                           <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start">

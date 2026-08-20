@@ -1,8 +1,21 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import PDFDocument from "pdfkit";
 import { getDb } from "@/lib/firebase/admin";
 import { jsonError, requireUser } from "@/lib/firebase/api-helpers";
 
 export const runtime = "nodejs";
+
+const STATIC_PACKS: Record<string, { relativePath: string; filename: string }> = {
+  "crs-app": {
+    relativePath: "course-packs/application-development.pdf",
+    filename: "lea-application-development-course-pack.pdf",
+  },
+  "crs-web": {
+    relativePath: "course-packs/web-development.pdf",
+    filename: "lea-web-development-course-pack.pdf",
+  },
+};
 
 function clean(value: unknown) {
   return String(value ?? "")
@@ -150,8 +163,27 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
 
   const course = snap.data() ?? {};
   const lessons = Array.isArray(course.lessons) ? (course.lessons as Record<string, unknown>[]) : [];
+  const staticPack = STATIC_PACKS[id];
+
+  if (staticPack) {
+    try {
+      const pdf = await readFile(path.join(process.cwd(), "public", staticPack.relativePath));
+      return new Response(new Uint8Array(pdf), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="${staticPack.filename}"`,
+          "Content-Length": String(pdf.byteLength),
+          "Cache-Control": "private, no-store",
+        },
+      });
+    } catch {
+      // Fall back to the generated PDF if the approved static pack is unavailable.
+    }
+  }
+
   const pdf = await renderPdf(course, lessons, new URL(req.url).origin);
-  const filename = `lea-${id}-learning-pack.pdf`.replace(/[^a-zA-Z0-9._-]/g, "-");
+  const filename = `lea-${id}-course-notes.pdf`.replace(/[^a-zA-Z0-9._-]/g, "-");
 
   return new Response(new Uint8Array(pdf), {
     status: 200,
