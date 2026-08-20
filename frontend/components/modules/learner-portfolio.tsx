@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ExternalLink, GitBranch, MonitorSmartphone, Plus } from "lucide-react";
+import { ExternalLink, GitBranch, Globe2, MonitorSmartphone, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,6 +35,11 @@ export function LearnerPortfolio() {
   const projectsQuery = useQuery({
     queryKey: ["learner-portfolio-projects"],
     queryFn: () => resourceService.list("projects", { per_page: 100, sort: "created_at", order: "desc" }),
+  });
+
+  const publishProject = useMutation({
+    mutationFn: ({ id, published }: { id: string; published: boolean }) => resourceService.update("projects", id, { status: published ? "published" : "draft", visibility: published ? "public" : "private", published_at: published ? new Date().toISOString() : null }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["learner-portfolio-projects"] }),
   });
 
   const createProject = useMutation({
@@ -91,7 +96,8 @@ export function LearnerPortfolio() {
           {projectsQuery.isLoading ? <Card><CardContent className="p-8 text-center text-sm text-muted-foreground">Loading your portfolio…</CardContent></Card> : projects.length === 0 ? <Card><CardContent className="p-8 text-center text-sm text-muted-foreground">No portfolio projects yet. Add your first project to begin building visible evidence of your skills.</CardContent></Card> : <div className="grid gap-4 sm:grid-cols-2">{projects.map((project) => {
             const projectLink = String(project.link ?? "");
             const tagsForProject = projectTags(project);
-            return <Card key={String(project.id)} className="flex flex-col"><CardHeader className="pb-2"><CardTitle className="flex items-center gap-2 text-sm font-medium"><MonitorSmartphone className="h-4 w-4 shrink-0 text-muted-foreground" />{String(project.title ?? "Untitled project")}</CardTitle></CardHeader><CardContent className="flex flex-1 flex-col gap-3"><p className="flex-1 text-sm text-muted-foreground">{String(project.description ?? "")}</p>{project.reflection ? <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground"><span className="font-medium text-foreground">Reflection: </span>{String(project.reflection)}</div> : null}<div className="flex flex-wrap gap-1.5">{tagsForProject.map((tag) => <Badge key={tag} variant="secondary" className="text-[11px]">{tag}</Badge>)}</div><div className="flex items-center justify-between"><span className="text-xs text-muted-foreground">{projectDate(project)}</span>{projectLink ? <Button variant="ghost" size="sm" asChild><a href={projectLink} target="_blank" rel="noreferrer">{projectLink.includes("github") ? <GitBranch className="mr-1 h-3.5 w-3.5" /> : <ExternalLink className="mr-1 h-3.5 w-3.5" />}Open</a></Button> : <span className="text-xs text-muted-foreground">No link added</span>}</div></CardContent></Card>;
+            const isPublished = project.status === "published" || project.visibility === "public";
+            return <Card key={String(project.id)} className="flex flex-col"><CardHeader className="pb-2"><CardTitle className="flex items-center gap-2 text-sm font-medium"><MonitorSmartphone className="h-4 w-4 shrink-0 text-muted-foreground" />{String(project.title ?? "Untitled project")}</CardTitle></CardHeader><CardContent className="flex flex-1 flex-col gap-3"><p className="flex-1 text-sm text-muted-foreground">{String(project.description ?? "")}</p>{project.reflection ? <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground"><span className="font-medium text-foreground">Reflection: </span>{String(project.reflection)}</div> : null}<div className="flex flex-wrap gap-1.5">{tagsForProject.map((tag) => <Badge key={tag} variant="secondary" className="text-[11px]">{tag}</Badge>)}{isPublished ? <Badge className="bg-emerald-600 text-[11px] text-white"><Globe2 className="mr-1 h-3 w-3" />Published</Badge> : <Badge variant="outline" className="text-[11px]">Draft</Badge>}</div><div className="flex flex-wrap items-center justify-between gap-2"><span className="text-xs text-muted-foreground">{projectDate(project)}</span><div className="flex flex-wrap items-center gap-1">{projectLink ? <Button variant="ghost" size="sm" asChild><a href={projectLink} target="_blank" rel="noreferrer">{projectLink.includes("github") ? <GitBranch className="mr-1 h-3.5 w-3.5" /> : <ExternalLink className="mr-1 h-3.5 w-3.5" />}Open</a></Button> : null}<Button variant={isPublished ? "outline" : "default"} size="sm" onClick={() => publishProject.mutate({ id: String(project.id), published: !isPublished })} disabled={publishProject.isPending}>{isPublished ? "Unpublish" : "Publish"}</Button>{isPublished ? <Button variant="ghost" size="sm" asChild><a href={`/portfolio/${encodeURIComponent(String(project.id))}`} target="_blank" rel="noreferrer"><ExternalLink className="mr-1 h-3.5 w-3.5" />Public view</a></Button> : null}</div></div></CardContent></Card>;
           })}</div>}
         </div>
       </div>

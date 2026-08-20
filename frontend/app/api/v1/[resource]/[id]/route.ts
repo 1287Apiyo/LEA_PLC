@@ -36,6 +36,7 @@ const COLLECTIONS: Record<string, string> = {
   invoices: "invoices",
   expenses: "expenses",
   notifications: "notifications",
+  onboarding_assessments: "onboarding_assessments",
 };
 
 const SENSITIVE = new Set(["salt", "password_hash"]);
@@ -51,9 +52,10 @@ const LEARNER_SCOPED_RESOURCES = new Set([
   "bookmarks",
   "downloads",
   "notifications",
+  "onboarding_assessments",
   "assignments",
 ]);
-const LEARNER_MUTABLE_RESOURCES = new Set(["projects", "messages", "bookmarks", "downloads"]);
+const LEARNER_MUTABLE_RESOURCES = new Set(["projects", "messages", "bookmarks", "downloads", "onboarding_assessments"]);
 
 function hasLearnerOwner(row: Record<string, unknown>, learnerId: string) {
   return ["learnerId", "learner_id", "userId", "user_id", "ownerId", "owner_id", "created_by", "recipientId", "recipient_id", "senderId", "sender_id"]

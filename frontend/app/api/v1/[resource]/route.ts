@@ -46,6 +46,10 @@ const COLLECTIONS: Record<string, string> = {
   invoices: "invoices",
   expenses: "expenses",
   notifications: "notifications",
+  onboarding_assessments: "onboarding_assessments",
+  career_profiles: "career_profiles",
+  career_applications: "career_applications",
+  learner_preferences: "learner_preferences",
 };
 
 const ROLE_FILTERS: Record<string, string> = {
@@ -54,7 +58,7 @@ const ROLE_FILTERS: Record<string, string> = {
   staff: "staff",
 };
 
-const LEARNER_CREATE_RESOURCES = new Set(["messages", "bookmarks", "downloads", "projects"]);
+const LEARNER_CREATE_RESOURCES = new Set(["messages", "bookmarks", "downloads", "projects", "onboarding_assessments", "career_profiles", "career_applications", "learner_preferences"]);
 const LEARNER_SCOPED_RESOURCES = new Set([
   "classes",
   "attendance",
@@ -67,6 +71,10 @@ const LEARNER_SCOPED_RESOURCES = new Set([
   "bookmarks",
   "downloads",
   "notifications",
+  "onboarding_assessments",
+  "career_profiles",
+  "career_applications",
+  "learner_preferences",
   "assignments",
 ]);
 

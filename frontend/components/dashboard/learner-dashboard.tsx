@@ -10,6 +10,7 @@ import {
   Bell,
   BookOpen,
   CalendarDays,
+  Compass,
   Download,
   FileCheck2,
   Flame,
@@ -55,6 +56,7 @@ export function LearnerDashboard() {
   const projectsQuery = useLearnerResource("projects", "updated_at", Boolean(user?.id));
   const downloadsQuery = useLearnerResource("downloads", "downloaded_at", Boolean(user?.id));
   const messagesQuery = useLearnerResource("messages", "created_at", Boolean(user?.id));
+  const onboardingQuery = useLearnerResource("onboarding_assessments", "updated_at", Boolean(user?.id));
 
   const firstName = user?.name.split(" ")[0] ?? "Learner";
   const avgProgress =
@@ -67,10 +69,14 @@ export function LearnerDashboard() {
   const projects = (projectsQuery.data?.data ?? []) as ResourceRow[];
   const downloads = (downloadsQuery.data?.data ?? []) as ResourceRow[];
   const messages = (messagesQuery.data?.data ?? []) as ResourceRow[];
+  const onboarding = (onboardingQuery.data?.data ?? []) as ResourceRow[];
+  const hasCompletedOnboarding = onboardingQuery.isFetched && onboarding.length > 0;
   const nextAssignment = data?.assignments.find((item) => item.status === "open" || item.status === "overdue");
   const nextCourse = data?.myCourses.find((course) => course.progress < 100);
   const latestProject = projects[0];
-  const nextAction = nextAssignment
+  const nextAction = !hasCompletedOnboarding
+    ? { label: "Set up your learning path", detail: "Answer four short questions so LEA can recommend the right starting programme and support level.", href: "/learner/onboarding", icon: Compass }
+    : nextAssignment
     ? { label: "Submit your next assignment", detail: `${nextAssignment.title} · ${nextAssignment.course}`, href: "/learner/assignments", icon: FileCheck2 }
     : nextCourse
       ? { label: `Continue ${nextCourse.title}`, detail: `${nextCourse.progress}% complete · next lesson: ${nextCourse.next_lesson || "Choose your next lesson"}`, href: `/learner/courses/${nextCourse.id}`, icon: BookOpen }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ExternalLink, Plus, Send, Trophy } from "lucide-react";
+import { ExternalLink, Plus, RefreshCcw, Send, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,6 +61,7 @@ function ResourceList({ resource, empty }: { resource: string; empty: string }) 
               {status(row.status ?? row.verified ? "verified" : undefined)}
               <span>{formatDate(row.updated_at ?? row.created_at ?? row.added_at ?? row.downloaded_at ?? row.issued_at)}</span>
               {row.url ? <Button variant="ghost" size="sm" asChild><a href={String(row.url)} target="_blank" rel="noreferrer"><ExternalLink className="mr-1 h-3.5 w-3.5" />Open</a></Button> : null}
+              {resource === "certificates" && row.verification_code ? <Button variant="ghost" size="sm" asChild><a href={`/verify/${encodeURIComponent(String(row.verification_code))}`} target="_blank" rel="noreferrer"><ExternalLink className="mr-1 h-3.5 w-3.5" />Verify</a></Button> : null}
             </div>
           </div>
         ))}
@@ -81,7 +82,13 @@ function DashboardCard({ data }: { data: LearnerDashboard }) {
 
 function AssignmentsView() {
   const { data, isLoading } = useLearnerDashboard();
+  const submissionsQuery = useQuery({
+    queryKey: ["learner-resource", "submissions"],
+    queryFn: () => resourceService.list("submissions", { per_page: 100, sort: "updated_at", order: "desc" }),
+  });
   const assignments = data?.assignments ?? [];
+  const submissions = (submissionsQuery.data?.data ?? []) as ResourceRow[];
+  const feedbackRows = submissions.filter((row) => row.feedback || row.comments || row.rubric || row.grade !== undefined || row.resubmission_requested === true);
   if (isLoading) return <Card><CardContent className="p-6 text-sm text-muted-foreground">Loading assignments…</CardContent></Card>;
   return (
     <div className="space-y-4">
@@ -98,6 +105,12 @@ function AssignmentsView() {
           </div>
         )) : <p className="p-8 text-center text-sm text-muted-foreground">Your course practice tasks will appear here as you enrol.</p>}
       </CardContent></Card>
+      <Card className="border-[#f47945]/30 bg-[#fffaf7]">
+        <CardHeader><CardTitle className="flex items-center gap-2 text-base"><RefreshCcw className="h-4 w-4 text-[#f47945]" aria-hidden /> Feedback and grading history</CardTitle></CardHeader>
+        <CardContent className="divide-y p-0">
+          {submissionsQuery.isLoading ? <p className="p-6 text-sm text-muted-foreground">Loading feedback…</p> : feedbackRows.length ? feedbackRows.map((row) => <div key={String(row.id)} className="space-y-2 p-4"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-medium">{String(row.assignment_title ?? row.title ?? "Assignment submission")}</p><p className="text-xs text-muted-foreground">{String(row.course_title ?? row.course ?? "Course work")} · {formatDate(row.updated_at ?? row.graded_at ?? row.created_at)}</p></div>{row.grade !== undefined ? <Badge variant="secondary">Grade {String(row.grade)}%</Badge> : status(row.status ?? "reviewed")}</div>{row.feedback || row.comments ? <p className="text-sm leading-6 text-muted-foreground">{String(row.feedback ?? row.comments)}</p> : null}{row.rubric ? <p className="text-xs text-muted-foreground">Rubric: {String(row.rubric)}</p> : null}{row.resubmission_requested === true ? <p className="text-xs font-semibold text-[#b94920]">Resubmission requested — review the feedback and submit an improved version.</p> : null}</div>) : <p className="p-6 text-sm text-muted-foreground">Tutor feedback and rubric results will appear here after your work is reviewed.</p>}
+        </CardContent>
+      </Card>
     </div>
   );
 }
