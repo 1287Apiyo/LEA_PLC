@@ -34,3 +34,18 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## LEA AI Learning Coach
+
+The learner portal now includes `/learner/coach`, a course-aware AI Learning Coach. Learners can select an enrolled course and lesson, ask for concept explanations, request hints, practise debugging, and receive a next-step study prompt. The server endpoint is `/api/v1/learner/ai-coach` and enforces learner authentication plus enrolment access before sending course context to the model.
+
+To enable live model responses locally, add the provider credentials to `.env.local` on the server. Never expose these values through `NEXT_PUBLIC_*` variables:
+
+```env
+OPENAI_API_BASE=https://api.openai.com
+OPENAI_API_KEY=replace-with-a-server-only-key
+LEA_AI_MODEL=gpt-5-mini
+```
+
+The endpoint also supports an OpenAI-compatible built-in provider by setting `BUILT_IN_FORGE_API_URL` and `BUILT_IN_FORGE_API_KEY`; those variables take precedence over the `OPENAI_*` pair. If no provider is configured, the interface remains usable and returns a guided fallback message rather than failing silently. The coach is designed to explain and scaffold learning, not complete assessed work, submit assignments, or reveal private learner records.

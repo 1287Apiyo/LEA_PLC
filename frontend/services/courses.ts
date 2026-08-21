@@ -41,16 +41,68 @@ export interface CourseResource {
   description?: string;
 }
 
+export type SubmissionStatus = "submitted" | "graded" | "approved" | "revision_requested";
+
+export interface SubmissionVersion {
+  version: number;
+  response_text: string;
+  evidence_url?: string | null;
+  submitted_at: string;
+  status: SubmissionStatus;
+}
+
 export interface CourseAssignmentSubmission {
   id: string;
   course_id: string;
   lesson_id: string;
   response_text: string;
   evidence_url?: string | null;
-  status: "submitted" | "graded";
+  status: SubmissionStatus;
   submitted_at: string;
+  submission_count?: number;
+  last_edited_at?: string;
+  versions?: SubmissionVersion[];
   grade?: number | null;
   feedback?: string;
+  graded_at?: string;
+  graded_by?: string;
+  rubric?: Record<string, number>;
+  resubmission_requested?: boolean;
+} 
+
+export interface LessonQuizQuestion {
+  id: string;
+  prompt: string;
+  options: string[];
+  correct_index: number;
+  explanation: string;
+}
+
+export interface LessonQuiz {
+  pass_percent: number;
+  questions: LessonQuizQuestion[];
+}
+
+export interface QuizExplanation {
+  question_id: string;
+  selected_index: string | null;
+  correct_index: number;
+  correct: boolean;
+  explanation: string;
+}
+
+export interface QuizAttempt {
+  id: string;
+  course_id: string;
+  lesson_id: string;
+  score: number;
+  passed: boolean;
+  pass_percent: number;
+  correct_count: number;
+  question_count: number;
+  attempt_number: number;
+  submitted_at: string;
+  explanations?: QuizExplanation[];
 }
 
 export interface CourseLesson {
@@ -64,6 +116,13 @@ export interface CourseLesson {
   lesson_content?: LessonContent | null;
   assignment: string;
   resources?: CourseResource[];
+  quiz?: LessonQuiz;
+  mastery?: {
+    passed: boolean;
+    best_score: number | null;
+    attempts: number;
+    latest: QuizAttempt | null;
+  };
   submission?: CourseAssignmentSubmission | null;
   order: number;
 }
@@ -122,5 +181,14 @@ export const courseService = {
     api.post<{ data: CourseAssignmentSubmission }>(
       `/courses/${courseId}/lessons/${lessonId}/submission`,
       payload
+    ),
+  submitQuiz: (
+    courseId: string,
+    lessonId: string,
+    answers: Record<string, string>,
+  ) =>
+    api.post<{ data: QuizAttempt }>(
+      `/courses/${courseId}/lessons/${lessonId}/quiz`,
+      { answers },
     ),
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { CalendarDays, ClipboardCheck, FileCheck2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -54,6 +55,11 @@ export function InstructorDashboard() {
             <StatCard icon={ClipboardCheck} {...data.stats.attendanceRate} />
             <StatCard icon={FileCheck2} {...data.stats.pendingGrading} />
             <StatCard icon={Users} {...data.stats.activeLearners} />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild className="bg-[#4d176e] hover:bg-[#35104f]"><Link href="/instructor/grading"><FileCheck2 className="mr-1.5 h-4 w-4" /> Open grading queue</Link></Button>
+            <Button asChild variant="outline"><Link href="/instructor/announcements">Post course update</Link></Button>
+            <Button asChild variant="outline"><Link href="/instructor/tutor-sessions">Review tutor requests</Link></Button>
           </div>
 
           <div className="grid gap-4 lg:grid-cols-3">

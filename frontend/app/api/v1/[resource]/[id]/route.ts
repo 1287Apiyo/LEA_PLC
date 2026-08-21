@@ -37,6 +37,7 @@ const COLLECTIONS: Record<string, string> = {
   expenses: "expenses",
   notifications: "notifications",
   onboarding_assessments: "onboarding_assessments",
+  quiz_attempts: "quiz_attempts",
 };
 
 const SENSITIVE = new Set(["salt", "password_hash"]);
@@ -54,6 +55,7 @@ const LEARNER_SCOPED_RESOURCES = new Set([
   "notifications",
   "onboarding_assessments",
   "assignments",
+  "quiz_attempts",
 ]);
 const LEARNER_MUTABLE_RESOURCES = new Set(["projects", "messages", "bookmarks", "downloads", "onboarding_assessments"]);
 

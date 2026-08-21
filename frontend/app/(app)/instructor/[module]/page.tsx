@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ModuleListView } from "@/components/shared/module-list-view";
+import { InstructorTeachingWorkspace } from "@/components/modules/instructor-teaching-workspace";
 import { PageHeader } from "@/components/shared/page-header";
 import { MODULE_REGISTRY, getModule } from "@/lib/module-registry";
 
@@ -35,7 +36,7 @@ export default async function InstructorModulePage({
   return (
     <div className="space-y-6">
       <PageHeader title={definition.title} description={definition.description} />
-      <ModuleListView role="instructor" slug={module} plural={definition.title} />
+      {new Set(["classes", "attendance", "assignments", "grades", "analytics", "materials", "announcements", "tutor-sessions", "discussions"]).has(module) ? <InstructorTeachingWorkspace slug={module} /> : <ModuleListView role="instructor" slug={module} plural={definition.title} />}
     </div>
   );
 }

@@ -36,6 +36,7 @@ import { CodingPlayground, type Language } from "@/components/modules/coding-pla
 import { ScratchWorkspace } from "@/components/modules/scratch-workspace";
 import { LessonAlignedContent, LessonNotesBody } from "@/components/learner/lesson-notes";
 import { Textarea } from "@/components/ui/textarea";
+import { LessonQuiz } from "@/components/learner/lesson-quiz";
 import { courseService } from "@/services/courses";
 import { resourceService } from "@/services/resources";
 import { cn } from "@/lib/utils";
@@ -161,6 +162,7 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
   /* A learner sees the video and lesson notes together, followed by practice. */
   const steps = useMemo<StepDef[]>(() => {
     const list: StepDef[] = [{ id: "watch", label: "Watch & notes" }];
+    if (selected?.quiz?.questions.length) list.push({ id: "mastery", label: "Mastery check" });
     if (selected?.assignment) list.push({ id: "assignment", label: "Practice" });
     return list;
   }, [selected]);
@@ -625,6 +627,20 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                         </div>
                                             ) : null}
 
+                      {currentStep?.id === "mastery" && selected.quiz ? (
+                        <LessonQuiz
+                          courseId={courseId}
+                          lessonId={selected.id}
+                          quiz={selected.quiz}
+                          mastery={selected.mastery}
+                          onCompleted={() => {
+                            void queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+                            void queryClient.invalidateQueries({ queryKey: ["learner-dashboard"] });
+                            void queryClient.invalidateQueries({ queryKey: ["learner-resource", "quiz_attempts"] });
+                          }}
+                        />
+                      ) : null}
+
                       {currentStep?.id === "assignment" && selected.assignment ? (
                         <div className="space-y-4">
                           <div className="flex items-center gap-2 rounded-xl border border-[#f47945]/35 bg-[#fffaf7] p-4">
@@ -673,32 +689,71 @@ export function CoursePlayer({ courseId }: { courseId: string }) {
                             </div>
                             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#4d176e]/10 pt-3">
                               <p id={`submission-help-${selected.id}`} className="text-xs text-muted-foreground">
-                                {selected.submission ? `Last saved ${new Date(selected.submission.submitted_at).toLocaleDateString()}` : `${submissionText.trim().length}/20 characters minimum`}
+                                {selected.submission?.status === "revision_requested"
+                                  ? "Your instructor requested a revision. Update the work and resubmit it for review."
+                                  : selected.submission?.status === "graded" || selected.submission?.status === "approved"
+                                    ? "This submission is locked after grading."
+                                    : selected.submission
+                                      ? `Last saved ${new Date(selected.submission.submitted_at).toLocaleDateString()}`
+                                      : `${submissionText.trim().length}/20 characters minimum`}
                               </p>
                               <Button
                                 type="button"
                                 onClick={() => submit.mutate()}
-                                disabled={submit.isPending || submissionText.trim().length < 20}
+                                disabled={submit.isPending || submissionText.trim().length < 20 || ["graded", "approved"].includes(selected.submission?.status ?? "")}
                                 className="bg-[#4d176e] text-white hover:bg-[#35104f]"
                               >
-                                {submit.isPending ? "Saving…" : selected.submission ? "Update submission" : "Submit assignment"}
+                                {submit.isPending
+                                  ? "Saving…"
+                                  : selected.submission?.status === "revision_requested"
+                                    ? "Resubmit for review"
+                                    : selected.submission
+                                      ? "Update submission"
+                                      : "Submit assignment"}
                               </Button>
                             </div>
                           </div>
                           {selected.submission ? (
-                            <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-4">
+                            <div className={cn(
+                              "p-4",
+                              selected.submission.status === "revision_requested"
+                                ? "border border-[#f47945]/45 bg-[#fff8f4]"
+                                : "border border-emerald-200 bg-emerald-50/70",
+                            )}>
                               <div className="flex flex-wrap items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
-                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden />
-                                  <p className="text-sm font-semibold text-emerald-900">Assignment submitted</p>
+                                  <CheckCircle2 className={cn("h-4 w-4", selected.submission.status === "revision_requested" ? "text-[#b94920]" : "text-emerald-600")} aria-hidden />
+                                  <p className={cn("text-sm font-semibold", selected.submission.status === "revision_requested" ? "text-[#7b3218]" : "text-emerald-900")}>
+                                    {selected.submission.status === "revision_requested"
+                                      ? "Revision requested"
+                                      : selected.submission.status === "approved"
+                                        ? "Assignment approved"
+                                        : selected.submission.status === "graded"
+                                          ? "Assignment graded"
+                                          : "Assignment submitted"}
+                                  </p>
                                 </div>
-                                <span className="text-xs text-emerald-800">{new Date(selected.submission.submitted_at).toLocaleString()}</span>
+                                <span className="text-xs text-muted-foreground">Version {selected.submission.submission_count ?? selected.submission.versions?.length ?? 1} · {new Date(selected.submission.submitted_at).toLocaleString()}</span>
                               </div>
-                              <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-emerald-950">{selected.submission.response_text}</p>
+                              <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-foreground">{selected.submission.response_text}</p>
                               {selected.submission.evidence_url ? (
                                 <a href={selected.submission.evidence_url} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-xs font-semibold text-[#4d176e] underline underline-offset-2 hover:text-[#b94920]">Open submitted evidence</a>
                               ) : null}
-                              {selected.submission.feedback ? <p className="mt-3 border-t border-emerald-200 pt-3 text-xs leading-5 text-emerald-900"><strong>Feedback:</strong> {selected.submission.feedback}</p> : null}
+                              {selected.submission.grade !== null && selected.submission.grade !== undefined ? <p className="mt-3 text-xs font-semibold text-[#4d176e]">Grade: {selected.submission.grade}%</p> : null}
+                              {selected.submission.feedback ? <p className="mt-3 border-t border-current/10 pt-3 text-xs leading-5 text-foreground"><strong>Instructor feedback:</strong> {selected.submission.feedback}</p> : null}
+                              {selected.submission.versions && selected.submission.versions.length > 1 ? (
+                                <details className="mt-4 border-t border-current/10 pt-3">
+                                  <summary className="cursor-pointer text-xs font-semibold text-[#4d176e]">View version history ({selected.submission.versions.length})</summary>
+                                  <div className="mt-3 space-y-2">
+                                    {[...selected.submission.versions].reverse().map((version) => (
+                                      <div key={`${selected.id}-version-${version.version}`} className="border border-current/10 bg-background/70 p-3">
+                                        <div className="flex flex-wrap justify-between gap-2 text-[11px] text-muted-foreground"><span>Version {version.version}</span><span>{new Date(version.submitted_at).toLocaleString()}</span></div>
+                                        <p className="mt-1 whitespace-pre-wrap text-xs leading-5 text-foreground">{version.response_text}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </details>
+                              ) : null}
                             </div>
                           ) : null}
                           <Button

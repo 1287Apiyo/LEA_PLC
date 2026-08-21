@@ -6,6 +6,7 @@ import {
   loadRefMaps,
   resolveReferences,
 } from "@/lib/firebase/enrich";
+import { issueCourseCertificate } from "@/lib/course-completion";
 
 export const runtime = "nodejs";
 
@@ -50,6 +51,7 @@ const COLLECTIONS: Record<string, string> = {
   career_profiles: "career_profiles",
   career_applications: "career_applications",
   learner_preferences: "learner_preferences",
+  quiz_attempts: "quiz_attempts",
 };
 
 const ROLE_FILTERS: Record<string, string> = {
@@ -58,7 +60,7 @@ const ROLE_FILTERS: Record<string, string> = {
   staff: "staff",
 };
 
-const LEARNER_CREATE_RESOURCES = new Set(["messages", "bookmarks", "downloads", "projects", "onboarding_assessments", "career_profiles", "career_applications", "learner_preferences"]);
+const LEARNER_CREATE_RESOURCES = new Set(["messages", "bookmarks", "downloads", "projects", "onboarding_assessments", "career_profiles", "career_applications", "learner_preferences", "certificates"]);
 const LEARNER_SCOPED_RESOURCES = new Set([
   "classes",
   "attendance",
@@ -76,6 +78,7 @@ const LEARNER_SCOPED_RESOURCES = new Set([
   "career_applications",
   "learner_preferences",
   "assignments",
+  "quiz_attempts",
 ]);
 
 const SENSITIVE = new Set(["salt", "password_hash"]);
@@ -199,6 +202,17 @@ export async function POST(req: Request, ctx: { params: Promise<{ resource: stri
 
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return jsonError("Invalid payload.", 422);
+
+  if (resource === "certificates" && auth.user.role === "learner") {
+    const courseId = String(body.courseId ?? body.course_id ?? "");
+    if (!courseId) return jsonError("A course is required before requesting a certificate.", 422);
+    const learnerId = String(auth.user.id ?? "");
+    if (!learnerId) return jsonError("Learner identity is missing.", 401);
+    const result = await issueCourseCertificate(db, learnerId, courseId);
+    if ("error" in result && !result.completion) return jsonError(String(result.error ?? "Certificate request failed."), 404);
+    if ("error" in result) return jsonError(String(result.error ?? "Complete the course requirements first."), 422);
+    return jsonOk({ data: { ...result.certificate, completion: result.completion, existing: result.existing } }, result.existing ? 200 : 201);
+  }
 
   const id = body.id ? String(body.id) : `${resource.slice(0, 3)}-${randomBytes(4).toString("hex")}`;
   const data = {

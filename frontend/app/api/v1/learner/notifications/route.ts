@@ -22,12 +22,14 @@ export async function GET(req: Request) {
   const auth = await requireUser(req);
   if ("response" in auth) return auth.response;
   const db = getDb();
-  const [assignmentsSnap, submissionsSnap, tutorSnap, messagesSnap, readsSnap] = await Promise.all([
-    db.collection("assignments").where("learnerId", "==", auth.user.id).limit(100).get(),
-    db.collection("submissions").where("learnerId", "==", auth.user.id).limit(100).get(),
-    db.collection("tutor_requests").where("learnerId", "==", auth.user.id).limit(100).get(),
-    db.collection("messages").where("learnerId", "==", auth.user.id).limit(100).get(),
-    db.collection("notification_reads").where("learnerId", "==", auth.user.id).limit(300).get(),
+  const learnerId = String(auth.user.id ?? "");
+  const [assignmentsSnap, submissionsSnap, tutorSnap, messagesSnap, readsSnap, storedSnap] = await Promise.all([
+    db.collection("assignments").where("learnerId", "==", learnerId).limit(100).get(),
+    db.collection("submissions").where("learnerId", "==", learnerId).limit(100).get(),
+    db.collection("tutor_requests").where("learnerId", "==", learnerId).limit(100).get(),
+    db.collection("messages").where("learnerId", "==", learnerId).limit(100).get(),
+    db.collection("notification_reads").where("learnerId", "==", learnerId).limit(300).get(),
+    db.collection("notifications").where("recipientId", "==", learnerId).limit(200).get(),
   ]);
 
   const readIds = new Set(readsSnap.docs.map((doc) => String(doc.data().notificationId ?? doc.id)));
@@ -56,6 +58,11 @@ export async function GET(req: Request) {
     const id = `message-${doc.id}`;
     rows.push({ id, title: String(row.subject ?? "New learner message"), description: String(row.preview ?? row.body ?? "You have a new support update."), kind: "message", href: "/learner/messages", created_at: String(row.created_at ?? new Date().toISOString()), read: readIds.has(id) });
   });
+  storedSnap.docs.forEach((doc) => {
+    const row = doc.data() as Record<string, unknown>;
+    const id = `stored-${doc.id}`;
+    rows.push({ id, title: String(row.title ?? "Learning update"), description: String(row.body ?? row.description ?? "You have a new update in your learner portal."), kind: String(row.type ?? "").includes("tutor") ? "tutor" : String(row.type ?? "").includes("assignment") || String(row.type ?? "").includes("certificate") ? "feedback" : "reminder", href: String(row.href ?? "/learner"), created_at: String(row.created_at ?? new Date().toISOString()), read: Boolean(row.read) || readIds.has(id) });
+  });
 
   rows.sort((a, b) => asDate(b.created_at).getTime() - asDate(a.created_at).getTime());
   return jsonOk({ data: rows, unread: rows.filter((row) => !row.read).length });
@@ -68,8 +75,9 @@ export async function POST(req: Request) {
   const notificationId = String(body?.notificationId ?? "").trim();
   if (!notificationId) return jsonError("Notification ID is required.", 422);
   const db = getDb();
-  const id = `${auth.user.id}_${notificationId}`.replace(/[^a-zA-Z0-9_-]/g, "_");
-  const row = { id, learnerId: auth.user.id, notificationId, read_at: new Date().toISOString() };
+  const learnerId = String(auth.user.id ?? "");
+  const id = `${learnerId}_${notificationId}`.replace(/[^a-zA-Z0-9_-]/g, "_");
+  const row = { id, learnerId, notificationId, read_at: new Date().toISOString() };
   await db.collection("notification_reads").doc(id).set(row, { merge: true });
   return jsonOk({ data: row });
 }

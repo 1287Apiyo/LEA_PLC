@@ -13,6 +13,7 @@ import { useLearnerDashboard } from "@/hooks/use-dashboard";
 import { resourceService, type ResourceRow } from "@/services/resources";
 import type { LearnerDashboard } from "@/types/dashboard";
 import { cn } from "@/lib/utils";
+import { LearnerCertificates } from "@/components/modules/learner-certificates";
 
 const TITLES: Record<string, { title: string; description: string }> = {
   assignments: { title: "Assignments", description: "Track practice work, submissions, grades, and feedback in one place." },
@@ -157,7 +158,7 @@ export function LearnerLifecycleHub({ slug }: { slug: string }) {
   else if (slug === "achievements") content = <AchievementsView />;
   else if (slug === "messages") content = <MessagesView />;
   else if (slug === "bookmarks") content = <BookmarksView />;
-  else if (slug === "certificates") content = <ResourceList resource="certificates" empty="Complete an enrolled course to earn your first certificate." />;
+  else if (slug === "certificates") content = <LearnerCertificates />;
   else if (slug === "attendance") content = <ResourceList resource="attendance" empty="Your attendance will appear after a scheduled class or tutor session." />;
   else if (slug === "downloads") content = <ResourceList resource="downloads" empty="Your downloaded course packs and certificates will appear here." />;
   else content = <ResourceList resource={slug} empty="Nothing is here yet." />;

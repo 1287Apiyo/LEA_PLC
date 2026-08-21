@@ -54,14 +54,14 @@ function dateLabel(value: unknown) {
 }
 
 function statusTone(status: string) {
-  if (status === "confirmed") return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  if (status === "confirmed" || status === "scheduled") return "border-emerald-200 bg-emerald-50 text-emerald-700";
   if (["declined", "cancelled"].includes(status)) return "border-rose-200 bg-rose-50 text-rose-700";
   if (status === "quoted") return "border-orange-200 bg-orange-50 text-orange-700";
   return "border-amber-200 bg-amber-50 text-amber-700";
 }
 
 function statusCopy(status: string) {
-  if (status === "confirmed") return "Confirmed";
+  if (status === "confirmed" || status === "scheduled") return "Confirmed";
   if (status === "declined") return "Declined";
   if (status === "cancelled") return "Cancelled";
   if (status === "quoted") return "Quote shared";
@@ -94,7 +94,7 @@ export function LearnerTutorSessions() {
     () => [...(Array.isArray(tutoring?.requests) ? tutoring.requests : [])].sort((a, b) => String(b.updated_at ?? "").localeCompare(String(a.updated_at ?? ""))),
     [tutoring?.requests],
   );
-  const confirmed = requests.filter((request) => request.status === "confirmed");
+  const confirmed = requests.filter((request) => ["confirmed", "scheduled"].includes(request.status));
   const awaiting = requests.filter((request) => ["requested", "under_review", "quoted"].includes(request.status));
   const selectedPricing = pricing?.[mode];
   const quotedPrice = selectedPricing ? (durationMinutes === 240 ? selectedPricing.bundle : selectedPricing.single) : 0;
@@ -174,7 +174,7 @@ export function LearnerTutorSessions() {
                 <div className="mt-3 grid gap-2 text-xs text-muted-foreground sm:grid-cols-2"><span className="flex items-center gap-1.5"><Clock3 className="h-3.5 w-3.5" />{request.confirmedDate ? dateLabel(request.confirmedDate) : `Preferred: ${dateLabel(request.preferredDate)}`} · {request.confirmedTime ?? request.preferredTime}</span><span className="flex items-center gap-1.5">{isOnline ? <Video className="h-3.5 w-3.5" /> : <MapPin className="h-3.5 w-3.5" />}{isOnline ? request.meetingPlatform ?? "Online meeting" : request.venue ?? "Venue to be confirmed"}</span></div>
                 {request.instructorName ? <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#f6eef9] px-3 py-2 text-sm text-[#4d176e]"><GraduationCap className="h-4 w-4" aria-hidden /><span><span className="font-medium">Instructor:</span> {request.instructorName}{request.instructorEmail ? ` · ${request.instructorEmail}` : ""}</span></div> : null}
                 {request.admin_response ? <div className="mt-3 rounded-lg bg-muted/40 p-3 text-sm"><p className="font-medium text-[#1f0d2e]">LEA update</p><p className="mt-1 leading-6 text-muted-foreground">{request.admin_response}</p></div> : <p className="mt-3 text-sm text-muted-foreground">The LEA team has received your request and will share an update here.</p>}
-                {request.status === "confirmed" && isOnline ? <div className="mt-3">{meetingLink ? <Button asChild className="w-full gap-2 bg-[#f47945] hover:bg-[#d95d2e]"><a href={meetingLink} target="_blank" rel="noreferrer"><Link2 className="h-4 w-4" aria-hidden />Join online session <ExternalLink className="h-3.5 w-3.5" aria-hidden /></a></Button> : <div className="flex items-center gap-2 rounded-lg border border-dashed border-orange-200 bg-orange-50 p-3 text-sm text-orange-800"><Video className="h-4 w-4" aria-hidden />Your instructor has confirmed the session. The online meeting link will be added here.</div>}</div> : null}
+                {(["confirmed", "scheduled"].includes(request.status)) && isOnline ? <div className="mt-3">{meetingLink ? <Button asChild className="w-full gap-2 bg-[#f47945] hover:bg-[#d95d2e]"><a href={meetingLink} target="_blank" rel="noreferrer"><Link2 className="h-4 w-4" aria-hidden />Join online session <ExternalLink className="h-3.5 w-3.5" aria-hidden /></a></Button> : <div className="flex items-center gap-2 rounded-lg border border-dashed border-orange-200 bg-orange-50 p-3 text-sm text-orange-800"><Video className="h-4 w-4" aria-hidden />Your instructor has confirmed the session. The online meeting link will be added here.</div>}</div> : null}
               </div>;
             })}
           </CardContent>

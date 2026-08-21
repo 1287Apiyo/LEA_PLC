@@ -33,28 +33,61 @@ export async function GET(req: Request) {
   const db = getDb();
 
   const [requestsSnap, classesSnap, enrolmentsSnap, coursesSnap] = await Promise.all([
-    db.collection("tutor_requests").where("learnerId", "==", auth.user.id).limit(100).get(),
-    db.collection("classes").where("learnerId", "==", auth.user.id).limit(100).get(),
-    db.collection("enrolments").where("learnerId", "==", auth.user.id).limit(100).get(),
+    db.collection("tutor_requests").limit(500).get(),
+    db.collection("classes").limit(500).get(),
+    db.collection("enrolments").limit(500).get(),
     db.collection("courses").limit(200).get(),
   ]);
   const courses = coursesSnap.docs.map((doc) => ({ id: doc.id, ...(doc.data() as Record<string, unknown>) }));
   const courseMap = new Map<string, Record<string, unknown>>(courses.map((course) => [String(course.id), course]));
-  const enrolledCourses = enrolmentsSnap.docs.map((doc) => {
-    const row = doc.data();
-    const course = courseMap.get(String(row.courseId ?? ""));
+  const learnerId = String(auth.user.id ?? "");
+  const requests = requestsSnap.docs
+    .map((doc): Record<string, unknown> & { id: string } => ({ id: doc.id, ...(doc.data() as Record<string, unknown>) }))
+    .filter((row) => String(row.learnerId ?? row.learner_id ?? "") === learnerId)
+    .map((row) => ({
+      ...row,
+      learnerId: String(row.learnerId ?? row.learner_id ?? learnerId),
+      courseId: String(row.courseId ?? row.course_id ?? ""),
+      status: String(row.status ?? "requested"),
+      admin_response: String(row.admin_response ?? row.response_message ?? row.responseMessage ?? ""),
+      confirmedDate: String(row.confirmedDate ?? row.confirmed_date ?? ""),
+      confirmedTime: String(row.confirmedTime ?? row.confirmed_time ?? ""),
+      venue: String(row.venue ?? row.location ?? ""),
+      meetingLink: String(row.meetingLink ?? row.meeting_link ?? ""),
+      meetingPlatform: String(row.meetingPlatform ?? row.meeting_platform ?? (row.mode === "online" ? "Online meeting" : "")),
+      instructorId: String(row.instructorId ?? row.instructor_id ?? row.trainerId ?? row.trainer_id ?? ""),
+      instructorName: String(row.instructorName ?? row.instructor_name ?? ""),
+      instructorEmail: String(row.instructorEmail ?? row.instructor_email ?? ""),
+    }));
+  const classes = classesSnap.docs
+    .map((doc): Record<string, unknown> & { id: string } => ({ id: doc.id, ...(doc.data() as Record<string, unknown>) }))
+    .filter((row) => String(row.learnerId ?? row.learner_id ?? "") === learnerId)
+    .map((row) => ({
+      ...row,
+      learnerId: String(row.learnerId ?? row.learner_id ?? learnerId),
+      courseId: String(row.courseId ?? row.course_id ?? ""),
+      confirmedDate: String(row.confirmedDate ?? row.confirmed_date ?? row.date ?? ""),
+      confirmedTime: String(row.confirmedTime ?? row.confirmed_time ?? row.start_time ?? ""),
+      meetingLink: String(row.meetingLink ?? row.meeting_link ?? ""),
+      meetingPlatform: String(row.meetingPlatform ?? row.meeting_platform ?? ""),
+      instructorId: String(row.instructorId ?? row.instructor_id ?? row.trainerId ?? row.trainer_id ?? ""),
+      instructorName: String(row.instructorName ?? row.instructor_name ?? ""),
+    }));
+  const enrolledCourses = enrolmentsSnap.docs.map((doc) => doc.data() as Record<string, unknown>).filter((row) => String(row.learnerId ?? row.learner_id ?? "") === learnerId).map((row, index) => {
+    const courseId = String(row.courseId ?? row.course_id ?? "");
+    const course = courseMap.get(courseId);
     return {
-      id: String(course?.id ?? row.courseId ?? doc.id),
-      title: String(course?.title ?? row.courseId ?? "Enrolled course"),
+      id: String(course?.id ?? courseId ?? `enrolment-${index}`),
+      title: String(course?.title ?? courseId ?? "Enrolled course"),
       programme_id: String(course?.programme_id ?? ""),
-      price_kes: coursePrice({ id: String(course?.id ?? row.courseId ?? ""), ...course }),
+      price_kes: coursePrice({ id: String(course?.id ?? courseId ?? ""), ...course }),
     };
   });
 
   return jsonOk({
     data: {
-      requests: requestsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
-      classes: classesSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+      requests,
+      classes,
       enrolledCourses,
       pricing: SESSION_PRICES_KES,
     },

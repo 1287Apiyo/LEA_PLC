@@ -91,6 +91,8 @@ export const MODULE_REGISTRY: Record<string, ModuleDefinition[]> = {
     module("analytics", "Learner Analytics", "Progress, performance and engagement across your classes.", LineChart, "No analytics yet", "Learner analytics will appear once classes have activity."),
     module("materials", "Teaching Materials", "Lesson plans and materials for your classes.", FolderOpen, "No materials yet", "Upload your teaching materials."),
     module("announcements", "Announcements", "Post announcements to your classes.", Megaphone, "No announcements yet", "Share your first announcement."),
+    module("tutor-sessions", "Tutor Sessions", "Respond to learner tutor requests and manage meeting links.", CalendarHeart, "No tutor requests", "Assigned tutor requests will appear here."),
+    module("discussions", "Discussions", "Moderate course questions, reply to learners, and share guidance.", MessageSquare, "No discussion threads", "Learner questions will appear here."),
   ],
   learner: [
     module("courses", "My Courses", "Enrolled courses, lessons and progress.", BookOpen, "No courses yet", "Enrol in a course to get started."),

@@ -2,6 +2,7 @@ import { getDb } from "@/lib/firebase/admin";
 import { jsonError, jsonOk, requireUser } from "@/lib/firebase/api-helpers";
 import { learnerNames } from "@/lib/firebase/enrich";
 import { courseMaterialsFor } from "@/lib/course-materials";
+import { normaliseLessonQuiz } from "@/lib/lesson-quizzes";
 
 export const runtime = "nodejs";
 
@@ -52,6 +53,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
 
   let enrolment: Record<string, unknown> | null = null;
   const submissionsByLesson = new Map<string, Record<string, unknown>>();
+  const quizAttemptsByLesson = new Map<string, Record<string, unknown>[]>();
   if (auth.user.role === "learner") {
     const enrSnap = await db
       .collection("enrolments")
@@ -74,6 +76,21 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       if (String(submission.courseId ?? "") !== id) continue;
       const lessonId = String(submission.lessonId ?? "");
       if (lessonId) submissionsByLesson.set(lessonId, { id: submissionDoc.id, ...submission });
+    }
+
+    const quizSnap = await db
+      .collection("quiz_attempts")
+      .where("learnerId", "==", auth.user.id)
+      .limit(500)
+      .get();
+    for (const attemptDoc of quizSnap.docs) {
+      const attempt = attemptDoc.data();
+      if (String(attempt.courseId ?? "") !== id) continue;
+      const lessonId = String(attempt.lessonId ?? "");
+      if (!lessonId) continue;
+      const list = quizAttemptsByLesson.get(lessonId) ?? [];
+      list.push({ id: attemptDoc.id, ...attempt });
+      quizAttemptsByLesson.set(lessonId, list);
     }
   }
 
@@ -114,6 +131,18 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
     download_url: String(currentResource.download_url ?? ''),
     description: String(currentResource.description ?? ''),
   }));
+  const instructorMaterialSnapshot = await db.collection("materials").where("courseId", "==", id).limit(200).get();
+  const instructorMaterials = instructorMaterialSnapshot.docs.map((doc) => {
+    const material = doc.data() as Record<string, unknown>;
+    return {
+      id: doc.id,
+      title: String(material.title ?? material.originalName ?? "Instructor material"),
+      type: String(material.category ?? "instructor material"),
+      url: String(material.url ?? ""),
+      download_url: String(material.download_url ?? material.url ?? ""),
+      description: String(material.description ?? ""),
+    };
+  });
 
   return jsonOk({
     data: {
@@ -135,7 +164,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       resource_count: Number(course.resource_count ?? resources.length),
       video_count: Number(course.video_count ?? new Set(lessons.map((lesson) => String(lesson.video_url ?? '')).filter(Boolean)).size),
       resources,
-      course_materials: courseMaterialsFor(id),
+      course_materials: [...courseMaterialsFor(id), ...instructorMaterials],
       coding: Boolean(course.coding),
 
       playground_language: course.playground_language ?? null,
@@ -154,6 +183,31 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
         notes: String(l.notes ?? ""),
         lesson_content: serialiseLessonContent(l.lesson_content),
         assignment: String(l.assignment ?? ""),
+        quiz: normaliseLessonQuiz(l),
+        mastery: (() => {
+          const attempts = (quizAttemptsByLesson.get(String(l.id ?? `lesson-${i + 1}`)) ?? [])
+            .sort((a, b) => String(b.submitted_at ?? "").localeCompare(String(a.submitted_at ?? "")));
+          const latest = attempts[0] ?? null;
+          return {
+            passed: attempts.some((attempt) => attempt.passed === true),
+            best_score: attempts.length ? Math.max(...attempts.map((attempt) => Number(attempt.score ?? 0))) : null,
+            attempts: attempts.length,
+            latest: latest
+              ? {
+                  id: String(latest.id ?? ""),
+                  course_id: String(latest.courseId ?? id),
+                  lesson_id: String(latest.lessonId ?? l.id ?? `lesson-${i + 1}`),
+                  score: Number(latest.score ?? 0),
+                  passed: latest.passed === true,
+                  pass_percent: Number(latest.pass_percent ?? 70),
+                  correct_count: Number(latest.correct_count ?? 0),
+                  question_count: Number(latest.question_count ?? 0),
+                  attempt_number: Number(latest.attempt_number ?? 1),
+                  submitted_at: String(latest.submitted_at ?? latest.created_at ?? ""),
+                }
+              : null,
+          };
+        })(),
 
         resources: Array.isArray(l.resources)
           ? (l.resources as Record<string, unknown>[]).map((currentResource, resourceIndex) => ({
@@ -174,10 +228,29 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
                 lesson_id: String(submission.lessonId ?? l.id ?? `lesson-${i + 1}`),
                 response_text: String(submission.response_text ?? ""),
                 evidence_url: submission.evidence_url ? String(submission.evidence_url) : null,
-                status: submission.status === "graded" ? "graded" : "submitted",
+                status: ["submitted", "graded", "approved", "revision_requested"].includes(String(submission.status))
+                  ? String(submission.status)
+                  : "submitted",
                 submitted_at: String(submission.submitted_at ?? submission.created_at ?? ""),
+                submission_count: Number(submission.submission_count ?? 1),
+                last_edited_at: String(submission.last_edited_at ?? submission.updated_at ?? submission.submitted_at ?? ""),
+                versions: Array.isArray(submission.versions)
+                  ? (submission.versions as Record<string, unknown>[]).map((version) => ({
+                      version: Number(version.version ?? 1),
+                      response_text: String(version.response_text ?? ""),
+                      evidence_url: version.evidence_url ? String(version.evidence_url) : null,
+                      submitted_at: String(version.submitted_at ?? ""),
+                      status: ["submitted", "graded", "approved", "revision_requested"].includes(String(version.status))
+                        ? String(version.status)
+                        : "submitted",
+                    }))
+                  : [],
                 grade: submission.grade === null || submission.grade === undefined ? null : Number(submission.grade),
                 feedback: String(submission.feedback ?? ""),
+                graded_at: String(submission.graded_at ?? ""),
+                graded_by: String(submission.graded_by ?? ""),
+                rubric: submission.rubric && typeof submission.rubric === "object" ? submission.rubric : {},
+                resubmission_requested: submission.status === "revision_requested",
               };
             })()
           : null,
@@ -208,7 +281,8 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return jsonError("Invalid payload.", 422);
-  const { id: _ignored, ...updates } = body;
+  const updates = { ...body };
+  delete updates.id;
   updates.updated_at = new Date().toISOString();
   await docRef.update(updates);
 
