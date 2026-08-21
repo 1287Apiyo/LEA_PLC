@@ -5,14 +5,12 @@ import Link from "next/link";
 import {
   ArrowRight,
   BookOpen,
-  BrainCircuit,
   CheckCircle2,
   Lightbulb,
   Loader2,
   MessageCircle,
   RotateCcw,
   Send,
-  Sparkles,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
@@ -144,18 +142,6 @@ export function LearnerAiCoach() {
 
   return (
     <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-[28px] bg-[#1f0d2e] px-6 py-8 text-white shadow-[0_18px_50px_rgba(31,13,46,0.18)] sm:px-8">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#f47945]/20 blur-3xl" aria-hidden />
-        <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#f8b49a]"><BrainCircuit className="h-4 w-4" aria-hidden />LEA AI Learning Coach</div>
-            <h1 className="mt-3 max-w-xl text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">Get unstuck without losing the learning.</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/72">Ask for clearer explanations, practical hints, debugging questions, and a next step grounded in the LEA Labs course you are taking.</p>
-          </div>
-          <div className="flex items-center gap-3 text-sm text-white/75 lg:pb-1"><Sparkles className="h-5 w-5 text-[#f47945]" aria-hidden /><span>Course-aware guidance</span></div>
-        </div>
-      </section>
-
       <div className="grid gap-5 xl:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="space-y-5">
           <Card className="border-[#d9c6e1] bg-[#fffdfb]">

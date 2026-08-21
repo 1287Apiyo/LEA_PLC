@@ -17,7 +17,7 @@ export function LandingNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e4def0]/90 bg-[#fcfbff]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 bg-[#fcfbff]/90 backdrop-blur-xl">
       <div className="px-5 sm:px-10 lg:px-[7vw]">
         <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between">
         <Link href="/" className="-ml-2 inline-flex items-center gap-2.5 sm:-ml-3 lg:-ml-2" aria-label={`${APP_NAME} home`}>
@@ -49,7 +49,7 @@ export function LandingNav() {
       </div>
 
       {open && (
-        <div className="border-t border-[#e4def0] bg-[#fcfbff] px-5 pb-5 pt-3 shadow-lg md:hidden">
+        <div className="bg-[#fcfbff] px-5 pb-5 pt-3 shadow-lg md:hidden">
           <nav className="space-y-1" aria-label="Mobile navigation">
             {NAV_LINKS.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 text-sm font-bold text-[#5d5470] transition hover:bg-[#fff0ea] hover:text-[#f47945]">
@@ -57,7 +57,7 @@ export function LandingNav() {
               </Link>
             ))}
           </nav>
-          <div className="mt-3 grid grid-cols-2 gap-2 border-t border-[#e4def0] pt-4">
+          <div className="mt-3 grid grid-cols-2 gap-2 pt-4">
             <Link href="/login" onClick={() => setOpen(false)} className="inline-flex h-11 items-center justify-center rounded-full bg-[#f47945] px-5 text-sm font-bold text-[#351039] shadow-[0_8px_18px_rgba(244,121,69,0.16)] transition hover:bg-[#ff8f57]">
               Log in
             </Link>

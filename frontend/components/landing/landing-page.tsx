@@ -17,12 +17,12 @@ import { PROGRAMMES as programmes } from "@/lib/programmes";
 const HERO_IMAGE = "/lea-hero-purple-orange.png";
 const COLLABORATION_IMAGE = "/lea-landing-programmes.png";
 const MENTOR_IMAGE = "/lea-landing-support.png";
-const COMMUNITY_IMAGE = "/lea-learner-portal-illustration.png";
+const COMMUNITY_IMAGE = "/lea-community-learners.jpeg";
 
 const PROGRAMME_CARD_IMAGES: Record<string, string> = {
   "software-engineering": "/lea-card-software-human.png",
   "applied-ai": "/lea-card-ai-human.png",
-  "basic-computer-knowledge": "/lea-card-computers-human.png",
+  "basic-computer-knowledge": "/lea-card-computers-african.jpeg",
 };
 
 
@@ -53,46 +53,45 @@ export default function LandingPage() {
       <LandingNav />
 
       <main>
-        {/* HERO — taller again, still sized to content rather than forced to full viewport height */}
-        <section className="relative overflow-hidden border-b border-[#1f0d2e] bg-[#1f0d2e]">
-          <div className="relative grid w-full lg:grid-cols-2">
-            <div className="relative z-10 flex items-center px-5 py-22 sm:px-10 sm:py-26 lg:pl-[max(7vw,calc((100vw_-_1440px)_/_2))] lg:pr-[5vw] lg:py-34">
-              <div className="max-w-[650px]">
-                <h1 className="max-w-[610px] text-[clamp(2.35rem,4.4vw,4.75rem)] font-semibold leading-[0.93] tracking-[-0.075em] text-[#fffdfb]">
+        {/* HERO — clear message, grounded alignment, and a full-height learner image */}
+        <section className="relative overflow-hidden bg-[#1f0d2e]">
+          <div className="relative mx-auto grid min-h-[620px] max-w-[1600px] lg:min-h-[680px] lg:grid-cols-2">
+            <div className="relative z-10 flex items-center px-5 py-16 sm:px-10 sm:py-20 lg:px-0 lg:py-24">
+              <div className="w-full max-w-[690px] lg:ml-[4vw] lg:mr-8">
+                <h1 className="max-w-[680px] text-[clamp(2.6rem,4.35vw,4.8rem)] font-semibold leading-[0.93] tracking-[-0.072em] text-[#fffdfb]">
                   <span>Build the skills</span><br />
                   <span>your next role will</span><br />
                   <span className="text-[#f47945]">ask for.</span>
                 </h1>
-                <p className="mt-6 max-w-[500px] text-sm leading-6 text-white/75 sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p>
+                <p className="mt-7 max-w-[510px] text-sm leading-6 text-white/76 sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p>
                 <p className="mt-3 max-w-[470px] text-xs font-medium leading-6 text-[#f6eef9]/90 sm:text-sm">Learn by building, grow with guidance, and leave with work you can show.</p>
-                <div className="mt-8 flex flex-wrap items-center gap-4">
+                <div className="mt-9 flex flex-wrap items-center gap-4">
                   <Link href="#programmes" className="inline-flex h-11 items-center gap-3 rounded-md bg-[#f47945] px-5 text-xs font-semibold text-[#351039] transition hover:bg-[#e96836] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f0d2e]">Explore programmes <ArrowDownRight className="h-4 w-4" /></Link>
-                  <Link href="#programmes" className="inline-flex items-center gap-1 border-b border-white/55 pb-1 text-xs font-semibold text-white transition hover:border-[#f47945] hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link>
+                  <Link href="#programmes" className="inline-flex items-center gap-1 text-xs font-semibold text-white transition hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link>
                 </div>
               </div>
             </div>
-            <div className="relative min-h-[420px] overflow-hidden bg-transparent sm:min-h-[500px] lg:min-h-0">
-              <Image src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover object-[58%_center]" />
-              <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(77,23,110,0.62)_0%,rgba(55,31,76,0.20)_46%,rgba(21,17,22,0.16)_100%)]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_25%,rgba(244,121,69,0.34),transparent_34%),linear-gradient(180deg,rgba(46,71,104,0.12),rgba(21,17,22,0.32))]" />
+            <div className="relative min-h-[420px] overflow-hidden bg-[#2d1738] sm:min-h-[520px] lg:min-h-0">
+              <Image src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" fill priority sizes="(min-width: 1024px) 54vw, 100vw" className="object-cover object-[58%_center]" />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(31,13,46,0.80)_0%,rgba(31,13,46,0.18)_32%,rgba(21,17,22,0.04)_100%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(244,121,69,0.30),transparent_31%),linear-gradient(180deg,rgba(46,71,104,0.08),rgba(21,17,22,0.28))]" />
+              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between gap-4 bg-[#1f0d2e]/55 px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.17em] text-white/75 backdrop-blur-sm sm:px-8">
+                <span>Learning by doing</span>
+                <span className="text-[#f8b49a]">LEA Labs</span>
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="programmes" className="relative scroll-mt-20 overflow-hidden border-y border-[#eee7f2] bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
-          <div className="pointer-events-none absolute -right-24 top-12 h-72 w-72 rounded-full border border-[#4d176e]/10" />
-          <div className="pointer-events-none absolute bottom-10 left-[8%] h-px w-24 bg-[#f47945]" />
+        <section id="programmes" className="relative scroll-mt-20 overflow-hidden bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="relative mx-auto max-w-[1440px]">
             <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end"><div><h2 className="max-w-[620px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#151116]">Choose a practical path forward.</h2></div><p className="max-w-[460px] text-sm leading-7 text-[#6e6072]">Choose between <span className="font-semibold text-[#4d176e]">Software Engineering</span>, <span className="font-semibold text-[#4d176e]">Applied AI</span>, and <span className="font-semibold text-[#4d176e]">Basic Computer Knowledge</span> for beginners, children, and families.</p></div>
             <div className="mt-8 grid gap-5 md:grid-cols-3 lg:mt-10">{programmes.map((programme) => <Link key={programme.title} href={`/programmes/${programme.slug}`} className="group overflow-hidden rounded-[26px] border border-[#f47945]/75 bg-white shadow-[0_18px_45px_rgba(77,23,110,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_60px_rgba(77,23,110,0.16)]"><div className="relative aspect-[1.45] overflow-hidden bg-[#1f0d2e]"><Image src={PROGRAMME_CARD_IMAGES[programme.slug] ?? programme.image} alt={`${programme.title} programme`} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-[#241027]/75 via-[#351039]/10 to-transparent" /><div className="absolute bottom-4 left-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#f47945] text-xs font-black text-[#351039]">{programme.number}</div><span className="absolute bottom-5 right-5 text-4xl font-semibold text-white/90">{programme.icon}</span></div><div className="flex min-h-[290px] flex-col p-5 sm:p-6"><h3 className="max-w-[270px] text-[clamp(1.2rem,1.5vw,1.5rem)] font-bold leading-[1.04] tracking-[-0.04em] text-[#f06d36]">{programme.title}</h3><p className="mt-3 text-sm leading-6 text-[#302434]">{programme.short}</p><p className="mt-2 text-xs leading-5 text-[#6e6072]">{programme.audience}</p><div className="mt-4 flex flex-wrap gap-2">{programme.bullets.map((bullet) => <span key={bullet} className="rounded-full border border-[#4d176e]/35 px-3 py-1.5 text-[10px] font-semibold text-[#4d176e]">{bullet}</span>)}</div><div className="mt-4 flex items-center justify-between border-t border-[#efcfc1] pt-4"><span className="text-xs text-[#6e6072]">Full programme</span><span className="text-sm font-black text-[#4d176e]">{programme.price}</span></div><span className="mt-4 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#f47945] text-xs font-black text-[#351039] transition group-hover:bg-[#ff8f57]">View programme <ArrowRight className="h-4 w-4" /></span></div></Link>)}</div>
-            <div className="mt-7 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-[#6e6072]"><span>Practical learning, whatever your starting point.</span><span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#f47945]" /> Three pathways. One clear next step.</span></div>
+            <div className="mt-7 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-[#6e6072]"><span>Practical learning, whatever your starting point.</span><span>Three pathways. One clear next step.</span></div>
           </div>
         </section>
 
-        <section id="how-it-works" className="relative scroll-mt-20 overflow-hidden bg-[#1f0d2e] px-5 py-12 text-white sm:px-10 sm:py-14 lg:flex lg:min-h-[540px] lg:items-center lg:px-[7vw] lg:py-12">
-          <div className="pointer-events-none absolute -right-28 -top-20 h-64 w-[390px] rotate-[-18deg] rounded-[50%] border border-white/20 sm:-right-20 sm:-top-16" />
-          <div className="pointer-events-none absolute right-[32%] top-[52%] h-1.5 w-1.5 rounded-full bg-[#f47945]" />
-          <div className="pointer-events-none absolute bottom-0 left-0 h-px w-full bg-white/10" />
+        <section id="how-it-works" className="scroll-mt-20 bg-[#1f0d2e] px-5 py-12 text-white sm:px-10 sm:py-14 lg:flex lg:min-h-[540px] lg:items-center lg:px-[7vw] lg:py-12">
           <div className="relative mx-auto grid w-full max-w-[1440px] items-center gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10">
             <div className="flex flex-col justify-center lg:min-h-[380px]">
               <div>
@@ -102,9 +101,9 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="space-y-3 lg:pt-0">
-              {steps.map(([number, title, text], index) => (
+              {steps.map(([number, title, text]) => (
                 <article key={number} className="grid grid-cols-[46px_1fr] gap-3 sm:grid-cols-[50px_1fr] sm:gap-3">
-                  <div className="relative flex justify-center"><span className="z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/45 text-[10px] font-semibold text-white sm:h-10 sm:w-10">{number}</span>{index < steps.length - 1 && <span className="absolute left-1/2 top-10 h-[calc(100%+0.75rem)] -translate-x-1/2 border-l border-dashed border-white/35" />}</div>
+                  <div className="flex justify-center pt-1"><span className="text-[10px] font-semibold text-white sm:text-xs">{number}</span></div>
                   <div className="pb-0"><h3 className="text-base font-semibold tracking-[-0.02em] text-[#f6d9c8] sm:text-lg">{title}</h3><p className="mt-1 max-w-[450px] text-[11px] leading-5 text-[#ead9ed] sm:text-sm">{text}</p></div>
                 </article>
               ))}
@@ -112,23 +111,21 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="site-tour" className="relative scroll-mt-20 overflow-hidden border-y border-[#4d176e]/12 bg-[#f6eef9] px-5 py-14 text-[#151116] sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
-          <div className="pointer-events-none absolute -right-24 top-10 h-64 w-64 rounded-full border border-[#4d176e]/15" />
-          <div className="pointer-events-none absolute -left-16 bottom-10 h-36 w-36 rounded-full bg-[#f47945]/10 blur-2xl" />
+        <section id="site-tour" className="scroll-mt-20 bg-[#f6eef9] px-5 py-14 text-[#151116] sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
           <div className="relative mx-auto max-w-[1440px]">
             <div className="grid items-center gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
               <div className="max-w-[420px]">
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f47945]">The LEA experience</p>
                 <h2 className="mt-4 max-w-[390px] text-[clamp(1.9rem,3vw,3.25rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-[#151116]">See the path before you take it.</h2>
                 <p className="mt-5 max-w-[390px] text-sm leading-7 text-[#5f5265] sm:text-base">Take a guided walk through the real LEA rhythm: choose a programme, learn inside the course player, practise with quizzes and projects, get feedback, and move forward with support.</p>
-                <ol className="mt-7 border-y border-[#4d176e]/15">
+                <ol className="mt-7">
                   {[
                     ["01", "Choose a direction", "Programme discovery"],
                     ["02", "Make the work", "Lessons, notes, quizzes"],
                     ["03", "Stay supported", "Tutors and discussions"],
                     ["04", "Show your progress", "Projects and certificates"],
                   ].map(([number, title, detail]) => (
-                    <li key={number} className="grid grid-cols-[30px_1fr_auto] items-center gap-3 border-b border-[#4d176e]/10 py-3 last:border-b-0">
+                    <li key={number} className="grid grid-cols-[30px_1fr_auto] items-center gap-3 py-3">
                       <span className="text-[10px] font-black text-[#f47945]">{number}</span>
                       <span className="text-xs font-bold text-[#241b42]">{title}</span>
                       <span className="text-right text-[10px] text-[#7b6d80]">{detail}</span>
@@ -139,69 +136,63 @@ export default function LandingPage() {
                 <Link href="#tour-video" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#f47945] px-5 py-3 text-xs font-black text-[#351039] shadow-[0_12px_24px_rgba(244,121,69,0.18)] transition hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6eef9]">Watch the guided tour <ArrowRight className="h-4 w-4" /></Link>
               </div>
               <div className="relative">
-                <div className="pointer-events-none absolute -inset-3 border border-[#f47945]/35 sm:-inset-4" />
                 <div id="tour-video" className="relative overflow-hidden rounded-[28px] border border-[#4d176e]/25 bg-[#12091a] p-2 shadow-[0_28px_70px_rgba(77,23,110,0.22)] sm:p-3">
-                  <div className="flex items-center justify-between border-b border-white/10 px-3 py-2 text-[10px] text-[#cdb7d5]"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#f47945]" /><span className="h-2 w-2 rounded-full bg-white/35" /><span className="h-2 w-2 rounded-full bg-white/20" /></span><span className="tracking-[0.16em]">LEA LABS · PRODUCT TOUR</span><span className="hidden text-[#f47945] sm:inline">01 / 04</span></div>
+                  <div className="flex items-center justify-end px-3 py-2 text-[10px] text-[#cdb7d5]"><span className="tracking-[0.16em]">LEA LABS · PRODUCT TOUR</span></div>
                   <video className="aspect-video w-full rounded-[20px] bg-[#1f0d2e] object-cover" controls playsInline preload="metadata" poster="/lea-tour-poster.png" aria-label="LEA Labs product tour showing public programme discovery, learner course tools, tutor support, discussions, projects, certificates, and instructor workflows">
                     <source src="/lea-site-tour.mp4" type="video/mp4" />
-                    Your browser does not support the LEA Labs site-tour video. <Link href="#programmes" className="underline">Explore the programmes instead.</Link>
+                    Your browser does not support the LEA Labs site-tour video. <Link href="#programmes" className="text-[#f47945]">Explore the programmes instead.</Link>
                   </video>
-                  <div className="flex flex-col gap-3 px-3 pt-3 text-[10px] text-[#cdb7d5] sm:flex-row sm:items-center sm:justify-between"><span>Guided product tour · built for real learner progress</span><span className="text-[#f47945]">Learn · Build · Move forward</span></div><div className="mt-4 grid gap-2 border-t border-white/10 px-3 pt-3 sm:grid-cols-3"><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">01</p><p className="mt-1 text-xs font-semibold text-white">Choose your direction</p></div><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">02</p><p className="mt-1 text-xs font-semibold text-white">Practise inside the portal</p></div><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">03</p><p className="mt-1 text-xs font-semibold text-white">Leave with evidence</p></div></div>
+                  <div className="flex flex-col gap-3 px-3 pt-3 text-[10px] text-[#cdb7d5] sm:flex-row sm:items-center sm:justify-between"><span>Guided product tour · built for real learner progress</span><span className="text-[#f47945]">Learn · Build · Move forward</span></div><div className="mt-4 grid gap-2 px-3 pt-3 sm:grid-cols-3"><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">01</p><p className="mt-1 text-xs font-semibold text-white">Choose your direction</p></div><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">02</p><p className="mt-1 text-xs font-semibold text-white">Practise inside the portal</p></div><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">03</p><p className="mt-1 text-xs font-semibold text-white">Leave with evidence</p></div></div>
                 </div>
               </div>
             </div>
-            <div className="mt-10 grid border-t border-[#4d176e]/15 sm:grid-cols-4">
-              {[['01', 'Find your fit'], ['02', 'Learn by doing'], ['03', 'Get guidance'], ['04', 'Share the work']].map(([number, label]) => <div key={number} className="flex items-center gap-3 border-b border-[#4d176e]/10 py-3 text-xs font-bold text-[#4d176e] last:border-b-0 sm:border-b-0 sm:border-r sm:px-4 sm:first:pl-0 sm:last:border-r-0"><span className="text-[10px] font-black text-[#f47945]">{number}</span><span>{label}</span></div>)}
+            <div className="mt-10 grid gap-4 sm:grid-cols-4">
+              {[['01', 'Find your fit'], ['02', 'Learn by doing'], ['03', 'Get guidance'], ['04', 'Share the work']].map(([number, label]) => <div key={number} className="flex items-center gap-3 py-3 text-xs font-bold text-[#4d176e] sm:px-0"><span className="text-[10px] font-black text-[#f47945]">{number}</span><span>{label}</span></div>)}
             </div>
           </div>
         </section>
 
-        <section className="border-t-2 border-[#f47945]/70 bg-[#fffdfb] px-5 py-13 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
+        <section className="bg-[#fffdfb] px-5 py-13 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
           <div className="mx-auto grid max-w-[1440px] items-center gap-9 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">
-            <div className="relative pl-8 pt-8 sm:pl-14 sm:pt-10">
-              <div className="absolute left-0 top-0 h-24 w-24 border-l border-t border-[#f47945] sm:h-28 sm:w-28" />
+            <div>
               <Image src={COLLABORATION_IMAGE} alt="LEA learners collaborating over a digital project" width={1200} height={760} sizes="(min-width: 1024px) 58vw, 100vw" className="aspect-[1.58] w-full object-cover object-center" />
             </div>
-            <blockquote className="relative max-w-[390px] lg:pb-7"><span className="block text-7xl font-black leading-[0.6] text-[#f47945]">&ldquo;</span><p className="mt-5 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
+            <blockquote className="max-w-[390px] lg:pb-7"><p className="mt-0 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
           </div>
         </section>
 
-        <section className="relative overflow-hidden border-t border-[#f47945]/55 bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
-          <div className="pointer-events-none absolute left-[17%] top-7 hidden text-[7rem] font-black leading-none text-[#eee7f2] lg:block">03</div>
-          <div className="pointer-events-none absolute bottom-9 right-[15%] h-24 w-52 rotate-[7deg] rounded-[50%] border border-[#f47945]/60" />
+        <section className="bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
             <div>
               <h2 className="mt-4 max-w-[590px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">The work matters.</span> <span className="text-[#4d176e]">So does the person doing it.</span></h2>
               <p className="mt-5 max-w-[620px] text-sm leading-7 text-[#6e6072] sm:text-base">Learning is more durable when someone can challenge your thinking, celebrate the progress, and help you connect a project to the direction you are building toward.</p>
-              <div className="mt-9 grid gap-5 sm:grid-cols-3">{support.map(([number, title, text]) => <article key={number} className="border-t border-[#4d176e] pt-3"><div className="text-[10px] font-black text-[#f47945]">{number}</div><h3 className="mt-3 text-base font-semibold leading-tight text-[#151116]">{title}</h3><p className="mt-3 text-xs leading-6 text-[#6e6072]">{text}</p></article>)}</div>
+              <div className="mt-9 grid gap-5 sm:grid-cols-3">{support.map(([number, title, text]) => <article key={number} className="pt-3"><div className="text-[10px] font-black text-[#f47945]">{number}</div><h3 className="mt-3 text-base font-semibold leading-tight text-[#151116]">{title}</h3><p className="mt-3 text-xs leading-6 text-[#6e6072]">{text}</p></article>)}</div>
             </div>
             <div className="relative lg:pt-2"><div className="mx-auto max-w-[470px] overflow-hidden bg-[#f4dfd9]"><Image src={MENTOR_IMAGE} alt="Mentor supporting a learner at a workstation" width={900} height={1024} sizes="(min-width: 1024px) 36vw, 100vw" className="aspect-[0.88] h-full w-full object-cover object-center" /><div className="bg-[#1f0d2e] px-5 py-4 text-white"><div className="mt-1 text-base font-semibold">Feedback that moves work forward.</div></div></div></div>
           </div>
         </section>
 
-        <section id="community" className="relative scroll-mt-20 overflow-hidden border-t border-[#f47945]/35 bg-[#f6eef9] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
-          <div className="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full border border-[#4d176e]/15" />
+        <section id="community" className="scroll-mt-20 bg-[#f6eef9] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="relative mx-auto grid max-w-[1440px] items-center gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-24">
-            <div className="relative pt-8 sm:pt-10"><div className="absolute left-0 top-0 h-20 w-20 border-l border-t border-[#f47945]" /><Image src={COMMUNITY_IMAGE} alt="Young professionals connecting after a LEA community event" width={1400} height={1000} sizes="(min-width: 1024px) 55vw, 100vw" className="aspect-[1.4] w-full object-cover object-center [clip-path:polygon(0_0,100%_0,100%_82%,82%_100%,0_88%)]" /></div>
-            <div className="max-w-[520px]"><h2 className="mt-4 text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">A place to learn from other people in</span> <span className="text-[#f47945]">motion.</span></h2><p className="mt-5 max-w-[480px] text-sm leading-7 text-[#6e6072] sm:text-base">The LEA community is for sharing questions, meeting collaborators, seeing what peers are building, and staying connected to a wider conversation about digital work.</p><div className="mt-6 flex flex-wrap gap-2">{["Peer exchange", "Guest sessions", "Studio events", "Open resources"].map((label) => <span key={label} className="border border-[#cdb7d5] bg-white/30 px-3 py-2 text-[10px] font-bold text-[#5c4566]">{label}</span>)}</div><Link href="/register" className="mt-6 inline-flex items-center gap-2 border-b border-[#4d176e] pb-2 text-xs font-black text-[#4d176e]">Ask about the LEA community <ExternalLink className="h-3.5 w-3.5" /></Link></div>
+            <div className="relative pt-8 sm:pt-10"><div className="absolute left-0 top-0 h-20 w-20 border-l border-t border-[#f47945]" /><Image src={COMMUNITY_IMAGE} alt="African learners sharing a collaborative learning space" width={1400} height={1000} sizes="(min-width: 1024px) 55vw, 100vw" className="aspect-[1.4] w-full object-cover object-center [clip-path:polygon(0_0,100%_0,100%_82%,82%_100%,0_88%)]" /></div>
+            <div className="max-w-[520px]"><h2 className="mt-4 text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">A place to learn from other people in</span> <span className="text-[#f47945]">motion.</span></h2><p className="mt-5 max-w-[480px] text-sm leading-7 text-[#6e6072] sm:text-base">The LEA community is for sharing questions, meeting collaborators, seeing what peers are building, and staying connected to a wider conversation about digital work.</p><div className="mt-6 flex flex-wrap gap-2">{["Peer exchange", "Guest sessions", "Studio events", "Open resources"].map((label) => <span key={label} className="border border-[#cdb7d5] bg-white/30 px-3 py-2 text-[10px] font-bold text-[#5c4566]">{label}</span>)}</div><Link href="/register" className="mt-6 inline-flex items-center gap-2 text-xs font-black text-[#4d176e]">Ask about the LEA community <ExternalLink className="h-3.5 w-3.5" /></Link></div>
           </div>
         </section>
 
-        <section id="questions" className="relative scroll-mt-20 border-t border-[#f47945]/60 bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
-          <div className="pointer-events-none absolute right-[16%] top-16 hidden h-20 w-20 border-r border-t border-[#f47945] lg:block" />
+        <section id="questions" className="scroll-mt-20 bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[0.76fr_1.24fr] lg:gap-16">
             <div className="max-w-[330px]">
               <h2 className="mt-4 text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.96] tracking-[-0.055em] text-[#151116]">Questions are part of choosing well.</h2>
               <p className="mt-5 text-sm leading-7 text-[#6e6072]">Here are a few practical starting points. If your question is more personal, the admissions team can help you think it through.</p>
               <Link href="/register" className="mt-6 inline-flex items-center gap-3 rounded-full border border-[#4d176e] px-5 py-3 text-xs font-bold text-[#151116] transition hover:bg-[#1f0d2e] hover:text-white">Speak to admissions <ArrowRight className="h-3.5 w-3.5" /></Link>
             </div>
-            <div className="relative pt-2"><div className="pointer-events-none absolute -right-1 -top-1 h-16 w-16 border-r border-t border-[#f47945]" /><div className="border-t border-[#d9cfdc]">{faqs.map(([question, answer]) => <details key={question} className="group border-b border-[#d9cfdc] py-4 sm:py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 pr-4 text-sm font-semibold tracking-[-0.02em] text-[#151116] marker:hidden sm:text-base"><span>{question}</span><ChevronDown className="h-4 w-4 shrink-0 text-[#6e6072] transition group-open:rotate-180" /></summary><p className="max-w-2xl pt-4 text-sm leading-7 text-[#6e6072]">{answer}</p></details>)}</div></div>
+                          <div className="pt-2"><div className="space-y-1">{faqs.map(([question, answer]) => <details key={question} className="group py-4 sm:py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 pr-4 text-sm font-semibold tracking-[-0.02em] text-[#151116] marker:hidden sm:text-base"><span>{question}</span><ChevronDown className="h-4 w-4 shrink-0 text-[#6e6072] transition group-open:rotate-180" /></summary><p className="max-w-2xl pt-4 text-sm leading-7 text-[#6e6072]">{answer}</p></details>)}</div></div>
           </div>
         </section>
 
         </main>
 
-        <footer className="border-t border-white/10 bg-[#1f0d2e] px-5 py-8 text-white sm:px-10 lg:px-[7vw] lg:py-9">
+        <footer className="bg-[#1f0d2e] px-5 py-8 text-white sm:px-10 lg:px-[7vw] lg:py-9">
           <div className="mx-auto max-w-[1440px]">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -217,7 +208,7 @@ export default function LandingPage() {
               </nav>
               <Link className="text-xs text-[#d7c6df] transition hover:text-[#f47945]" href="mailto:hello@lealabs.africa">hello@lealabs.africa</Link>
             </div>
-            <div className="mt-6 flex flex-col gap-2 border-t border-white/10 pt-4 text-[11px] text-[#bfa9c8] sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-6 flex flex-col gap-2 pt-4 text-[11px] text-[#bfa9c8] sm:flex-row sm:items-center sm:justify-between">
               <span>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</span>
               <span>Applewood Adams, 13th Floor</span>
             </div>
