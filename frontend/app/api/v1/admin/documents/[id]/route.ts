@@ -27,6 +27,6 @@ export async function DELETE(
     return new Response(null, { status: 204 });
   } catch (error) {
     console.error("[admin-documents] delete failed", error);
-    return jsonError("The document could not be deleted from the local server.", 500);
+    return jsonError("The document could not be deleted from Firebase Storage.", 500);
   }
 }

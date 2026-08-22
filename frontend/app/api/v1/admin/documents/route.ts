@@ -46,7 +46,7 @@ type StoredDocumentRecord = {
   contentType: string;
   sizeBytes: number;
   storagePath: string;
-  storageBackend: "local-filesystem";
+  storageBackend: "firebase-storage";
   scope: "administrator";
   createdBy: string;
   created_at: string;
@@ -110,7 +110,7 @@ function serializeDocument(id: string, data: Record<string, unknown>) {
     contentType: stringValue(data.contentType || data.mimeType) || "application/octet-stream",
     sizeBytes: Number(data.sizeBytes ?? data.fileSize ?? 0),
     storagePath: stringValue(data.storagePath),
-    storageBackend: "local-filesystem" as const,
+    storageBackend: "firebase-storage" as const,
     scope: "administrator" as const,
     createdBy: stringValue(data.createdBy || data.uploadedBy),
     created_at: createdAt,
@@ -135,7 +135,7 @@ export async function GET(req: Request) {
       .map((document) => serializeDocument(document.id, document.data() as Record<string, unknown>))
       .sort((left, right) => right.created_at.localeCompare(left.created_at));
 
-    return jsonOk({ data, meta: { total: data.length, storage_backend: "local-filesystem" } });
+    return jsonOk({ data, meta: { total: data.length, storage_backend: "firebase-storage" } });
   } catch (error) {
     console.error("[admin-documents] list failed", error);
     return jsonError("Unable to load the document library.", 500);
@@ -206,6 +206,7 @@ export async function POST(req: Request) {
       documentId: documentRef.id,
       originalName: fileValue.name,
       bytes: new Uint8Array(await fileValue.arrayBuffer()),
+      contentType: fileValue.type || "application/octet-stream",
       folderSegment,
     });
 
@@ -224,7 +225,7 @@ export async function POST(req: Request) {
       contentType: fileValue.type || "application/octet-stream",
       sizeBytes: fileValue.size,
       storagePath,
-      storageBackend: "local-filesystem",
+      storageBackend: "firebase-storage",
       scope: "administrator",
       createdBy: auth.user.id,
       created_at: createdAt,
@@ -236,6 +237,6 @@ export async function POST(req: Request) {
   } catch (error) {
     if (storagePath) await deleteAdminDocument(storagePath).catch(() => undefined);
     console.error("[admin-documents] upload failed", error);
-    return jsonError("The document could not be stored on the local server. Check the server folder permissions and try again.", 500);
+    return jsonError("The document could not be stored in Firebase Storage. Check the Firebase Storage configuration and try again.", 500);
   }
 }

@@ -22,7 +22,7 @@ LEA Labs is a modular, multi-tenant-ready SaaS platform with a decoupled archite
 - **Frontend**: Next.js 15 App Router, TypeScript strict, Tailwind + shadcn/ui design system. Server Components are the default; Client Components are used only for interactivity (forms, tables, charts, editor).
 - **Backend**: Laravel 12 in API-only mode. Sanctum issues personal-access bearer tokens; `spatie/laravel-permission` provides roles and a granular, expandable permission registry.
 - **Communication**: typed REST JSON. The frontend never talks to the database — every screen consumes an API resource.
-- **Storage**: Cloudflare R2 via S3-compatible driver (Laravel `s3` driver configured with R2 endpoints), so swapping to AWS S3 is a config change only.
+- **Storage**: Administrator-uploaded documents are stored in Firebase Storage under organized `admin-documents/{administrator}/{destination}/...` paths, with searchable metadata in Firestore. The Laravel backend's existing R2/S3 disk remains available for legacy/general media until those flows are migrated.
 
 ## 2. Module layout (frontend)
 
@@ -139,7 +139,7 @@ Key conventions: UUID primary keys on business entities, `bigint` identities on 
 
 - Server Components + streaming; client islands only where needed
 - Route-level code splitting via Next.js dynamic imports (charts, editors, QR)
-- `next/image` optimization; R2/S3 public URLs for media
+- `next/image` optimization; Firebase Storage download routes for private administrator documents and R2/S3 URLs for legacy/general media
 - Paginated APIs, memoized selectors, React Query caching & dedup
 - Database indexes on all FK + frequently-filtered columns; eager loading to avoid N+1
 
@@ -147,7 +147,7 @@ Key conventions: UUID primary keys on business entities, `bigint` identities on 
 
 - **Frontend → Vercel**: zero-config. Env: `NEXT_PUBLIC_API_URL`. Optional rewrites proxy `/api/*` to the backend.
 - **Backend → Railway / Forge / VPS**: `php artisan migrate --force`, scheduler + queue workers for notifications and exports.
-- **Storage**: R2 bucket + public URL mapping; S3-compatible so AWS S3 is a driver swap.
+- **Storage**: Firebase Storage must be configured with `FIREBASE_STORAGE_BUCKET` and Firebase Admin credentials in Vercel. Private administrator documents are downloaded through authenticated Next.js routes; no document bytes are written to the local filesystem.
 - **CI guardrails**: `tsc --noEmit`, `eslint`, `next build` must pass with zero errors/warnings before deploy.
 
 ## 11. Future-proofing

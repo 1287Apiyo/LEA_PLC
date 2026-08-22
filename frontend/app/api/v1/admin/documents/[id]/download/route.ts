@@ -37,7 +37,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("[admin-documents] local download failed", error);
-    return jsonError("The document file is missing from the local server.", 404);
+    console.error("[admin-documents] Firebase Storage download failed", error);
+    return jsonError("The document file is missing from Firebase Storage.", 404);
   }
 }

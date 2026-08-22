@@ -280,7 +280,7 @@ export function DocumentLibrary() {
           <p className="text-sm font-medium text-primary">Admin workspace</p>
           <h1 className="text-2xl font-semibold tracking-tight">Organized document library</h1>
           <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
-            Upload course materials into the correct course folder, or store official documents under LEA Labs and LEA Afritech. Files remain private on the local application server; Firestore stores the searchable metadata.
+            Upload course materials into the correct course folder, or store official documents under LEA Labs and LEA Afritech. Files are stored privately in Firebase Storage; Firestore stores the searchable metadata.
           </p>
         </div>
         <Button variant="outline" onClick={() => { void documentsQuery.refetch(); void coursesQuery.refetch(); }} disabled={documentsQuery.isFetching || coursesQuery.isFetching}>
