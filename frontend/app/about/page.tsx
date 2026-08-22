@@ -3,7 +3,7 @@ import { ArrowRight, Compass, GraduationCap, Handshake, Hammer, Leaf, Lightbulb,
 import { LandingNav } from "@/components/landing/landing-nav";
 import { LandingFooter } from "@/components/landing/landing-footer";
 
-const COMMUNITY_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-community-launch_f1ae296d.jpg";
+const ABOUT_HERO_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-community-launch_f1ae296d.jpg";
 const MENTOR_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-mentor-support_9d78971d.jpg";
 
 const values = [
@@ -26,7 +26,7 @@ const growthStages = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#fffdfb] text-[#17131a] selection:bg-[#f47945]/25">
+    <div className="lea-motion-page min-h-screen bg-[#fffdfb] text-[#17131a] selection:bg-[#f47945]/25">
       <LandingNav />
 
       <main>
@@ -35,14 +35,14 @@ export default function AboutPage() {
             <div className="grid items-stretch gap-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-12">
               <div className="flex flex-col justify-center py-4 lg:py-8">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#f47945]">About LEA Labs</p>
-                <h1 className="mt-5 max-w-[660px] text-[clamp(2.25rem,4.3vw,4.6rem)] font-medium leading-[0.92] tracking-[-0.07em] text-white">A learning ecosystem built for <span className="text-[#f47945]">forward motion.</span></h1>
+                <h1 className="mt-5 max-w-[660px] text-[clamp(2.15rem,3.8vw,4.2rem)] font-medium leading-[0.92] tracking-[-0.07em] text-white">A learning ecosystem built for <span className="text-[#f47945]">forward motion.</span></h1>
                 <p className="mt-6 max-w-[560px] text-base leading-7 text-white/70">LEA Labs connects practical learning, human guidance, and opportunity so people can build the skills and confidence to move into the digital economy.</p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link href="#story" className="inline-flex items-center gap-3 bg-[#f47945] px-5 py-3 text-xs font-medium text-[#351039] transition hover:bg-[#1f0d2e] hover:text-white">Read our story <ArrowRight className="h-4 w-4" /></Link>
                   <Link href="#mission" className="inline-flex items-center border-b border-white/45 pb-1 text-xs font-medium text-white transition hover:border-[#f47945] hover:text-[#f47945]">Our mission <span className="ml-2">↗</span></Link>
                 </div>
               </div>
-              <div className="relative min-h-[320px] overflow-hidden bg-[#1f0d2e] sm:min-h-[390px]"><img src={COMMUNITY_IMAGE} alt="Learners connecting at LEA Labs" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-tr from-[#1f0d2e]/75 via-[#1f0d2e]/15 to-[#f47945]/25" /><div className="absolute bottom-5 left-5 border border-white/40 bg-[#1f0d2e]/40 px-4 py-3 text-white backdrop-blur-sm"><p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#f7c2aa]">Learn. Evolve. Advance.</p><p className="mt-1 text-sm">Progress starts with a place to practise.</p></div></div>
+              <div className="relative min-h-[320px] overflow-hidden bg-[#1f0d2e] sm:min-h-[390px]"><img src={ABOUT_HERO_IMAGE} alt="A LEA learner in a contemporary learning studio" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-tr from-[#1f0d2e]/75 via-[#1f0d2e]/15 to-[#f47945]/25" /><div className="absolute bottom-5 left-5 border border-white/40 bg-[#1f0d2e]/40 px-4 py-3 text-white backdrop-blur-sm"><p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#f7c2aa]">Learn. Evolve. Advance.</p><p className="mt-1 text-sm">Progress starts with a place to practise.</p></div></div>
             </div>
           </div>
         </section>

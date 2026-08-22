@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
+
 import { APP_NAME } from "@/lib/constants";
 import "./globals.css";
 

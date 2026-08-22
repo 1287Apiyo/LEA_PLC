@@ -11,12 +11,13 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { LandingNav } from "@/components/landing/landing-nav";
+import { TestimonialsRotator } from "@/components/landing/testimonials-rotator";
 import { APP_NAME } from "@/lib/constants";
 import { PROGRAMMES as programmes } from "@/lib/programmes";
 
-const HERO_IMAGE = "/lea-hero-purple-orange.png";
+const HERO_IMAGE = "/lea-home-hero-teen-v2.png";
 const COLLABORATION_IMAGE = "/lea-landing-programmes.png";
-const MENTOR_IMAGE = "/lea-landing-support.png";
+const MENTOR_IMAGE = "/lea-community-dashboard.png";
 const COMMUNITY_IMAGE = "/lea-home-community.png";
 
 const PROGRAMME_CARD_IMAGES: Record<string, string> = {
@@ -53,35 +54,28 @@ export default function LandingPage() {
       <LandingNav />
 
       <main>
-        {/* HERO — clear message, grounded alignment, and a full-height learner image */}
-        <section className="relative overflow-hidden bg-[#1f0d2e]">
-          <div className="relative mx-auto grid min-h-[620px] max-w-[1600px] lg:min-h-[680px] lg:grid-cols-2">
-            <div className="relative z-10 flex items-center px-5 py-16 sm:px-10 sm:py-20 lg:px-0 lg:py-24">
-              <div className="w-full max-w-[690px] lg:ml-[4vw] lg:mr-8">
-                <h1 className="max-w-[680px] text-[clamp(2.6rem,4.35vw,4.8rem)] font-semibold leading-[0.93] tracking-[-0.072em] text-[#fffdfb]">
-                  <span>Build the skills</span><br />
-                  <span>your next role will</span><br />
-                  <span className="text-[#f47945]">ask for.</span>
-                </h1>
-                <p className="mt-7 max-w-[510px] text-sm leading-6 text-white/76 sm:text-base sm:leading-7">LEA Labs is a practical learning space for ambitious people who want to move with confidence into the digital economy.</p>
-                <p className="mt-3 max-w-[470px] text-xs font-medium leading-6 text-[#f6eef9]/90 sm:text-sm">Learn by building, grow with guidance, and leave with work you can show.</p>
-                <div className="mt-9 flex flex-wrap items-center gap-4">
-                  <Link href="#programmes" className="inline-flex h-11 items-center gap-3 rounded-md bg-[#f47945] px-5 text-xs font-semibold text-[#351039] transition hover:bg-[#e96836] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f0d2e]">Explore programmes <ArrowDownRight className="h-4 w-4" /></Link>
-                  <Link href="#programmes" className="inline-flex items-center gap-1 text-xs font-semibold text-white transition hover:text-[#f47945]">Find your path <span aria-hidden>↗</span></Link>
-                </div>
-              </div>
-            </div>
-            <div className="relative min-h-[420px] overflow-hidden bg-[#2d1738] sm:min-h-[520px] lg:min-h-0">
-              <Image src={HERO_IMAGE} alt="LEA learner moving forward with a laptop in a contemporary learning studio" fill priority sizes="(min-width: 1024px) 54vw, 100vw" className="object-cover object-[58%_center]" />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(31,13,46,0.80)_0%,rgba(31,13,46,0.18)_32%,rgba(21,17,22,0.04)_100%)]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(244,121,69,0.30),transparent_31%),linear-gradient(180deg,rgba(46,71,104,0.08),rgba(21,17,22,0.28))]" />
-              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between gap-4 bg-[#1f0d2e]/55 px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.17em] text-white/75 backdrop-blur-sm sm:px-8">
-                <span>Learning by doing</span>
-                <span className="text-[#f8b49a]">LEA Labs</span>
+        {/* HERO — LEA's editorial learning still-life */}
+        <section className="relative h-[520px] min-h-[520px] overflow-hidden bg-[#12091a] text-white sm:h-auto sm:min-h-[680px] lg:min-h-[720px]">
+          <Image src={HERO_IMAGE} alt="An African learner working on a laptop in a LEA learning environment" fill priority quality={100} sizes="100vw" unoptimized className="scale-[1.22] object-cover object-[78%_center] origin-[78%_52%] sm:scale-100 sm:object-[72%_center] lg:object-[62%_center]" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,9,26,0.9)_0%,rgba(18,9,26,0.66)_34%,rgba(18,9,26,0.08)_72%,rgba(18,9,26,0.18)_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(18,9,26,0.72)_0%,transparent_45%),radial-gradient(circle_at_55%_60%,rgba(244,121,69,0.14),transparent_30%)]" />
+          <div className="relative flex h-full min-h-0 items-end justify-start px-5 pb-32 sm:h-auto sm:min-h-[680px] sm:px-10 sm:pb-44 lg:min-h-[720px] lg:px-[7vw] lg:pb-48">
+            <div className="mx-auto mr-auto w-full max-w-[1440px]">
+              <div className="w-full max-w-[900px]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#f7c2aa]">LEA Labs · learn by doing</p>
+              <h1 className="mt-5 max-w-[980px] text-[clamp(2.7rem,6vw,6rem)] font-medium leading-[0.9] tracking-[-0.075em] text-[#fffdfb] lg:whitespace-nowrap">
+                Open a world <span className="block text-[#f47945]">of possibility.</span>
+              </h1>
+              <p className="mt-6 max-w-[560px] text-sm leading-7 text-white/80 sm:text-base">LEA helps learners across Africa turn curiosity into practical digital confidence through guided programmes, hands-on projects, and support from people who understand the journey. <span className="hidden sm:inline">Start with the foundations, practise on real challenges, and build work you can carry into your next opportunity.</span></p>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <Link href="#programmes" className="inline-flex h-11 items-center gap-3 rounded-full border border-[#f47945] bg-[#f47945] px-6 text-xs font-bold text-[#351039] transition hover:border-white hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#12091a]">Find your starting point <ArrowDownRight className="h-4 w-4" /></Link>
+                <Link href="#programmes" className="inline-flex items-center gap-2 border-b border-white/45 pb-1 text-xs font-bold text-white transition hover:border-[#f47945] hover:text-[#f47945]">Explore programmes <span aria-hidden>↗</span></Link>
               </div>
             </div>
           </div>
+        </div>
         </section>
+
 
         <section id="programmes" className="relative scroll-mt-20 overflow-hidden bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="relative mx-auto max-w-[1440px]">
@@ -100,11 +94,12 @@ export default function LandingPage() {
                 <Link href="/register" className="mt-5 inline-flex h-10 items-center gap-4 rounded-full bg-white px-5 text-xs font-semibold text-[#26142f] transition hover:-translate-y-0.5 hover:bg-[#fff7ef] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f0d2e]">Start the conversation <ArrowRight className="h-4 w-4" /></Link>
               </div>
             </div>
-            <div className="space-y-3 lg:pt-0">
+            <div className="relative space-y-5 lg:pt-0">
+              <div aria-hidden="true" className="absolute bottom-5 left-[23px] top-5 w-px bg-[#f47945]/55 sm:left-[24px]" />
               {steps.map(([number, title, text]) => (
-                <article key={number} className="grid grid-cols-[46px_1fr] gap-3 sm:grid-cols-[50px_1fr] sm:gap-3">
-                  <div className="flex justify-center pt-1"><span className="text-[10px] font-semibold text-white sm:text-xs">{number}</span></div>
-                  <div className="pb-0"><h3 className="text-base font-semibold tracking-[-0.02em] text-[#f6d9c8] sm:text-lg">{title}</h3><p className="mt-1 max-w-[450px] text-[11px] leading-5 text-[#ead9ed] sm:text-sm">{text}</p></div>
+                <article key={number} className="relative grid grid-cols-[46px_1fr] gap-3 sm:grid-cols-[50px_1fr] sm:gap-3">
+                  <div className="relative z-10 flex justify-center pt-0.5"><span className="flex h-6 w-6 items-center justify-center rounded-full border border-[#f47945] bg-[#1f0d2e] text-[9px] font-bold text-[#f47945] sm:h-7 sm:w-7 sm:text-[10px]">{number}</span></div>
+                  <div className="pb-1"><h3 className="text-base font-semibold tracking-[-0.02em] text-[#f47945] sm:text-lg">{title}</h3><p className="mt-1 max-w-[450px] text-[11px] leading-5 text-[#ead9ed] sm:text-sm">{text}</p></div>
                 </article>
               ))}
             </div>
@@ -157,18 +152,19 @@ export default function LandingPage() {
             <div>
               <Image src={COLLABORATION_IMAGE} alt="LEA learners collaborating over a digital project" width={1200} height={760} sizes="(min-width: 1024px) 58vw, 100vw" className="aspect-[1.58] w-full object-cover object-center" />
             </div>
-            <blockquote className="max-w-[390px] lg:pb-7"><p className="mt-0 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span></p></blockquote>
+            <blockquote className="max-w-[390px] lg:pb-7"><p className="mt-0 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span aria-hidden className="text-[#f47945]">“</span><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span><span aria-hidden className="text-[#f47945]">”</span></p></blockquote>
           </div>
         </section>
 
-        <section className="bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
-          <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <div aria-hidden="true" className="relative z-10 h-8 bg-[#1f0d2e]"><div className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-l-[30px] border-r-[30px] border-t-[30px] border-l-transparent border-r-transparent border-t-[#fffdfb]" /></div>
+
+        <section className="bg-[#1f0d2e] px-5 pb-8 pt-16 text-white sm:px-10 sm:pb-10 sm:pt-18 lg:px-[7vw] lg:pb-12 lg:pt-22">
+          <div className="relative mx-auto grid max-w-[1440px] items-stretch gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
             <div>
-              <h2 className="mt-4 max-w-[590px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">The work matters.</span> <span className="text-[#4d176e]">So does the person doing it.</span></h2>
-              <p className="mt-5 max-w-[620px] text-sm leading-7 text-[#6e6072] sm:text-base">Learning is more durable when someone can challenge your thinking, celebrate the progress, and help you connect a project to the direction you are building toward.</p>
-              <div className="mt-9 grid gap-5 sm:grid-cols-3">{support.map(([number, title, text]) => <article key={number} className="pt-3"><div className="text-[10px] font-black text-[#f47945]">{number}</div><h3 className="mt-3 text-base font-semibold leading-tight text-[#151116]">{title}</h3><p className="mt-3 text-xs leading-6 text-[#6e6072]">{text}</p></article>)}</div>
+              <h2 className="mt-4 max-w-[590px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-white"><span className="text-white">The work matters.</span> <span className="text-[#f47945]">So does the person doing it.</span></h2>
+              <p className="mt-5 max-w-[620px] text-sm leading-7 text-[#f4e8f5] sm:text-base">Learning is more durable when someone can challenge your thinking, celebrate the progress, and help you connect a project to the direction you are building toward.</p>
             </div>
-            <div className="relative lg:pt-2"><div className="mx-auto max-w-[470px] overflow-hidden bg-[#f4dfd9]"><Image src={MENTOR_IMAGE} alt="Mentor supporting a learner at a workstation" width={900} height={1024} sizes="(min-width: 1024px) 36vw, 100vw" className="aspect-[0.88] h-full w-full object-cover object-center" /><div className="bg-[#1f0d2e] px-5 py-4 text-white"><div className="mt-1 text-base font-semibold">Feedback that moves work forward.</div></div></div></div>
+            <div className="relative flex items-start justify-start lg:justify-end lg:pt-0"><TestimonialsRotator /></div>
           </div>
         </section>
 
