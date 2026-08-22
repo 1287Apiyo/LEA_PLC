@@ -1,9 +1,11 @@
-import path from "path";
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Monorepo: LEASYSTEM is the file-tracing root (two lockfiles exist).
-  outputFileTracingRoot: path.join(__dirname, "../"),
+  // Firebase App Hosting expects the standalone server bundle and route manifest.
+  output: "standalone",
+  // App Hosting builds from frontend/, so keep the standalone bundle rooted here.
+  outputFileTracingRoot: __dirname,
   serverExternalPackages: ["pdfkit"],
   images: {
     remotePatterns: [
