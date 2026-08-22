@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 const DEFAULT_KEY_PATH = path.join(process.cwd(), "..", "backend", "storage", "firebase", "service-account.json");
+const DEFAULT_PROJECT_ID = "lea-labs-f9e16";
 
 type ServiceAccount = { project_id?: string; [key: string]: unknown };
 
@@ -37,7 +38,12 @@ export function getFirebaseApp(): App {
         process.env.FIREBASE_STORAGE_BUCKET?.trim() ||
         config.storageBucket ||
         (serviceAccount?.project_id ? `${serviceAccount.project_id}.firebasestorage.app` : undefined),
-      projectId: config.projectId || serviceAccount?.project_id,
+      projectId:
+        config.projectId ||
+        serviceAccount?.project_id ||
+        process.env.GOOGLE_CLOUD_PROJECT?.trim() ||
+        process.env.GCLOUD_PROJECT?.trim() ||
+        DEFAULT_PROJECT_ID,
     });
 
     void hasServiceAccount;

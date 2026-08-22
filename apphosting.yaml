@@ -6,6 +6,10 @@ runConfig:
   memoryMiB: 1024
 
 env:
+  - variable: FIREBASE_CONFIG
+    value: '{"projectId":"lea-labs-f9e16","storageBucket":"lea-labs-f9e16.firebasestorage.app"}'
+    availability:
+      - RUNTIME
   - variable: FIREBASE_STORAGE_BUCKET
     value: lea-labs-f9e16.firebasestorage.app
     availability:
