@@ -1,0 +1,17 @@
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 1024
+
+env:
+  - variable: FIREBASE_STORAGE_BUCKET
+    value: lea-labs-f9e16.firebasestorage.app
+    availability:
+      - RUNTIME
+  - variable: NEXT_PUBLIC_API_URL
+    value: /api/v1
+    availability:
+      - BUILD
+      - RUNTIME

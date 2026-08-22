@@ -1,0 +1,8 @@
+{
+  "apphosting": [
+    {
+      "backendId": "lea-labs-web",
+      "rootDir": "frontend"
+    }
+  ]
+}
