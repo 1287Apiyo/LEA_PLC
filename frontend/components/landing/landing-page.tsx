@@ -17,12 +17,12 @@ import { PROGRAMMES as programmes } from "@/lib/programmes";
 const HERO_IMAGE = "/lea-hero-purple-orange.png";
 const COLLABORATION_IMAGE = "/lea-landing-programmes.png";
 const MENTOR_IMAGE = "/lea-landing-support.png";
-const COMMUNITY_IMAGE = "/lea-community-learners.jpeg";
+const COMMUNITY_IMAGE = "/lea-home-community.png";
 
 const PROGRAMME_CARD_IMAGES: Record<string, string> = {
-  "software-engineering": "/lea-card-software-human.png",
-  "applied-ai": "/lea-card-ai-human.png",
-  "basic-computer-knowledge": "/lea-card-computers-african.jpeg",
+  "software-engineering": "/lea-home-program-software.png",
+  "applied-ai": "/lea-home-program-ai.png",
+  "basic-computer-knowledge": "/lea-home-program-computers.png",
 };
 
 
