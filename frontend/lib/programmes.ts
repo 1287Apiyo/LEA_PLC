@@ -49,8 +49,8 @@ export const PROGRAMMES: Programme[] = [
     outcome: "Leave with a portfolio-ready project, a clearer technical vocabulary, and a repeatable way to keep building.",
     duration: "16 weeks",
     format: "Guided practice, mentor feedback, and project work",
-    price: "KES 45,000",
-    priceNote: "Full programme tuition covers the live course catalogue, guided projects, mentor feedback, and the final capstone review.",
+    price: "KES 40,000",
+    priceNote: "Foundation Track fees cover the guided foundations pathway, practical projects, mentor feedback, and the first capstone review.",
     catalogueKeys: ["prg-coding", "coding", "coding-programme"],
     curriculum: [
       { number: "01", title: "Digital foundations", weeks: "Weeks 1–2", summary: "Start with how the web works, the tools engineers use, and a reliable workflow for learning by doing.", topics: ["How the web works", "Developer tools", "Git & GitHub", "Learning workflow"] },
@@ -113,7 +113,7 @@ export const PROGRAMMES: Programme[] = [
   {
     slug: "basic-computer-knowledge",
     number: "03",
-    title: "Basic Computer Knowledge",
+    title: "Digital Foundations",
     short: "Build everyday confidence with devices, files, the internet, and the digital habits that make learning easier.",
     audience: "For beginners, children, and families taking their first steps with computers.",
     bullets: ["Digital confidence", "Beginner friendly", "Kids welcome"],
@@ -125,7 +125,7 @@ export const PROGRAMMES: Programme[] = [
     outcome: "Leave with practical digital confidence, safer online habits, and a foundation for your next learning step.",
     duration: "8 weeks",
     format: "Guided practice, simple projects, and supportive coaching",
-    price: "KES 18,000",
+    price: "KES 25,000",
     priceNote: "Full programme tuition covers all four modules, guided practice, beginner-friendly projects, and supportive coaching for the learner.",
     curriculum: [
       { number: "01", title: "Meet your computer", weeks: "Weeks 1–2", summary: "Learn the parts of a computer, how to use a mouse and keyboard, and how to work confidently with the desktop.", topics: ["Parts of a computer", "Mouse & keyboard", "Desktop basics", "Device care"] },

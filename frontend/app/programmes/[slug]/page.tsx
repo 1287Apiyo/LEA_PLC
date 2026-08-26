@@ -20,10 +20,18 @@ export async function generateMetadata({ params }: ProgrammePageProps) {
   };
 }
 
-const INTAKE_OPTIONS = [
+type IntakeOption = { title: string; mode: string; level?: string; duration?: string; price?: string };
+
+const INTAKE_OPTIONS: IntakeOption[] = [
   { title: "Full-time Hybrid", mode: "Online + in-person classes | Mon–Fri | 8am–5pm EAT" },
   { title: "Full-time Remote", mode: "100% online classes | Mon–Fri | 8am–5pm EAT" },
   { title: "Part-time Remote", mode: "100% online classes | Mon–Fri | 6pm–9pm EAT" },
+];
+
+const SOFTWARE_LEVEL_OPTIONS: IntakeOption[] = [
+  { level: "Beginner", title: "Foundation Track", mode: "A welcoming starting point for learners building their first confident software-development habits.", duration: "12 weeks", price: "KES 40,000" },
+  { level: "Intermediate", title: "Professional Builder", mode: "A structured route for learners ready to build complete products through focused practice and a 16-week project journey.", duration: "16 weeks", price: "KES 45,000" },
+  { level: "Advanced", title: "Advanced Product Engineer", mode: "A demanding, project-led pathway for learners ready to deepen their engineering judgement and ship stronger digital products.", duration: "16 weeks", price: "KES 50,000" },
 ];
 
 function curriculumExplanation(item: CurriculumItem, programmeSlug: string) {
@@ -45,6 +53,8 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
   const titleLead = titleWords[0];
   const titleRest = titleWords.slice(1).join(" ");
   const curriculumModuleCount = programme.curriculum.filter((item) => item.type !== "break").length;
+  const isSoftwareProgramme = programme.slug === "software-engineering";
+  const intakeOptions = isSoftwareProgramme ? SOFTWARE_LEVEL_OPTIONS : INTAKE_OPTIONS;
 
   return (
     <div className="min-h-screen bg-[#fffdfb] text-[#17131a] selection:bg-[#f47945]/25">
@@ -66,23 +76,24 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
           <div className="relative mx-auto max-w-[1440px]">
             <div className="mb-8 flex flex-col justify-between gap-4 border-y border-[#4d176e]/15 py-5 sm:flex-row sm:items-end">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.22em] text-[#f06d36]">Available learning formats</p>
-                <h2 className="mt-2 text-[clamp(1.45rem,2.4vw,2.35rem)] font-normal leading-[1] tracking-[-0.045em] text-[#151116]">Choose your <span className="text-[#4d176e]">learning rhythm.</span></h2>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-[#f06d36]">{isSoftwareProgramme ? "Software engineering pathways" : "Available learning formats"}</p>
+                <h2 className="mt-2 text-[clamp(1.45rem,2.4vw,2.35rem)] font-normal leading-[1] tracking-[-0.045em] text-[#151116]">{isSoftwareProgramme ? <>Choose your <span className="text-[#4d176e]">starting point.</span></> : <>Choose your <span className="text-[#4d176e]">learning rhythm.</span></>}</h2>
               </div>
-              <p className="max-w-[400px] text-base leading-7 text-[#6e6072]">One programme, three ways to make the work. Pick the rhythm that gives you the clearest space to learn, practise, and keep moving.</p>
+              <p className="max-w-[400px] text-base leading-7 text-[#6e6072]">{isSoftwareProgramme ? "Three progressive pathways make it easier to begin at the level that fits your experience, then keep building with practical project work." : "One programme, three ways to make the work. Pick the rhythm that gives you the clearest space to learn, practise, and keep moving."}</p>
             </div>
 
             <div className="grid gap-5 lg:grid-cols-3">
-              {INTAKE_OPTIONS.map((intake) => (
+              {intakeOptions.map((intake) => (
                 <article key={intake.title} className="group flex min-h-[350px] flex-col rounded-[18px] border border-dashed border-[#f47945]/55 bg-[#fff8f3] p-5 shadow-[0_10px_24px_rgba(77,23,110,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#f47945] hover:shadow-[0_16px_34px_rgba(77,23,110,0.12)] sm:p-6">
+                  {intake.level ? <p className="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#4d176e]">{intake.level}</p> : null}
                   <h3 className="mt-0 text-lg font-semibold tracking-[-0.03em] text-[#f06d36]">{intake.title}</h3>
                   <p className="mt-4 min-h-[72px] text-sm leading-6 text-[#4d176e]">{intake.mode}</p>
                   <div className="mt-5 grid gap-0 border-y border-dashed border-[#f47945]/45 text-sm">
                     <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 py-3"><span className="font-medium text-[#351039]">Starts</span><span className="font-bold text-[#4d176e]">August 31st, 2026</span></div>
-                    <div className="flex items-center justify-between gap-4 py-3"><span className="font-medium text-[#351039]">Duration</span><span className="font-bold text-[#4d176e]">{programme.duration}</span></div>
+                    <div className="flex items-center justify-between gap-4 py-3"><span className="font-medium text-[#351039]">Duration</span><span className="font-bold text-[#4d176e]">{intake.duration ?? programme.duration}</span></div>
                   </div>
                   <div className="mt-auto pt-5">
-                    <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 pb-4"><span className="font-medium text-[#351039]">Tuition</span><span className="text-xl font-bold tracking-[-0.03em] text-[#f06d36]">{programme.price}</span></div>
+                    <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 pb-4"><span className="font-medium text-[#351039]">Tuition</span><span className="text-xl font-bold tracking-[-0.03em] text-[#f06d36]">{intake.price ?? programme.price}</span></div>
                     <Link href="/register" className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#f47945] px-5 text-sm font-black text-[#351039] transition hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2">Apply <ArrowRight className="ml-2 h-4 w-4" /></Link>
                   </div>
                 </article>
