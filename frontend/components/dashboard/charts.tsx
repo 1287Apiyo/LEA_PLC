@@ -10,6 +10,8 @@ import {
   Cell,
   Line,
   LineChart,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -117,6 +119,36 @@ export function TrendAreaChart({ data, height = 260 }: TrendChartProps) {
 }
 
 /** Line chart — weekly attendance / progress. */
+interface DonutChartProps {
+  value: number;
+  height?: number;
+}
+
+/** Donut chart — overall learner course completion percentage. */
+export function CourseProgressDonut({ value, height = 170 }: DonutChartProps) {
+  const colors = useChartColors();
+  const progress = Math.max(0, Math.min(100, Math.round(value)));
+  const data = [
+    { label: "Complete", value: progress },
+    { label: "Remaining", value: Math.max(0, 100 - progress) },
+  ];
+
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <PieChart>
+        <Pie data={data} dataKey="value" nameKey="label" innerRadius={46} outerRadius={68} paddingAngle={3} stroke="none">
+          <Cell fill={colors.series[0]} />
+          <Cell fill={colors.grid} />
+        </Pie>
+        <Tooltip
+          contentStyle={tooltipStyle(colors)}
+          formatter={(entryValue, name) => [`${Number(entryValue ?? 0)}%`, String(name ?? "Progress")]}
+        />
+      </PieChart>
+    </ResponsiveContainer>
+  );
+}
+
 export function TrendLineChart({ data, height = 240 }: TrendChartProps) {
   const colors = useChartColors();
   return (
