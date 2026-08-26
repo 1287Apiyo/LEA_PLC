@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { GraduationCap, ShieldCheck, UserCog } from "lucide-react";
+import { GraduationCap, UserCog } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,7 @@ import { registerSchema, type RegisterFormValues } from "@/validation/auth";
 const ROLE_OPTIONS: { value: Role; label: string; description: string; icon: typeof GraduationCap }[] = [
   { value: "learner", label: "Learner", description: "I'm here to learn and grow", icon: GraduationCap },
   { value: "instructor", label: "Instructor", description: "I teach classes and grade work", icon: UserCog },
-  { value: "administrator", label: "Administrator", description: "I run the platform behind the scenes", icon: ShieldCheck },
+  
 ];
 
 export function RegisterForm() {
