@@ -9,6 +9,9 @@ import {
   Play,
   ChevronDown,
   ExternalLink,
+  Mail,
+  MapPin,
+  Phone,
 } from "lucide-react";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { TestimonialsRotator } from "@/components/landing/testimonials-rotator";
@@ -16,7 +19,6 @@ import { APP_NAME } from "@/lib/constants";
 import { PROGRAMMES as programmes } from "@/lib/programmes";
 
 const HERO_IMAGE = "/lea-home-hero-teen-v2.png";
-const COLLABORATION_IMAGE = "/lea-landing-programmes.png";
 const MENTOR_IMAGE = "/lea-community-dashboard.png";
 const COMMUNITY_IMAGE = "/lea-home-community.png";
 
@@ -41,12 +43,6 @@ const support = [
   ["03", "Direction after the room", "Career conversations keep the learning experience connected to your next opportunity."],
 ];
 
-const faqs = [
-  ["Who are LEA programmes designed for?", "LEA programmes are designed for ambitious learners at different starting points, from school-leavers building confidence to working professionals ready to move into digital work."],
-  ["Can I learn around an existing job or studies?", "Yes. Each pathway is designed around focused practice, clear milestones, and a rhythm that can fit alongside existing commitments."],
-  ["What kind of learning experience should I expect?", "Expect practical projects, guided support, feedback, and a community of people who are also building their next direction."],
-  ["How do I choose the right programme?", "Start with the kind of work you want to explore. The admissions team can help you compare pathways and choose a starting point that fits."],
-];
 
 export default function LandingPage() {
   return (
@@ -107,7 +103,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="site-tour" className="scroll-mt-20 bg-[#f6eef9] px-5 py-14 text-[#151116] sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
+        <section id="site-tour" className="scroll-mt-20 bg-white px-5 py-14 text-[#151116] sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
           <div className="relative mx-auto max-w-[1440px]">
             <div className="grid items-center gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
               <div className="max-w-[420px]">
@@ -148,14 +144,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="bg-[#fffdfb] px-5 py-13 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
-          <div className="mx-auto grid max-w-[1440px] items-center gap-9 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">
-            <div>
-              <Image src={COLLABORATION_IMAGE} alt="LEA learners collaborating over a digital project" width={1200} height={760} sizes="(min-width: 1024px) 58vw, 100vw" className="aspect-[1.58] w-full object-cover object-center" />
-            </div>
-            <blockquote className="max-w-[390px] lg:pb-7"><p className="mt-0 text-[clamp(1.55rem,2.4vw,2.35rem)] font-semibold leading-[1] tracking-[-0.045em] text-[#151116]"><span aria-hidden className="text-[#f47945]">“</span><span className="text-[#151116]">Good learning does not ask you to wait until you are ready.</span> <span className="text-[#4d176e]">It gives you a room to become ready.</span><span aria-hidden className="text-[#f47945]">”</span></p></blockquote>
-          </div>
-        </section>
 
         <div aria-hidden="true" className="relative z-10 h-8 bg-[#1f0d2e]"><div className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-l-[30px] border-r-[30px] border-t-[30px] border-l-transparent border-r-transparent border-t-[#fffdfb]" /></div>
 
@@ -176,38 +164,27 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="questions" className="scroll-mt-20 bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
-          <div className="relative mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-[0.76fr_1.24fr] lg:gap-16">
-            <div className="max-w-[330px]">
-              <h2 className="mt-4 text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.96] tracking-[-0.055em] text-[#151116]">Questions are part of choosing well.</h2>
-              <p className="mt-5 text-sm leading-7 text-[#6e6072]">Here are a few practical starting points. If your question is more personal, the admissions team can help you think it through.</p>
-              <Link href="/register" className="mt-6 inline-flex items-center gap-3 rounded-full border border-[#4d176e] px-5 py-3 text-xs font-bold text-[#151116] transition hover:bg-[#1f0d2e] hover:text-white">Speak to admissions <ArrowRight className="h-3.5 w-3.5" /></Link>
-            </div>
-                          <div className="pt-2"><div className="space-y-1">{faqs.map(([question, answer]) => <details key={question} className="group py-4 sm:py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 pr-4 text-sm font-semibold tracking-[-0.02em] text-[#151116] marker:hidden sm:text-base"><span>{question}</span><ChevronDown className="h-4 w-4 shrink-0 text-[#6e6072] transition group-open:rotate-180" /></summary><p className="max-w-2xl pt-4 text-sm leading-7 text-[#6e6072]">{answer}</p></details>)}</div></div>
-          </div>
-        </section>
 
         </main>
 
         <footer className="bg-[#1f0d2e] px-5 py-8 text-white sm:px-10 lg:px-[7vw] lg:py-9">
           <div className="mx-auto max-w-[1440px]">
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#f6eef9]">LEA Labs</p>
-                <p className="mt-2 max-w-[260px] text-xs leading-6 text-[#d7c6df]">Practical learning for digital work.</p>
+            <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex flex-col items-start gap-2 text-xs leading-5 text-[#d7c6df]">
+                <div className="inline-flex items-start gap-2"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f47945]" strokeWidth={2} aria-hidden="true" /><span>Applewood Adams, 13th Floor</span></div>
+                <a className="inline-flex items-center gap-2 transition hover:text-white" href="tel:0746821567"><Phone className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />0746821567</a>
+                <a className="inline-flex items-center gap-2 transition hover:text-white" href="mailto:leaorganizationke@gmail.com"><Mail className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />leaorganizationke@gmail.com</a>
               </div>
-              <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#f6eef9]">
-                <Link className="transition hover:text-[#f47945]" href="#programmes">Programmes</Link>
-                <Link className="transition hover:text-[#f47945]" href="/about">About</Link>
-                <Link className="transition hover:text-[#f47945]" href="/corporate">Corporate Training</Link>
-                <Link className="transition hover:text-[#f47945]" href="/login">Log in</Link>
-                <Link className="font-semibold text-[#f47945] transition hover:text-[#ff8f57]" href="/register">Get started</Link>
-              </nav>
-              <Link className="text-xs text-[#d7c6df] transition hover:text-[#f47945]" href="mailto:hello@lealabs.africa">hello@lealabs.africa</Link>
+              <div className="flex flex-col items-start gap-4">
+                <div className="text-left">
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#f6eef9]">LEA Labs</p>
+                  <p className="mt-2 text-xs leading-6 text-[#d7c6df]">Practical learning for digital work.</p>
+                </div>
+                <Link className="inline-flex items-center gap-2 self-start bg-[#f47945] px-5 py-3 text-xs font-semibold text-[#351039] transition hover:bg-white" href="/register">Get started <ArrowRight className="h-3.5 w-3.5" /></Link>
+              </div>
             </div>
-            <div className="mt-6 flex flex-col gap-2 pt-4 text-[11px] text-[#bfa9c8] sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-6 border-t border-white/10 pt-4 text-[11px] text-[#bfa9c8]">
               <span>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</span>
-              <span>Applewood Adams, 13th Floor</span>
             </div>
           </div>
         </footer>
