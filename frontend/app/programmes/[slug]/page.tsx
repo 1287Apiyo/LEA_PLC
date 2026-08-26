@@ -1,24 +1,11 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ChevronDown, Laptop, MessageCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { notFound } from "next/navigation";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { LandingFooter } from "@/components/landing/landing-footer";
-import { courseBelongsToProgramme, loadLiveCatalogueSafely, type LiveCatalogueCourse } from "@/lib/firebase/catalogue";
-import { getProgramme, PROGRAMMES } from "@/lib/programmes";
+import { getProgramme, PROGRAMMES, type CurriculumItem } from "@/lib/programmes";
 
 type ProgrammePageProps = { params: Promise<{ slug: string }> };
-
-type DisplayModule = {
-  id: string;
-  number: string;
-  title: string;
-  summary: string;
-  price: string;
-  lessonCount: number;
-  lessonTitles: string[];
-  durationMinutes: number;
-  live: boolean;
-};
 
 export function generateStaticParams() {
   return PROGRAMMES.map((programme) => ({ slug: programme.slug }));
@@ -33,23 +20,20 @@ export async function generateMetadata({ params }: ProgrammePageProps) {
   };
 }
 
-function minutesLabel(minutes: number) {
-  if (!minutes) return "Self-paced practice";
-  return `${minutes} min of guided content`;
-}
+const INTAKE_OPTIONS = [
+  { title: "Full-time Hybrid", mode: "Online + in-person classes | Mon–Fri | 8am–5pm EAT" },
+  { title: "Full-time Remote", mode: "100% online classes | Mon–Fri | 8am–5pm EAT" },
+  { title: "Part-time Remote", mode: "100% online classes | Mon–Fri | 6pm–9pm EAT" },
+];
 
-function toDisplayModule(module: LiveCatalogueCourse, index: number): DisplayModule {
-  return {
-    id: module.id,
-    number: String(index + 1).padStart(2, "0"),
-    title: module.title,
-    summary: module.summary,
-    price: module.price || "Included in programme",
-    lessonCount: module.lessonCount,
-    lessonTitles: module.lessonTitles,
-    durationMinutes: module.durationMinutes,
-    live: true,
-  };
+function curriculumExplanation(item: CurriculumItem, programmeSlug: string) {
+  if (item.type === "break") return item.summary;
+  if (programmeSlug === "software-engineering") {
+    if (item.title.toLowerCase().includes("frontend")) return "This stage takes learners from the structure of a web page into confident frontend practice. You will work with semantic HTML, CSS, responsive layouts, accessibility, component thinking, and the habits needed to test an interface across real devices before moving on to application behaviour and backend services.";
+    if (item.title.toLowerCase().includes("backend")) return "This stage explains the systems behind a digital product. You will build routes and services, work with data, validation, authentication concepts, and error handling, then understand how a backend communicates with the frontend to support a secure and dependable product.";
+    if (item.title.toLowerCase().includes("full-stack")) return "This stage connects the interface, application behaviour, APIs, and backend into one working product. You will practise moving data through the full system, handling forms and states, testing the important flows, and preparing the project for deployment with confidence.";
+  }
+  return item.summary;
 }
 
 export default async function ProgrammeDetailPage({ params }: ProgrammePageProps) {
@@ -57,61 +41,85 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
   const programme = getProgramme(slug);
   if (!programme) notFound();
 
-  const liveCatalogue = await loadLiveCatalogueSafely();
-  const liveModules = liveCatalogue.courses
-    .filter((course) => courseBelongsToProgramme(course, programme))
-    .map(toDisplayModule);
-  const fallbackModules: DisplayModule[] = programme.modules.map((module) => ({
-    ...module,
-    id: `${programme.slug}-${module.number}`,
-    lessonCount: 0,
-    lessonTitles: [],
-    durationMinutes: 0,
-    live: false,
-  }));
-  const displayModules = liveModules.length > 0 ? liveModules : fallbackModules;
-  const usesLiveModules = liveModules.length > 0;
+  const titleWords = programme.title.split(" ");
+  const titleLead = titleWords[0];
+  const titleRest = titleWords.slice(1).join(" ");
+  const curriculumModuleCount = programme.curriculum.filter((item) => item.type !== "break").length;
 
   return (
     <div className="min-h-screen bg-[#fffdfb] text-[#17131a] selection:bg-[#f47945]/25">
       <LandingNav />
       <main>
-        <section className="relative overflow-hidden bg-[#f6eef9] px-5 pb-12 pt-7 sm:px-10 sm:pb-16 sm:pt-8 lg:px-[7vw] lg:pb-20">
-          <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full border border-[#4d176e]/10" />
+        <section className="bg-[#1f0d2e] px-5 pb-10 pt-5 text-white sm:px-10 sm:pb-12 sm:pt-6 lg:px-[7vw] lg:pb-14">
           <div className="mx-auto max-w-[1440px]">
-            <Link href="/#programmes" className="inline-flex items-center gap-2 text-xs font-medium text-[#4d176e] transition hover:text-[#f47945]"><ArrowLeft className="h-4 w-4" /> Back to programmes</Link>
-            <div className="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end lg:gap-16">
+            <Link href="/#programmes" className="inline-flex w-fit items-center gap-2 text-sm font-medium text-white/80 transition hover:text-[#f47945]"><ArrowLeft className="h-4 w-4" /> Back to programmes</Link>
+            <div className="mx-auto max-w-[980px] pb-2 pt-14 text-center sm:pt-16">
+              <h1 className="mx-auto max-w-[900px] text-[clamp(1.85rem,4vw,4rem)] font-normal leading-[0.98] tracking-[-0.075em] text-white"><span>{titleLead}</span>{titleRest ? <> <span className="text-[#f06d36]">{titleRest}</span></> : null}</h1>
+              <p className="mx-auto mt-5 max-w-[760px] text-base leading-8 text-white/80 sm:text-lg">{programme.overview}</p>
+              <div className="mt-7 flex flex-wrap justify-center gap-3"><Link href="#modules" className="inline-flex items-center gap-3 rounded-full bg-[#f47945] px-5 py-2.5 text-sm font-black text-[#351039] transition hover:bg-[#ff8f57]">Explore programme <ArrowRight className="h-4 w-4" /></Link><Link href="/login" className="inline-flex items-center gap-2 rounded-full border border-white/35 px-5 py-2.5 text-sm font-medium text-white transition hover:border-[#f47945] hover:text-[#f47945]">Sign in to start <span aria-hidden>↗</span></Link></div>
+            </div>
+          </div>
+        </section>
+
+
+        <section className="bg-white px-5 py-14 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
+          <div className="relative mx-auto max-w-[1440px]">
+            <div className="mb-8 flex flex-col justify-between gap-4 border-y border-[#4d176e]/15 py-5 sm:flex-row sm:items-end">
               <div>
-                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-[#f47945] text-xs font-medium text-[#351039]">{programme.number}</div>
-                <h1 className="max-w-[650px] text-[clamp(2.15rem,4vw,4.2rem)] font-medium leading-[0.94] tracking-[-0.065em] text-[#151116]">{programme.title}</h1>
-                <p className="mt-5 max-w-[550px] text-sm leading-7 text-[#6e6072]">{programme.overview}</p>
-                <div className="mt-6 flex flex-wrap gap-3"><Link href="#modules" className="inline-flex items-center gap-3 rounded-full bg-[#f47945] px-5 py-3 text-xs font-medium text-[#351039] transition hover:bg-[#ff8f57]">Explore live curriculum <ArrowRight className="h-4 w-4" /></Link><Link href="/login" className="inline-flex items-center gap-2 rounded-full border border-[#4d176e]/25 px-5 py-3 text-xs font-medium text-[#4d176e] transition hover:border-[#f47945] hover:text-[#f47945]">Sign in to start <span aria-hidden>↗</span></Link></div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-[#f06d36]">Available learning formats</p>
+                <h2 className="mt-2 text-[clamp(1.45rem,2.4vw,2.35rem)] font-normal leading-[1] tracking-[-0.045em] text-[#151116]">Choose your <span className="text-[#4d176e]">learning rhythm.</span></h2>
               </div>
-              <div className="relative min-h-[280px] overflow-hidden rounded-[24px] border border-[#d9cbdc] bg-white shadow-[0_22px_70px_rgba(77,23,110,0.12)] sm:min-h-[350px]"><img src={programme.image} alt={`${programme.title} learning experience`} className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-[#351039]/80 via-transparent to-transparent" /><div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-5 p-5 text-white sm:p-6"><div><div className="text-xl font-medium tracking-[-0.04em]">{programme.outcome}</div></div><span className="hidden text-6xl font-medium text-white/80 sm:block">{programme.icon}</span></div></div>
+              <p className="max-w-[400px] text-base leading-7 text-[#6e6072]">One programme, three ways to make the work. Pick the rhythm that gives you the clearest space to learn, practise, and keep moving.</p>
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-3">
+              {INTAKE_OPTIONS.map((intake) => (
+                <article key={intake.title} className="group flex min-h-[350px] flex-col rounded-[18px] border border-dashed border-[#f47945]/55 bg-[#fff8f3] p-5 shadow-[0_10px_24px_rgba(77,23,110,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#f47945] hover:shadow-[0_16px_34px_rgba(77,23,110,0.12)] sm:p-6">
+                  <h3 className="mt-0 text-lg font-semibold tracking-[-0.03em] text-[#f06d36]">{intake.title}</h3>
+                  <p className="mt-4 min-h-[72px] text-sm leading-6 text-[#4d176e]">{intake.mode}</p>
+                  <div className="mt-5 grid gap-0 border-y border-dashed border-[#f47945]/45 text-sm">
+                    <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 py-3"><span className="font-medium text-[#351039]">Starts</span><span className="font-bold text-[#4d176e]">August 31st, 2026</span></div>
+                    <div className="flex items-center justify-between gap-4 py-3"><span className="font-medium text-[#351039]">Duration</span><span className="font-bold text-[#4d176e]">{programme.duration}</span></div>
+                  </div>
+                  <div className="mt-auto pt-5">
+                    <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 pb-4"><span className="font-medium text-[#351039]">Tuition</span><span className="text-xl font-bold tracking-[-0.03em] text-[#f06d36]">{programme.price}</span></div>
+                    <Link href="/register" className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#f47945] px-5 text-sm font-black text-[#351039] transition hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2">Apply <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
-        <section id="modules" className="scroll-mt-20 px-5 py-14 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
-          <div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:gap-14">
-            <div>
-              <h2 className="max-w-[440px] text-[clamp(1.75rem,2.7vw,2.9rem)] font-medium leading-[0.98] tracking-[-0.055em] text-[#151116]"><span className="text-[#4d176e]">Build one useful layer</span> <span className="text-[#f47945]">at a time.</span></h2>
-              <p className="mt-4 max-w-[420px] text-sm leading-7 text-[#6e6072]">Every course is designed around practice, guidance, and a clear outcome you can carry into the next stage.</p>
-              <div className="mt-6 inline-flex items-center gap-3 text-xs font-medium text-[#6e6072]"><Laptop className="h-4 w-4 text-[#f47945]" /> Practical, guided learning</div>
-              <div className="mt-5 grid max-w-[560px] gap-4 border-t border-[#eadfe9] pt-4 sm:grid-cols-3"><div><div className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#8a748e]">Duration</div><div className="mt-1 text-xs font-medium leading-5 text-[#4d176e]">{programme.duration}</div></div><div><div className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#8a748e]">Format</div><div className="mt-1 text-xs font-medium leading-5 text-[#4d176e]">{programme.format}</div></div><div><div className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#8a748e]">Best for</div><div className="mt-1 text-xs leading-5 text-[#6e6072]">{programme.audience}</div></div></div>
+        <section id="modules" className="scroll-mt-20 bg-white px-5 py-14 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
+          <div className="mx-auto max-w-[1440px]">
+            <div className="mb-8 border-t border-[#d9cbdc] pt-8">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#f06d36]">Inside the pathway</p>
+              <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
+                <h3 className="text-xl font-normal tracking-[-0.035em] text-[#17131a]">Curriculum breakdown</h3>
+                <div className="text-sm text-[#4d176e]">{curriculumModuleCount} {curriculumModuleCount === 1 ? "module" : "modules"} · {programme.curriculum.filter((item) => item.type === "break").length} break included</div>
+              </div>
             </div>
-            <div>
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-y border-[#eadfe9] py-3"><div className="text-xs font-medium text-[#17131a]">{usesLiveModules ? "Live curriculum" : "Programme outline"}</div><div className="text-[11px] text-[#8a748e]">{displayModules.length} {displayModules.length === 1 ? "course" : "courses"} · {usesLiveModules ? "from the LEA learning catalogue" : "admissions outline"}</div></div>
-              <div className="grid gap-4 sm:grid-cols-2">{displayModules.map((module) => <Link key={module.id} href="/login" className="group flex min-h-[285px] flex-col rounded-[22px] border border-[#d9cbdc] bg-white p-5 shadow-[0_14px_35px_rgba(77,23,110,0.05)] transition duration-300 hover:-translate-y-1 hover:border-[#f47945] hover:shadow-[0_20px_48px_rgba(77,23,110,0.12)] sm:p-6"><div className="flex items-start justify-between gap-4"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f47945] text-[11px] font-medium text-[#351039]">{module.number}</span><ArrowRight className="h-4 w-4 text-[#4d176e] transition group-hover:translate-x-1 group-hover:text-[#f47945]" /></div><div className="mt-5 text-base font-medium tracking-[-0.03em] text-[#17131a]">{module.title}</div><p className="mt-2 text-sm leading-6 text-[#6e6072]">{module.summary}</p>{module.lessonTitles.length > 0 && <div className="mt-4 flex flex-wrap gap-1.5">{module.lessonTitles.slice(0, 3).map((lesson) => <span key={lesson} className="border border-[#eadfe9] bg-[#fffdfb] px-2 py-1 text-[10px] leading-4 text-[#6e6072]">{lesson}</span>)}{module.lessonCount > 3 && <span className="px-1 py-1 text-[10px] leading-4 text-[#4d176e]">+{module.lessonCount - 3} more</span>}</div>}<div className="mt-auto flex items-end justify-between gap-3 border-t border-[#eadfe9] pt-4"><div><div className="text-[10px] font-medium text-[#8a748e]">{module.live ? minutesLabel(module.durationMinutes) : "Module tuition"}</div><div className="mt-1 text-sm font-medium text-[#4d176e]">{module.live ? `${module.lessonCount} lessons` : module.price}</div></div><span className="text-[10px] font-medium text-[#4d176e] transition group-hover:text-[#f47945]">Open in learner area</span></div></Link>)}</div>
+            <div className="space-y-4">
+              {programme.curriculum.map((item) => (
+                <details key={`${programme.slug}-${item.number}-${item.title}`} className={`group overflow-hidden rounded-[18px] border bg-[#fff8f3] shadow-[0_10px_24px_rgba(77,23,110,0.06)] ${item.type === "break" ? "border-dashed border-[#f06d36]/55" : "border-[#f47945]/45"}`}>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-5 py-5 transition hover:bg-[#ffefe6] sm:px-8 sm:py-6 [&::-webkit-details-marker]:hidden">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#4d176e]">{item.weeks}</p>
+                      <h4 className="mt-1 text-base font-medium tracking-[-0.03em] text-[#4d176e] sm:text-lg">{item.title}</h4>
+                    </div>
+                    <ChevronDown className="h-5 w-5 shrink-0 text-[#4d176e] transition duration-300 group-open:rotate-180" />
+                  </summary>
+                  <div className="border-t border-[#eadfe9] bg-white px-5 py-6 sm:px-8 sm:py-7">
+                    <p className="max-w-[980px] text-base leading-8 text-[#4d176e]">{curriculumExplanation(item, programme.slug)}</p>
+                    {item.topics.length > 0 && <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#4d176e]"><span className="font-semibold text-[#4d176e]">Covers:</span>{item.topics.map((topic) => <span key={topic}>{topic}</span>)}</div>}
+                  </div>
+                </details>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="bg-[#1f0d2e] px-5 py-14 text-white sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20"><div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[1fr_0.72fr] lg:items-start"><div><h2 className="max-w-[620px] text-[clamp(1.85rem,2.9vw,3.1rem)] font-medium leading-[0.98] tracking-[-0.055em] text-white">A clear next step, with the right support around it.</h2><p className="mt-4 max-w-[520px] text-sm leading-7 text-white/70">{programme.priceNote}</p></div><div className="rounded-[22px] border border-white/20 bg-white/10 p-6 sm:p-8"><div className="text-xs font-medium text-[#f7c2aa]">Full programme tuition</div><div className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">{programme.price}</div><p className="mt-4 text-sm leading-6 text-white/70">Start with the live course catalogue above, then use the learner area to access lessons, practice, and progress tracking.</p><Link href="/login" className="mt-6 inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-xs font-medium text-[#351039] transition hover:bg-[#f7c2aa]">Talk to admissions <ArrowRight className="h-4 w-4" /></Link></div></div></section>
-
-        <section className="px-5 py-14 sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20"><div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:gap-14"><div><h2 className="max-w-[440px] text-[clamp(1.75rem,2.7vw,2.9rem)] font-medium leading-[0.98] tracking-[-0.055em] text-[#151116]">A little clarity goes a long way.</h2><p className="mt-4 max-w-[420px] text-sm leading-7 text-[#6e6072]">If you are not sure whether this is the right starting point, the admissions team can help you think it through.</p><Link href="/login" className="mt-6 inline-flex items-center gap-3 rounded-full border border-[#4d176e]/30 px-5 py-3 text-xs font-medium text-[#4d176e] transition hover:border-[#f47945] hover:text-[#f47945]">Ask a question <MessageCircle className="h-4 w-4" /></Link></div><div className="space-y-0">{programme.faqs.map((faq) => <details key={faq.question} className="group border-b border-[#ded3df] py-4"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-[#17131a] [&::-webkit-details-marker]:hidden"><span>{faq.question}</span><ChevronDown className="h-4 w-4 shrink-0 text-[#4d176e] transition group-open:rotate-180" /></summary><p className="max-w-[640px] pt-3 text-sm leading-6 text-[#6e6072]">{faq.answer}</p></details>)}</div></div></section>
-
-        <section className="bg-[#f6eef9] px-5 py-10 sm:px-10 lg:px-[7vw]"><div className="mx-auto flex max-w-[1440px] flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"><div><div className="text-xl font-medium tracking-[-0.04em] text-[#151116]">Take the next step with {programme.title}.</div><p className="mt-2 text-sm text-[#6e6072]">Admissions can help you choose the right starting point.</p></div><Link href="/login" className="inline-flex items-center gap-3 rounded-full bg-[#f47945] px-5 py-3 text-xs font-medium text-[#351039] transition hover:bg-[#ff8f57]">Start with admissions <ArrowRight className="h-4 w-4" /></Link></div></section>
       </main>
       <LandingFooter />
     </div>
