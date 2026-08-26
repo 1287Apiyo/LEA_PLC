@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
+  ChevronDown,
   Clock3,
   Download,
   PlayCircle,
@@ -35,6 +36,7 @@ export function LearnerProgrammePage({ slug }: { slug: string }) {
   const programme = getProgramme(slug);
   const queryClient = useQueryClient();
   const [enrollingCourseId, setEnrollingCourseId] = useState<string | null>(null);
+  const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
 
   const coursesQuery = useQuery({
     queryKey: ["learner-programme", slug],
@@ -103,6 +105,8 @@ export function LearnerProgrammePage({ slug }: { slug: string }) {
                   <div><h3 className="text-lg font-semibold leading-tight tracking-[-0.03em] text-[#151116]">{course.title}</h3><p className="mt-2 line-clamp-3 text-sm leading-6 text-[#6e6072]">{course.summary}</p></div>
                   <div className="flex flex-wrap gap-x-3 gap-y-2 text-[11px] text-[#6e6072]"><span className="inline-flex items-center gap-1"><PlayCircle className="h-3.5 w-3.5" aria-hidden />{course.lessons_count} lessons</span><span className="inline-flex items-center gap-1"><Clock3 className="h-3.5 w-3.5" aria-hidden />{formatMinutes(course.total_minutes)}</span>{course.video_count ? <span className="inline-flex items-center gap-1"><PlayCircle className="h-3.5 w-3.5" aria-hidden />{course.video_count} videos</span> : null}{course.resource_count ? <span className="inline-flex items-center gap-1"><Download className="h-3.5 w-3.5" aria-hidden />{course.resource_count} resources</span> : null}</div>
                   <div className="rounded-lg bg-[#fbf8fd] p-3.5"><div className="flex items-center gap-2 text-xs font-semibold text-[#4d176e]"><Target className="h-3.5 w-3.5" aria-hidden />Build outcome</div><p className="mt-1.5 line-clamp-2 text-sm leading-5 text-[#3f3445]">{course.project || course.deliverable || course.outcomes[0]}</p></div>
+                  <button type="button" onClick={() => setExpandedCourseId((current) => current === course.id ? null : course.id)} className="flex items-center justify-between border-t border-[#eee5f1] pt-3 text-left text-xs font-semibold text-[#4d176e] transition hover:text-[#b94920]" aria-expanded={expandedCourseId === course.id}><span>{expandedCourseId === course.id ? "Hide course details" : "Preview course details"}</span><ChevronDown className={`h-4 w-4 transition-transform ${expandedCourseId === course.id ? "rotate-180" : ""}`} aria-hidden /></button>
+                  {expandedCourseId === course.id ? <div className="rounded-lg border border-[#eadcf0] bg-white p-3 text-xs leading-5 text-[#6e6072]"><p className="font-semibold text-[#151116]">What you will practise</p><ul className="mt-1.5 list-disc space-y-1 pl-4">{course.outcomes.slice(0, 3).map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></div> : null}
                   {course.enrolled ? <div><div className="mb-1.5 flex items-center justify-between text-[11px] text-[#6e6072]"><span>{progress}% complete</span><span>{progress >= 100 ? "Complete" : "Keep going"}</span></div><div className="h-2 overflow-hidden rounded-sm bg-[#f2eaf4]"><div className="h-full rounded-sm transition-all" style={{ width: `${progress}%`, backgroundColor: accent }} /></div></div> : null}
                   <div className="mt-auto flex flex-col gap-2 pt-1"><Button asChild className="w-full rounded-md bg-[#4d176e] hover:bg-[#351039]"><Link href={`/learner/courses/${course.id}`}>{course.enrolled ? (progress > 0 ? "Continue course" : "Start course") : "View course"}<ArrowRight className="ml-1.5 h-4 w-4" aria-hidden /></Link></Button>{!course.enrolled ? <Button className="w-full rounded-md bg-[#f47945] text-[#351039] hover:bg-[#ff8f57]" disabled={enrollingCourseId === course.id} onClick={() => enrol.mutate(course.id)}>{enrollingCourseId === course.id ? "Enrolling…" : "Enrol now"}</Button> : null}</div>
                 </CardContent>

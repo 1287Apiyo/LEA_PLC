@@ -41,29 +41,36 @@ const toStringArray = (value: unknown) =>
 
 const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
+const PROGRAMME_CARD_IMAGES: Record<string, string> = {
+  "software-engineering": "/lea-home-program-software.png",
+  "applied-ai": "/lea-home-program-ai.png",
+  "basic-computer-knowledge": "/lea-home-program-computers.png",
+};
+
 const toProgramme = (row: ResourceRow): ProgrammeSummary => {
   const id = String(row.id ?? "programme");
-  const title = String(row.title ?? row.name ?? "Programme");
+  const sourceTitle = String(row.title ?? row.name ?? "Programme");
   const staticProgramme = PROGRAMMES.find((item) =>
-    item.catalogueKeys?.includes(id) || item.title.toLowerCase() === title.toLowerCase()
+    item.catalogueKeys?.includes(id) || item.title.toLowerCase() === sourceTitle.toLowerCase() || (item.slug === "basic-computer-knowledge" && sourceTitle.toLowerCase() === "basic computer knowledge")
   );
+  const title = staticProgramme?.title ?? sourceTitle;
 
   return {
     id,
     slug: staticProgramme?.slug ?? slugify(title),
     title,
-    description: String(row.description ?? staticProgramme?.short ?? "A practical pathway built around guided projects and evidence."),
-    order: Number(row.order ?? 99),
-    duration: String(row.duration ?? staticProgramme?.duration ?? "Self-paced"),
+    description: staticProgramme?.short ?? String(row.description ?? "A practical pathway built around guided projects and evidence."),
+    order: staticProgramme ? PROGRAMMES.indexOf(staticProgramme) : Number(row.order ?? 99),
+    duration: staticProgramme?.duration ?? String(row.duration ?? "Self-paced"),
     level: String(row.level ?? "Applied"),
-    price: String(row.price ?? staticProgramme?.price ?? ""),
+    price: staticProgramme?.price ?? String(row.price ?? ""),
     outcomes: toStringArray(row.outcomes),
     skills: toStringArray(row.skills),
-    short: String(row.short ?? staticProgramme?.short ?? "A practical pathway built around guided projects and evidence."),
-    audience: String(row.audience ?? staticProgramme?.audience ?? "For learners ready to take a practical next step."),
-    bullets: toStringArray(row.bullets).length > 0 ? toStringArray(row.bullets) : staticProgramme?.bullets ?? [],
-    icon: String(row.icon ?? staticProgramme?.icon ?? "✦"),
-    image: String(row.image ?? staticProgramme?.image ?? "/lea-hero-purple-orange.png"),
+    short: staticProgramme?.short ?? String(row.short ?? "A practical pathway built around guided projects and evidence."),
+    audience: staticProgramme?.audience ?? String(row.audience ?? "For learners ready to take a practical next step."),
+    bullets: staticProgramme?.bullets ?? (toStringArray(row.bullets).length > 0 ? toStringArray(row.bullets) : []),
+    icon: staticProgramme?.icon ?? String(row.icon ?? "✦"),
+    image: staticProgramme ? PROGRAMME_CARD_IMAGES[staticProgramme.slug] ?? staticProgramme.image : String(row.image ?? "/lea-hero-purple-orange.png"),
   };
 };
 
@@ -172,8 +179,8 @@ export function CourseCatalog() {
         <div className="pointer-events-none absolute -right-20 top-0 h-48 w-48 rounded-full border border-[#4d176e]/10" aria-hidden />
         <div className="relative flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div>
-            <h2 className="max-w-xl text-[clamp(1.75rem,2.8vw,2.65rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#151116]">Choose a practical path forward.</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6e6072]">Choose between <span className="font-semibold text-[#4d176e]">Software Engineering</span>, <span className="font-semibold text-[#4d176e]">Applied AI</span>, and <span className="font-semibold text-[#4d176e]">Basic Computer Knowledge</span>. Open a card to see the complete module sequence.</p>
+            <h2 className="max-w-xl text-xl font-semibold leading-[1] tracking-[-0.045em] text-[#151116] sm:text-2xl">Choose a practical path forward.</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6e6072]">Choose between <span className="font-semibold text-[#4d176e]">Software Engineering</span>, <span className="font-semibold text-[#4d176e]">Applied AI</span>, and <span className="font-semibold text-[#4d176e]">Digital Foundations</span>. Open a card to see the complete module sequence.</p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-[#6e6072]">
             <span>{groups.length} programmes</span><span>{courses.length} courses</span><span>{enrolledCourses} in progress</span>
@@ -246,7 +253,7 @@ function ProgrammeCard({
         <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#302434]">{programme.short}</p>
         <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#6e6072]">{programme.audience}</p>
         {programme.bullets.length > 0 ? <div className="mt-4 flex flex-wrap gap-2">{programme.bullets.slice(0, 3).map((bullet) => <span key={bullet} className="rounded-full border border-[#4d176e]/35 px-3 py-1.5 text-[10px] font-semibold text-[#4d176e]">{bullet}</span>)}</div> : null}
-        <div className="mt-4 flex items-center justify-between border-t border-[#efcfc1] pt-4"><span className="text-xs text-[#6e6072]">{courses.length} modules · {lessonCount} lessons</span><span className="text-sm font-black text-[#4d176e]">{programme.price}</span></div>
+        <div className="mt-4 flex items-center justify-between border-t border-[#efcfc1] pt-4"><span className="text-xs text-[#6e6072]">{programme.slug === "software-engineering" ? "Foundation Track fees" : "Full programme"}</span><span className="text-sm font-black text-[#4d176e]">{programme.price}</span></div>
         <div className="mt-4 flex items-center justify-between gap-3"><span className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-full bg-[#f47945] text-xs font-black text-[#351039] transition group-hover:bg-[#ff8f57]">View modules <ArrowRight className="h-4 w-4" /></span>{enrolledCount > 0 ? <span className="text-[11px] font-medium text-[#b94920]">{enrolledCount} in progress</span> : null}</div>
       </div>
     </Link>

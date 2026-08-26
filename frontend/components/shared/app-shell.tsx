@@ -86,7 +86,7 @@ export function AppShell({ role, children }: AppShellProps) {
           </div>
         </header>
 
-        <main className="w-full flex-1 px-4 py-6 sm:px-5">
+        <main className="w-full flex-1 px-3 py-5 sm:px-4 lg:px-3">
           {children}
         </main>
       </div>

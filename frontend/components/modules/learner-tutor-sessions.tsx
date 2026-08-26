@@ -120,16 +120,16 @@ export function LearnerTutorSessions() {
     <div className="space-y-6">
       <PageHeader title="Tutor Sessions" description="Request one-to-one support, follow the conversation, and join confirmed online sessions from one place." />
 
-      <Card className="overflow-hidden border-[#eadcf0] bg-gradient-to-r from-[#1f0d2e] via-[#4d176e] to-[#7e398f] text-white">
+      <Card className="overflow-hidden border-l-4 border-[#d9c6e1] border-l-[#f47945] bg-white text-[#151116] shadow-sm">
         <CardContent className="flex flex-col gap-5 p-6 sm:p-7 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl">
-            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#ffd3bd]"><GraduationCap className="h-4 w-4" aria-hidden /> Personal tutor support</p>
+            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#b94920]"><GraduationCap className="h-4 w-4 text-[#f47945]" aria-hidden /> Personal tutor support</p>
             <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">Ask for help, get a clear response, keep moving.</h2>
-            <p className="mt-2 text-sm leading-6 text-white/75">Choose a course and preferred time. The LEA team will review the request, connect you with an instructor, and share the confirmed details here.</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Choose a course and preferred time. The LEA team will review the request, connect you with an instructor, and share the confirmed details here.</p>
           </div>
           <div className="grid grid-cols-2 gap-2 text-center text-xs sm:min-w-[250px]">
-            <div className="rounded-xl bg-white/10 px-3 py-3"><p className="text-white/65">Awaiting response</p><p className="mt-1 text-xl font-semibold text-[#ffd3bd]">{awaiting.length}</p></div>
-            <div className="rounded-xl bg-white/10 px-3 py-3"><p className="text-white/65">Confirmed sessions</p><p className="mt-1 text-xl font-semibold">{confirmed.length}</p></div>
+            <div className="rounded-xl border border-[#eadcf0] bg-[#f6eef9] px-3 py-3"><p className="text-[#6e6072]">Awaiting response</p><p className="mt-1 text-xl font-semibold text-[#4d176e]">{awaiting.length}</p></div>
+            <div className="rounded-xl border border-[#eadcf0] bg-[#fff7ef] px-3 py-3"><p className="text-[#6e6072]">Confirmed sessions</p><p className="mt-1 text-xl font-semibold text-[#4d176e]">{confirmed.length}</p></div>
           </div>
         </CardContent>
       </Card>

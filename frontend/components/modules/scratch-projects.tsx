@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Blocks, Code2, ExternalLink, FolderOpen, Loader2, Plus, Sparkles, Trash2 } from "lucide-react";
+import { Blocks, Code2, ExternalLink, FolderOpen, Loader2, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -128,10 +128,10 @@ export function LearnerProjects() {
         actions={<div className="flex flex-wrap gap-2"><Button asChild variant="outline" className="gap-2 border-[#eadcf0] text-[#4d176e]"><Link href="/learner/playground?mode=scratch"><Blocks className="h-4 w-4" aria-hidden /> New Scratch project</Link></Button><Button asChild className="gap-2 bg-[#f47945] text-white hover:bg-[#d95d2e]"><Link href="/learner/playground?mode=code"><Plus className="h-4 w-4" aria-hidden /> New coding project</Link></Button></div>}
       />
 
-      <Card className="overflow-hidden border-[#eadcf0] bg-gradient-to-r from-[#1f0d2e] via-[#4d176e] to-[#7e398f] text-white">
+      <Card className="overflow-hidden border-[#d9c6e1] border-l-4 border-l-[#f47945] bg-white text-[#151116] shadow-sm">
         <CardContent className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
-          <div className="max-w-2xl"><div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#ffd3bd]"><Sparkles className="h-4 w-4" aria-hidden /> Your learning shelf</div><h2 className="text-xl font-semibold tracking-tight sm:text-2xl">Build across every course. Keep the evidence.</h2><p className="mt-2 max-w-xl text-sm leading-6 text-white/75">Save coding work from any class alongside Scratch projects. Each card opens the right editor with the saved code or blocks ready to continue.</p></div>
-          <div className="grid grid-cols-2 gap-2 text-center text-xs sm:min-w-[230px]"><div className="rounded-xl bg-white/10 px-4 py-3"><p className="text-white/60">All projects</p><p className="mt-1 text-xl font-semibold">{projects.length}</p></div><div className="rounded-xl bg-white/10 px-4 py-3"><p className="text-white/60">Code + blocks</p><p className="mt-1 text-xl font-semibold text-[#ffd3bd]">{projects.filter((project) => isScratchProject(project)).length} + {projects.filter((project) => !isScratchProject(project)).length}</p></div></div>
+          <div className="max-w-2xl"><h2 className="text-xl font-semibold tracking-tight sm:text-2xl">Build across every course. Keep the evidence.</h2><p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">Save coding work from any class alongside Scratch projects. Each card opens the right editor with the saved code or blocks ready to continue.</p></div>
+          <div className="grid grid-cols-2 gap-2 text-center text-xs sm:min-w-[230px]"><div className="rounded-xl border border-[#eadcf0] bg-[#f6eef9] px-4 py-3"><p className="text-[#6e6072]">All projects</p><p className="mt-1 text-xl font-semibold text-[#151116]">{projects.length}</p></div><div className="rounded-xl border border-[#eadcf0] bg-[#fff7ef] px-4 py-3"><p className="text-[#6e6072]">Code + blocks</p><p className="mt-1 text-xl font-semibold text-[#4d176e]">{projects.filter((project) => isScratchProject(project)).length} + {projects.filter((project) => !isScratchProject(project)).length}</p></div></div>
         </CardContent>
       </Card>
 

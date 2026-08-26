@@ -21,7 +21,6 @@ import {
   BrainCircuit,
   GraduationCap,
   ClipboardList,
-  Compass,
   MessageSquare,
   FileText,
   type LucideIcon,
@@ -113,7 +112,6 @@ export const NAV: Record<Role, NavSection[]> = {
       title: "Overview",
       items: [
         { title: "Dashboard", href: "/learner", icon: LayoutDashboard },
-        { title: "Learning setup", href: "/learner/onboarding", icon: Compass },
         { title: "AI Learning Coach", href: "/learner/coach", icon: BrainCircuit },
         { title: "Programmes & courses", href: "/learner/courses", icon: BookOpen },
         { title: "Assignments", href: "/learner/assignments", icon: FileText },
