@@ -22,16 +22,65 @@ export async function generateMetadata({ params }: ProgrammePageProps) {
 
 type IntakeOption = { title: string; mode: string; level?: string; duration?: string; price?: string };
 
-const INTAKE_OPTIONS: IntakeOption[] = [
-  { title: "Full-time Hybrid", mode: "Online + in-person classes | Mon–Fri | 8am–5pm EAT" },
-  { title: "Full-time Remote", mode: "100% online classes | Mon–Fri | 8am–5pm EAT" },
-  { title: "Part-time Remote", mode: "100% online classes | Mon–Fri | 6pm–9pm EAT" },
-];
+// Hybrid surcharge map — keyed by programme slug
+const HYBRID_SURCHARGE: Record<string, string> = {
+  "software-engineering": "KES 45,000",
+  "applied-ai": "KES 40,000",
+  "basic-computer-knowledge": "KES 30,000",
+};
 
-const SOFTWARE_LEVEL_OPTIONS: IntakeOption[] = [
-  { level: "Beginner", title: "Foundation Track", mode: "A welcoming starting point for learners building their first confident software-development habits.", duration: "12 weeks", price: "KES 40,000" },
-  { level: "Intermediate", title: "Professional Builder", mode: "A structured route for learners ready to build complete products through focused practice and a 16-week project journey.", duration: "16 weeks", price: "KES 45,000" },
-  { level: "Advanced", title: "Advanced Product Engineer", mode: "A demanding, project-led pathway for learners ready to deepen their engineering judgement and ship stronger digital products.", duration: "16 weeks", price: "KES 50,000" },
+function getIntakeOptions(slug: string): IntakeOption[] {
+  return [
+    { title: "Full-time Hybrid", mode: "Online + in-person classes | Mon–Fri | 8am–5pm EAT", price: HYBRID_SURCHARGE[slug] },
+    { title: "Full-time Remote", mode: "100% online classes | Mon–Fri | 8am–5pm EAT" },
+    { title: "Part-time Remote", mode: "100% online classes | Mon–Fri | 6pm–9pm EAT" },
+  ];
+}
+
+// Software Engineering: each level × three formats
+type SoftwareFormat = { format: string; schedule: string; price: string };
+type SoftwareLevel = {
+  level: string;
+  title: string;
+  description: string;
+  duration: string;
+  formats: SoftwareFormat[];
+};
+
+const SOFTWARE_LEVELS: SoftwareLevel[] = [
+  {
+    level: "Beginner",
+    title: "Foundation Track",
+    description: "A welcoming starting point for learners building their first confident software-development habits.",
+    duration: "12 weeks",
+    formats: [
+      { format: "Full-time Hybrid", schedule: "Online + in-person | Mon–Fri | 8am–5pm EAT", price: "KES 45,000" },
+      { format: "Full-time Remote", schedule: "100% online | Mon–Fri | 8am–5pm EAT", price: "KES 40,000" },
+      { format: "Part-time Remote", schedule: "100% online | Mon–Fri | 6pm–9pm EAT", price: "KES 40,000" },
+    ],
+  },
+  {
+    level: "Intermediate",
+    title: "Professional Builder",
+    description: "A structured route for learners ready to build complete products through focused practice and a 16-week project journey.",
+    duration: "16 weeks",
+    formats: [
+      { format: "Full-time Hybrid", schedule: "Online + in-person | Mon–Fri | 8am–5pm EAT", price: "KES 50,000" },
+      { format: "Full-time Remote", schedule: "100% online | Mon–Fri | 8am–5pm EAT", price: "KES 45,000" },
+      { format: "Part-time Remote", schedule: "100% online | Mon–Fri | 6pm–9pm EAT", price: "KES 45,000" },
+    ],
+  },
+  {
+    level: "Advanced",
+    title: "Advanced Product Engineer",
+    description: "A demanding, project-led pathway for learners ready to deepen their engineering judgement and ship stronger digital products.",
+    duration: "16 weeks",
+    formats: [
+      { format: "Full-time Hybrid", schedule: "Online + in-person | Mon–Fri | 8am–5pm EAT", price: "KES 55,000" },
+      { format: "Full-time Remote", schedule: "100% online | Mon–Fri | 8am–5pm EAT", price: "KES 50,000" },
+      { format: "Part-time Remote", schedule: "100% online | Mon–Fri | 6pm–9pm EAT", price: "KES 50,000" },
+    ],
+  },
 ];
 
 function curriculumExplanation(item: CurriculumItem, programmeSlug: string) {
@@ -54,7 +103,7 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
   const titleRest = titleWords.slice(1).join(" ");
   const curriculumModuleCount = programme.curriculum.filter((item) => item.type !== "break").length;
   const isSoftwareProgramme = programme.slug === "software-engineering";
-  const intakeOptions = isSoftwareProgramme ? SOFTWARE_LEVEL_OPTIONS : INTAKE_OPTIONS;
+  const intakeOptions = getIntakeOptions(slug);
 
   return (
     <div className="min-h-screen bg-[#fffdfb] text-[#17131a] selection:bg-[#f47945]/25">
@@ -77,28 +126,64 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
             <div className="mb-8 flex flex-col justify-between gap-4 border-y border-[#4d176e]/15 py-5 sm:flex-row sm:items-end">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-[#f06d36]">{isSoftwareProgramme ? "Software engineering pathways" : "Available learning formats"}</p>
-                <h2 className="mt-2 text-[clamp(1.45rem,2.4vw,2.35rem)] font-normal leading-[1] tracking-[-0.045em] text-[#151116]">{isSoftwareProgramme ? <>Choose your <span className="text-[#4d176e]">starting point.</span></> : <>Choose your <span className="text-[#4d176e]">learning rhythm.</span></>}</h2>
+                <h2 className="mt-2 text-[clamp(1.45rem,2.4vw,2.35rem)] font-normal leading-[1] tracking-[-0.045em] text-[#151116]">{isSoftwareProgramme ? <>Choose your <span className="text-[#4d176e]">level &amp; format.</span></> : <>Choose your <span className="text-[#4d176e]">learning rhythm.</span></>}</h2>
               </div>
-              <p className="max-w-[400px] text-base leading-7 text-[#6e6072]">{isSoftwareProgramme ? "Three progressive pathways make it easier to begin at the level that fits your experience, then keep building with practical project work." : "One programme, three ways to make the work. Pick the rhythm that gives you the clearest space to learn, practise, and keep moving."}</p>
+              <p className="max-w-[400px] text-base leading-7 text-[#6e6072]">{isSoftwareProgramme ? "Three progressive levels, each available in Hybrid, Full-time Remote, or Part-time Remote. Hybrid adds in-person sessions and is priced KES 5,000 above the remote rate." : "One programme, three ways to make the work. Pick the rhythm that gives you the clearest space to learn, practise, and keep moving."}</p>
             </div>
 
-            <div className="grid gap-5 lg:grid-cols-3">
-              {intakeOptions.map((intake) => (
-                <article key={intake.title} className="group flex min-h-[350px] flex-col rounded-[18px] border border-dashed border-[#f47945]/55 bg-[#fff8f3] p-5 shadow-[0_10px_24px_rgba(77,23,110,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#f47945] hover:shadow-[0_16px_34px_rgba(77,23,110,0.12)] sm:p-6">
-                  {intake.level ? <p className="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#4d176e]">{intake.level}</p> : null}
-                  <h3 className="mt-0 text-lg font-semibold tracking-[-0.03em] text-[#f06d36]">{intake.title}</h3>
-                  <p className="mt-4 min-h-[72px] text-sm leading-6 text-[#4d176e]">{intake.mode}</p>
-                  <div className="mt-5 grid gap-0 border-y border-dashed border-[#f47945]/45 text-sm">
-                    <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 py-3"><span className="font-medium text-[#351039]">Starts</span><span className="font-bold text-[#4d176e]">August 31st, 2026</span></div>
-                    <div className="flex items-center justify-between gap-4 py-3"><span className="font-medium text-[#351039]">Duration</span><span className="font-bold text-[#4d176e]">{intake.duration ?? programme.duration}</span></div>
+            {isSoftwareProgramme ? (
+              /* Software Engineering — level × format grid */
+              <div className="space-y-10">
+                {SOFTWARE_LEVELS.map((lvl) => (
+                  <div key={lvl.level}>
+                    <div className="mb-4 flex flex-wrap items-baseline gap-3">
+                      <span className="rounded-full bg-[#4d176e]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#4d176e]">{lvl.level}</span>
+                      <h3 className="text-lg font-semibold tracking-[-0.03em] text-[#f06d36]">{lvl.title}</h3>
+                      <span className="text-sm text-[#6e6072]">· {lvl.duration}</span>
+                    </div>
+                    <p className="mb-5 max-w-[680px] text-sm leading-6 text-[#4d176e]">{lvl.description}</p>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                      {lvl.formats.map((fmt) => (
+                        <article key={fmt.format} className="group flex flex-col rounded-[18px] border border-dashed border-[#f47945]/55 bg-[#fff8f3] p-5 shadow-[0_10px_24px_rgba(77,23,110,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#f47945] hover:shadow-[0_16px_34px_rgba(77,23,110,0.12)]">
+                          <h4 className="text-sm font-semibold tracking-[-0.02em] text-[#f06d36]">{fmt.format}</h4>
+                          <p className="mt-2 text-xs leading-5 text-[#4d176e]">{fmt.schedule}</p>
+                          <div className="mt-4 border-t border-dashed border-[#f47945]/35 pt-4">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-xs font-medium text-[#351039]">Tuition</span>
+                              <span className="text-base font-bold tracking-[-0.03em] text-[#f06d36]">{fmt.price}</span>
+                            </div>
+                            <div className="mt-3 flex items-center justify-between gap-2 text-xs text-[#6e6072]">
+                              <span>Starts</span>
+                              <span className="font-semibold text-[#4d176e]">Aug 31st, 2026</span>
+                            </div>
+                          </div>
+                          <Link href="/register" className="mt-4 inline-flex h-9 w-full items-center justify-center rounded-full bg-[#f47945] px-4 text-xs font-black text-[#351039] transition hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2">Apply <ArrowRight className="ml-1.5 h-3 w-3" /></Link>
+                        </article>
+                      ))}
+                    </div>
                   </div>
-                  <div className="mt-auto pt-5">
-                    <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 pb-4"><span className="font-medium text-[#351039]">Tuition</span><span className="text-xl font-bold tracking-[-0.03em] text-[#f06d36]">{intake.price ?? programme.price}</span></div>
-                    <Link href="/register" className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#f47945] px-5 text-sm font-black text-[#351039] transition hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2">Apply <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                  </div>
-                </article>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              /* Other programmes — simple 3-card grid */
+              <div className="grid gap-5 lg:grid-cols-3">
+                {intakeOptions.map((intake) => (
+                  <article key={intake.title} className="group flex min-h-[350px] flex-col rounded-[18px] border border-dashed border-[#f47945]/55 bg-[#fff8f3] p-5 shadow-[0_10px_24px_rgba(77,23,110,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#f47945] hover:shadow-[0_16px_34px_rgba(77,23,110,0.12)] sm:p-6">
+                    {intake.level ? <p className="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#4d176e]">{intake.level}</p> : null}
+                    <h3 className="mt-0 text-lg font-semibold tracking-[-0.03em] text-[#f06d36]">{intake.title}</h3>
+                    <p className="mt-4 min-h-[72px] text-sm leading-6 text-[#4d176e]">{intake.mode}</p>
+                    <div className="mt-5 grid gap-0 border-y border-dashed border-[#f47945]/45 text-sm">
+                      <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 py-3"><span className="font-medium text-[#351039]">Starts</span><span className="font-bold text-[#4d176e]">August 31st, 2026</span></div>
+                      <div className="flex items-center justify-between gap-4 py-3"><span className="font-medium text-[#351039]">Duration</span><span className="font-bold text-[#4d176e]">{intake.duration ?? programme.duration}</span></div>
+                    </div>
+                    <div className="mt-auto pt-5">
+                      <div className="flex items-center justify-between gap-4 border-b border-dashed border-[#f47945]/35 pb-4"><span className="font-medium text-[#351039]">Tuition</span><span className="text-xl font-bold tracking-[-0.03em] text-[#f06d36]">{intake.price ?? programme.price}</span></div>
+                      <Link href="/register" className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#f47945] px-5 text-sm font-black text-[#351039] transition hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2">Apply <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

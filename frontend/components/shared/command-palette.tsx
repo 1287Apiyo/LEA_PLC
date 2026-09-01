@@ -13,7 +13,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { flattenNav } from "@/components/shared/nav-config";
+import { NAV } from "@/components/shared/nav-config";
 import { ROLE_LABELS } from "@/lib/constants";
 import type { Role } from "@/types/auth";
 
@@ -21,11 +21,13 @@ interface CommandPaletteProps {
   role: Role;
 }
 
-/** ⌘K command palette — navigation + quick actions. */
+/** ⌘K command palette — navigation grouped by section + quick actions. */
 export function CommandPalette({ role }: CommandPaletteProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const items = useMemo(() => flattenNav(role), [role]);
+
+  // All nav sections for the current role — memoised to avoid re-building on renders
+  const sections = useMemo(() => NAV[role], [role]);
 
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
@@ -45,6 +47,7 @@ export function CommandPalette({ role }: CommandPaletteProps) {
 
   return (
     <>
+      {/* Desktop search bar */}
       <Button
         variant="outline"
         size="sm"
@@ -58,6 +61,8 @@ export function CommandPalette({ role }: CommandPaletteProps) {
           ⌘K
         </kbd>
       </Button>
+
+      {/* Mobile icon button */}
       <Button
         variant="outline"
         size="icon"
@@ -72,20 +77,33 @@ export function CommandPalette({ role }: CommandPaletteProps) {
         <CommandInput placeholder={`Search ${ROLE_LABELS[role]} workspace…`} />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Navigate">
-            {items.map((item) => (
-              <CommandItem key={item.href} onSelect={() => go(item.href)}>
-                <item.icon className="mr-2 h-4 w-4" aria-hidden />
-                <span>{item.title}</span>
-              </CommandItem>
-            ))}
-          </CommandGroup>
+
+          {/* One CommandGroup per nav section so results are properly labelled */}
+          {sections.map((section, sectionIndex) => (
+            <div key={section.title ?? sectionIndex}>
+              <CommandGroup heading={section.title ?? "Navigate"}>
+                {section.items.map((item) => (
+                  <CommandItem
+                    key={item.href}
+                    // value drives the search filter — include href keywords for better matching
+                    value={`${item.title} ${item.href.replace(/\//g, " ")}`}
+                    onSelect={() => go(item.href)}
+                  >
+                    <item.icon className="mr-2 h-4 w-4" aria-hidden />
+                    <span>{item.title}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+              {sectionIndex < sections.length - 1 && <CommandSeparator />}
+            </div>
+          ))}
+
           <CommandSeparator />
           <CommandGroup heading="Actions">
-            <CommandItem onSelect={() => go(`/settings/profile`)}>
+            <CommandItem value="profile settings" onSelect={() => go("/settings/profile")}>
               <span>Profile settings</span>
             </CommandItem>
-            <CommandItem onSelect={() => go("/logout")}>
+            <CommandItem value="sign out logout" onSelect={() => go("/logout")}>
               <span>Sign out</span>
             </CommandItem>
           </CommandGroup>
