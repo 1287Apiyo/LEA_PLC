@@ -10,6 +10,7 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { CrudTable } from "@/components/shared/crud-table";
 import { currency, date, statusCell, typeCell } from "@/lib/table-registry";
 import { resourceService, type ResourceRow } from "@/services/resources";
+import { SandboxPayments } from "@/components/modules/sandbox-payments";
 
 function column(id: string, header: string, cell?: (v: unknown, row: ResourceRow) => React.ReactNode): ColumnDef<ResourceRow> {
   return {
@@ -78,7 +79,7 @@ export function FinanceOverview() {
     <div className="space-y-6">
       <PageHeader
         title="Finance"
-        description="Payments, invoices and expenses — M-Pesa, Stripe and bank."
+        description="Payments, invoices and expenses — with a local M-Pesa and cash sandbox monitor for testing."
       />
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard
@@ -100,6 +101,8 @@ export function FinanceOverview() {
           hint="this period"
         />
       </div>
+
+      <SandboxPayments />
 
       <Card>
         <CardContent className="p-0">
