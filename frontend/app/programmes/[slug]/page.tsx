@@ -110,12 +110,12 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
     <div className="min-h-screen bg-[#fffdfb] text-[#17131a] selection:bg-[#4d176e]/20">
       <LandingNav />
       <main>
-        <section className="relative isolate min-h-[500px] overflow-hidden bg-[#1f0d2e] px-5 pb-10 pt-5 text-white sm:min-h-[560px] sm:px-10 sm:pb-12 sm:pt-6 lg:px-[7vw] lg:pb-14">
+        <section className="relative isolate min-h-[410px] overflow-hidden bg-[#1f0d2e] px-5 pb-8 pt-5 text-white sm:min-h-[460px] sm:px-10 sm:pb-10 sm:pt-6 lg:px-[7vw] lg:pb-12">
           <div aria-hidden="true" className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${programme.image})`, backgroundPosition: heroPosition }} />
           <div aria-hidden="true" className="absolute inset-0 bg-[#1f0d2e]/90" />
           <div className="relative z-10 mx-auto max-w-[1440px]">
             <Link href="/#programmes" className="inline-flex w-fit items-center gap-2 text-sm font-medium text-white/80 transition hover:text-[#d9b9e8]"><ArrowLeft className="h-4 w-4" /> Back to programmes</Link>
-            <div className="mx-auto max-w-[980px] pb-2 pt-14 text-center sm:pt-16">
+            <div className="mx-auto max-w-[980px] pb-2 pt-10 text-center sm:pt-12">
               <h1 className="mx-auto max-w-[900px] text-[clamp(1.85rem,4vw,4rem)] font-normal leading-[0.98] tracking-[-0.075em] text-white"><span>{titleLead}</span>{titleRest ? <> <span className="text-[#f06d36]">{titleRest}</span></> : null}</h1>
               <p className="mx-auto mt-5 max-w-[760px] text-base leading-8 text-white/80 sm:text-lg">{programme.overview}</p>
               <div className="mt-7 flex flex-wrap justify-center gap-3"><Link href="#modules" className="inline-flex items-center gap-3 rounded-full bg-[#f47945] px-5 py-2.5 text-sm font-black text-[#351039] transition hover:bg-[#ff8f57]">Explore programme <ArrowRight className="h-4 w-4" /></Link><Link href="/login" className="inline-flex items-center gap-2 rounded-full border border-white/35 px-5 py-2.5 text-sm font-medium text-white transition hover:border-[#d9b9e8] hover:text-[#d9b9e8]">Sign in to start <span aria-hidden>↗</span></Link></div>
