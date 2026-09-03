@@ -57,7 +57,7 @@ export function SandboxPayments() {
           <CardTitle className="flex items-center gap-2 text-base"><WalletCards className="h-4 w-4 text-[#4d176e]" aria-hidden />Sandbox payment monitor</CardTitle>
           <p className="mt-1 text-xs text-[#6e6072]">{SANDBOX_PAYMENT_LABEL}</p>
         </div>
-        <Button type="button" variant="outline" size="sm" onClick={() => { clearSimulatedPayments(); setPayments([]); }} className="gap-1.5"><RotateCcw className="h-3.5 w-3.5" aria-hidden />Reset</Button>
+        <div className="flex items-center gap-2"><Button type="button" variant="outline" size="sm" onClick={() => setPayments(getSimulatedPayments())}>Refresh</Button><Button type="button" variant="outline" size="sm" onClick={() => { clearSimulatedPayments(); setPayments([]); }} className="gap-1.5"><RotateCcw className="h-3.5 w-3.5" aria-hidden />Reset</Button></div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-3 sm:grid-cols-4">

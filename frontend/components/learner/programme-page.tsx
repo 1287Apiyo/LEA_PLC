@@ -43,6 +43,7 @@ export function LearnerProgrammePage({ slug }: { slug: string }) {
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
   const [simulatedEnrollmentIds, setSimulatedEnrollmentIds] = useState<string[]>([]);
   const [checkoutCourse, setCheckoutCourse] = useState<CourseCatalogItem | null>(null);
+  const [learnerName, setLearnerName] = useState("Demo learner");
   const [paymentMethod, setPaymentMethod] = useState<SimulatedPaymentMethod>("mpesa");
   const [phone, setPhone] = useState("2547");
   const [activePayment, setActivePayment] = useState<SimulatedPayment | null>(null);
@@ -61,6 +62,7 @@ export function LearnerProgrammePage({ slug }: { slug: string }) {
   const startCheckout = (course: CourseCatalogItem) => {
     setCheckoutCourse(course);
     setPaymentMethod("mpesa");
+    setLearnerName("Demo learner");
     setPhone("2547");
     setActivePayment(null);
   };
@@ -69,7 +71,7 @@ export function LearnerProgrammePage({ slug }: { slug: string }) {
     if (!checkoutCourse) return;
     const amount = Number(programme?.price.replace(/[^0-9]/g, "")) || 0;
     const payment = createSimulatedPayment({
-      learner: "Current learner",
+      learner: learnerName.trim() || "Unnamed learner",
       courseId: checkoutCourse.id,
       courseTitle: checkoutCourse.title,
       programme: programme?.title ?? "Programme",
@@ -172,6 +174,7 @@ export function LearnerProgrammePage({ slug }: { slug: string }) {
             </div>
             {!activePayment ? (
               <div className="mt-5 space-y-4">
+                <label className="block text-sm font-medium text-[#351039]">Learner name<input value={learnerName} onChange={(event) => setLearnerName(event.target.value)} className="mt-1.5 h-11 w-full rounded-md border border-[#d9cbdc] px-3 text-sm outline-none focus:border-[#4d176e] focus:ring-2 focus:ring-[#4d176e]/15" placeholder="Enter learner name" /></label>
                 <div className="grid grid-cols-2 gap-2 rounded-lg bg-[#f7f3f9] p-1">
                   {(["mpesa", "cash"] as SimulatedPaymentMethod[]).map((method) => (
                     <button key={method} type="button" onClick={() => setPaymentMethod(method)} className={`rounded-md px-3 py-2 text-sm font-semibold transition ${paymentMethod === method ? "bg-white text-[#4d176e] shadow-sm" : "text-[#6e6072]"}`}>{method === "mpesa" ? "M-Pesa STK Push" : "Cash"}</button>
