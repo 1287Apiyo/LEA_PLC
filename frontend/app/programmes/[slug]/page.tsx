@@ -210,6 +210,7 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
                   </summary>
                   <div className="border-t border-[#eadfe9] bg-white px-5 py-6 sm:px-8 sm:py-7">
                     <p className="max-w-[980px] text-base leading-8 text-[#6e6072]">{curriculumExplanation(item, programme.slug)}</p>
+                    {item.project ? <div className="mt-5 rounded-xl border border-[#f47945]/30 bg-[#fff8f3] p-4 sm:p-5"><p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#b94920]">Build project</p><p className="mt-2 text-sm font-semibold leading-6 text-[#351039]">{item.project}</p></div> : null}
                     {item.topics.length > 0 && <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#6e6072]"><span className="font-semibold text-[#351039]">Covers:</span>{item.topics.map((topic) => <span key={topic}>{topic}</span>)}</div>}
                   </div>
                 </details>
