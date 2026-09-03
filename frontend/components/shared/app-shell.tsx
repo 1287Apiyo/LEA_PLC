@@ -22,7 +22,9 @@ interface AppShellProps {
 function Brand() {
   return (
     <div className="flex h-14 items-center gap-2.5 border-b border-sidebar-border px-4">
-      <BrandMark className="h-7 w-7 shrink-0" />
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-sm">
+        <BrandMark className="h-full w-full" />
+      </span>
       <span className="text-sm font-semibold uppercase tracking-wider text-primary">
         {APP_NAME}
       </span>

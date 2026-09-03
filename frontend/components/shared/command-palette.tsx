@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -74,40 +75,41 @@ export function CommandPalette({ role }: CommandPaletteProps) {
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder={`Search ${ROLE_LABELS[role]} workspace…`} />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+        <Command>
+          <CommandInput placeholder={`Search ${ROLE_LABELS[role]} workspace…`} />
+          <CommandList>
+            <CommandEmpty>No results found.</CommandEmpty>
 
-          {/* One CommandGroup per nav section so results are properly labelled */}
-          {sections.map((section, sectionIndex) => (
-            <div key={section.title ?? sectionIndex}>
-              <CommandGroup heading={section.title ?? "Navigate"}>
-                {section.items.map((item) => (
-                  <CommandItem
-                    key={item.href}
-                    // value drives the search filter — include href keywords for better matching
-                    value={`${item.title} ${item.href.replace(/\//g, " ")}`}
-                    onSelect={() => go(item.href)}
-                  >
-                    <item.icon className="mr-2 h-4 w-4" aria-hidden />
-                    <span>{item.title}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-              {sectionIndex < sections.length - 1 && <CommandSeparator />}
-            </div>
-          ))}
+            {/* One CommandGroup per nav section so results are properly labelled */}
+            {sections.map((section, sectionIndex) => (
+              <div key={section.title ?? sectionIndex}>
+                <CommandGroup heading={section.title ?? "Navigate"}>
+                  {section.items.map((item) => (
+                    <CommandItem
+                      key={item.href}
+                      value={`${item.title} ${item.href.replace(/\//g, " ")}`}
+                      onSelect={() => go(item.href)}
+                    >
+                      <item.icon className="mr-2 h-4 w-4" aria-hidden />
+                      <span>{item.title}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                {sectionIndex < sections.length - 1 && <CommandSeparator />}
+              </div>
+            ))}
 
-          <CommandSeparator />
-          <CommandGroup heading="Actions">
-            <CommandItem value="profile settings" onSelect={() => go("/settings/profile")}>
-              <span>Profile settings</span>
-            </CommandItem>
-            <CommandItem value="sign out logout" onSelect={() => go("/logout")}>
-              <span>Sign out</span>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+            <CommandSeparator />
+            <CommandGroup heading="Actions">
+              <CommandItem value="profile settings" onSelect={() => go("/settings/profile")}>
+                <span>Profile settings</span>
+              </CommandItem>
+              <CommandItem value="sign out logout" onSelect={() => go("/logout")}>
+                <span>Sign out</span>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </CommandDialog>
     </>
   );
