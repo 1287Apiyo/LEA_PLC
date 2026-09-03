@@ -20,10 +20,9 @@ export function LandingNav() {
     <header className="sticky top-0 z-50 bg-[#fcfbff]/90 backdrop-blur-xl">
       <div className="px-5 sm:px-10 lg:px-[7vw]">
         <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between">
-        <Link href="/" className="inline-flex items-center gap-2.5" aria-label={`${APP_NAME} home`}>
-          <BrandMark className="h-10 w-10" />
-          <span className="text-[15px] font-black tracking-[0.16em] text-[#241b42]">LEA LABS</span>
-        </Link>
+       <Link href="/" className="inline-flex items-center" aria-label={`${APP_NAME} home`}>
+  <BrandMark className="h-20 w-20" />
+</Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
           {NAV_LINKS.map((link) => (
