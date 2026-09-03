@@ -104,13 +104,16 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
   const curriculumModuleCount = programme.curriculum.filter((item) => item.type !== "break").length;
   const isSoftwareProgramme = programme.slug === "software-engineering";
   const intakeOptions = getIntakeOptions(slug);
+  const heroPosition = programme.slug === "basic-computer-knowledge" ? "70% center" : "center";
 
   return (
     <div className="min-h-screen bg-[#fffdfb] text-[#17131a] selection:bg-[#4d176e]/20">
       <LandingNav />
       <main>
-        <section className="bg-[#1f0d2e] px-5 pb-10 pt-5 text-white sm:px-10 sm:pb-12 sm:pt-6 lg:px-[7vw] lg:pb-14">
-          <div className="mx-auto max-w-[1440px]">
+        <section className="relative isolate min-h-[500px] overflow-hidden bg-[#1f0d2e] px-5 pb-10 pt-5 text-white sm:min-h-[560px] sm:px-10 sm:pb-12 sm:pt-6 lg:px-[7vw] lg:pb-14">
+          <div aria-hidden="true" className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${programme.image})`, backgroundPosition: heroPosition }} />
+          <div aria-hidden="true" className="absolute inset-0 bg-[#1f0d2e]/90" />
+          <div className="relative z-10 mx-auto max-w-[1440px]">
             <Link href="/#programmes" className="inline-flex w-fit items-center gap-2 text-sm font-medium text-white/80 transition hover:text-[#d9b9e8]"><ArrowLeft className="h-4 w-4" /> Back to programmes</Link>
             <div className="mx-auto max-w-[980px] pb-2 pt-14 text-center sm:pt-16">
               <h1 className="mx-auto max-w-[900px] text-[clamp(1.85rem,4vw,4rem)] font-normal leading-[0.98] tracking-[-0.075em] text-white"><span>{titleLead}</span>{titleRest ? <> <span className="text-[#f06d36]">{titleRest}</span></> : null}</h1>

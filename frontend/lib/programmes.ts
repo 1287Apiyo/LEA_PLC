@@ -31,7 +31,7 @@ export type CurriculumItem = {
   type?: "break";
 };
 
-const IMAGE_ROOT = "https://leasystem-jgtiwg7u.manus.space/manus-storage";
+
 
 export const PROGRAMMES: Programme[] = [
   {
@@ -43,7 +43,7 @@ export const PROGRAMMES: Programme[] = [
     bullets: ["Web foundations", "Product thinking", "Project practice"],
     icon: "</>",
     tone: "from-[#efe2f7] to-[#f8eef9]",
-    image: `${IMAGE_ROOT}/lea-programme-collaboration_c9aa5e6b.jpg`,
+    image: "/images/programmes/software-engineering-hero.png",
     eyebrow: "Build digital products",
     overview: "A practical route into software engineering for learners who want to understand how digital products are planned, built, tested, and improved.",
     outcome: "Leave with a portfolio-ready project, a clearer technical vocabulary, and a repeatable way to keep building.",
@@ -82,7 +82,7 @@ export const PROGRAMMES: Programme[] = [
     bullets: ["AI foundations", "Practical workflows", "Responsible use"],
     icon: "✦",
     tone: "from-[#fff0e8] to-[#f8e2d9]",
-    image: `${IMAGE_ROOT}/lea-hero-learning-current_d35697f7.jpg`,
+    image: "/images/programmes/applied-ai-hero.png",
     eyebrow: "Work thoughtfully with AI",
     overview: "A grounded introduction to applied AI that helps learners move beyond the hype and use intelligent tools with clarity, care, and practical intent.",
     outcome: "Leave with a small library of useful workflows, stronger judgement, and a practical point of view on responsible AI use.",
@@ -119,7 +119,7 @@ export const PROGRAMMES: Programme[] = [
     bullets: ["Digital confidence", "Beginner friendly", "Kids welcome"],
     icon: "⌘",
     tone: "from-[#e8f2ef] to-[#eef7f4]",
-    image: `${IMAGE_ROOT}/lea-community-launch_f1ae296d.jpg`,
+    image: "/images/programmes/digital-foundations-hero.png",
     eyebrow: "Start with confidence",
     overview: "A welcoming first step for beginners and kids who want to feel at home with computers, the internet, and the everyday tools that open up learning.",
     outcome: "Leave with practical digital confidence, safer online habits, and a foundation for your next learning step.",
