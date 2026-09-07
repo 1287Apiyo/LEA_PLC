@@ -9,8 +9,8 @@ export function LandingFooter() {
         <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex flex-col items-start gap-2 text-xs leading-5 text-[#d7c6df]">
             <div className="inline-flex items-start gap-2"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f47945]" strokeWidth={2} aria-hidden="true" /><span>Applewood Adams, 13th Floor</span></div>
-            <a className="inline-flex items-center gap-2 transition hover:text-white" href="tel:0746821567"><Phone className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />0746821567</a>
-            <a className="inline-flex items-center gap-2 transition hover:text-white" href="mailto:leaorganizationke@gmail.com"><Mail className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />leaorganizationke@gmail.com</a>
+            <a className="inline-flex items-center gap-2 transition hover:text-white" href="tel:0729929101"><Phone className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />0729 929101</a>
+            <a className="inline-flex items-center gap-2 transition hover:text-white" href="mailto:lealabsplc@gmail.com"><Mail className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />lealabsplc@gmail.com</a>
           </div>
           <div className="flex flex-col items-start gap-4">
             <div className="text-left">

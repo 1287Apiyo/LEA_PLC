@@ -62,7 +62,7 @@ export default function LandingPage() {
         {showCourseNotice && (
           <aside className="relative z-[60] flex min-h-[44px] items-center bg-[#4d176e] px-5 py-1.5 text-white sm:px-10 lg:px-[7vw]" aria-label={`${noticeProgramme.title} course announcement`}>
             <div className="mx-auto flex w-full max-w-[1440px] items-center gap-5 pr-8 text-[10px] sm:gap-7 sm:text-xs">
-              <a href="mailto:leaorganizationke@gmail.com" className="hidden items-center gap-2 whitespace-nowrap text-white/85 transition hover:text-white lg:inline-flex"><Mail className="h-3.5 w-3.5 text-[#f47945]" /> leaorganizationke@gmail.com</a>
+              <a href="mailto:lealabsplc@gmail.com" className="hidden items-center gap-2 whitespace-nowrap text-white/85 transition hover:text-white lg:inline-flex"><Mail className="h-3.5 w-3.5 text-[#f47945]" /> lealabsplc@gmail.com</a>
               <span className="hidden items-center gap-2 whitespace-nowrap text-white/85 sm:inline-flex"><span className="text-[#f47945]">●</span> Mon–Fri 8:00 am – 5:00 pm EAT</span>
               <p className="min-w-0 flex-1 truncate text-xs font-medium sm:text-sm">{noticeProgramme.title}</p>
               <Link href={`/programmes/${noticeProgramme.slug}`} className="inline-flex h-7 shrink-0 items-center gap-1 rounded-sm bg-[#f47945] px-3 text-[10px] font-black text-[#351039] transition hover:bg-[#ff8f57] sm:px-4 sm:text-xs">Enroll <ArrowRight className="h-3 w-3" /></Link>
@@ -199,8 +199,8 @@ export default function LandingPage() {
             <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex flex-col items-start gap-2 text-xs leading-5 text-[#d7c6df]">
                 <div className="inline-flex items-start gap-2"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f47945]" strokeWidth={2} aria-hidden="true" /><span>Applewood Adams, 13th Floor</span></div>
-                <a className="inline-flex items-center gap-2 transition hover:text-white" href="tel:0746821567"><Phone className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />0746821567</a>
-                <a className="inline-flex items-center gap-2 transition hover:text-white" href="mailto:leaorganizationke@gmail.com"><Mail className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />leaorganizationke@gmail.com</a>
+                <a className="inline-flex items-center gap-2 transition hover:text-white" href="tel:0729929101"><Phone className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />0729 929101</a>
+                <a className="inline-flex items-center gap-2 transition hover:text-white" href="mailto:lealabsplc@gmail.com"><Mail className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />lealabsplc@gmail.com</a>
               </div>
               <div className="flex flex-col items-start gap-4">
                 <div className="text-left">

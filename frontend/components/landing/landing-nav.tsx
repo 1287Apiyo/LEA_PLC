@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { BrandMark } from "@/components/shared/brand-mark";
 import { APP_NAME } from "@/lib/constants";
+import { PROGRAMMES } from "@/lib/programmes";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -25,7 +26,18 @@ export function LandingNav() {
 </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
-          {NAV_LINKS.map((link) => (
+          {NAV_LINKS.map((link) => link.label === "Programs" ? (
+            <div key={link.href} className="group relative">
+              <button type="button" className="inline-flex items-center gap-1 text-sm font-bold text-[#716981] transition hover:text-[#f47945] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-4">
+                Programs <ChevronDown className="h-3.5 w-3.5 transition group-hover:rotate-180" />
+              </button>
+              <div className="pointer-events-none absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 pt-4 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                <div className="overflow-hidden rounded-2xl border border-[#4d176e]/10 bg-white p-2 shadow-[0_18px_45px_rgba(77,23,110,.16)]">
+                  {PROGRAMMES.map((programme) => <Link key={programme.slug} href={`/programmes/${programme.slug}`} className="block rounded-xl px-4 py-3 transition hover:bg-[#fff0ea]"><span className="block text-sm font-bold text-[#351039]">{programme.title}</span><span className="mt-1 block text-xs leading-5 text-[#6e6072]">{programme.short}</span></Link>)}
+                </div>
+              </div>
+            </div>
+          ) : (
             <Link key={link.href} href={link.href} className="text-sm font-bold text-[#716981] transition hover:text-[#f47945]">
               {link.label}
             </Link>
@@ -50,7 +62,14 @@ export function LandingNav() {
       {open && (
         <div className="bg-[#fcfbff] px-5 pb-5 pt-3 shadow-lg md:hidden">
           <nav className="space-y-1" aria-label="Mobile navigation">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map((link) => link.label === "Programs" ? (
+              <div key={link.href} className="rounded-xl bg-[#fffaf7] px-3 py-2">
+                <p className="px-0 py-2 text-sm font-bold text-[#4d176e]">Programs</p>
+                <div className="space-y-1 border-l border-[#f47945]/35 pl-3">
+                  {PROGRAMMES.map((programme) => <Link key={programme.slug} href={`/programmes/${programme.slug}`} onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 text-xs font-semibold text-[#5d5470] transition hover:bg-[#fff0ea] hover:text-[#f47945]">{programme.title}</Link>)}
+                </div>
+              </div>
+            ) : (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 text-sm font-bold text-[#5d5470] transition hover:bg-[#fff0ea] hover:text-[#f47945]">
                 {link.label}
               </Link>
