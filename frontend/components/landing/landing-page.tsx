@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,6 +13,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  X,
 } from "lucide-react";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { TestimonialsRotator } from "@/components/landing/testimonials-rotator";
@@ -45,11 +47,36 @@ const support = [
 
 
 export default function LandingPage() {
+  const [showCourseNotice, setShowCourseNotice] = useState(true);
+  const [noticeProgrammeIndex, setNoticeProgrammeIndex] = useState(0);
+
+  useEffect(() => {
+    const daysSinceEpoch = Math.floor(Date.now() / 86_400_000);
+    setNoticeProgrammeIndex(daysSinceEpoch % programmes.length);
+  }, []);
+
+  const noticeProgramme = programmes[noticeProgrammeIndex] ?? programmes[0];
+
   return (
     <div id="top" className="min-h-screen overflow-hidden bg-[#fffdfb] text-[#26142f] selection:bg-[#f47945]/25">
+        {showCourseNotice && (
+          <aside className="relative z-[60] flex min-h-[44px] items-center bg-[#4d176e] px-5 py-1.5 text-white sm:px-10 lg:px-[7vw]" aria-label={`${noticeProgramme.title} course announcement`}>
+            <div className="mx-auto flex w-full max-w-[1440px] items-center gap-5 pr-8 text-[10px] sm:gap-7 sm:text-xs">
+              <a href="mailto:leaorganizationke@gmail.com" className="hidden items-center gap-2 whitespace-nowrap text-white/85 transition hover:text-white lg:inline-flex"><Mail className="h-3.5 w-3.5 text-[#f47945]" /> leaorganizationke@gmail.com</a>
+              <span className="hidden items-center gap-2 whitespace-nowrap text-white/85 sm:inline-flex"><span className="text-[#f47945]">●</span> Mon–Fri 8:00 am – 5:00 pm EAT</span>
+              <p className="min-w-0 flex-1 truncate text-xs font-medium sm:text-sm">{noticeProgramme.title}</p>
+              <Link href={`/programmes/${noticeProgramme.slug}`} className="inline-flex h-7 shrink-0 items-center gap-1 rounded-sm bg-[#f47945] px-3 text-[10px] font-black text-[#351039] transition hover:bg-[#ff8f57] sm:px-4 sm:text-xs">Enroll <ArrowRight className="h-3 w-3" /></Link>
+              <button type="button" onClick={() => setShowCourseNotice(false)} className="absolute right-3 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-white/75 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] sm:right-6" aria-label="Dismiss Software Engineering announcement">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </aside>
+        )}
+
       <LandingNav />
 
       <main>
+
         {/* HERO — LEA's editorial learning still-life */}
         <section className="relative h-[520px] min-h-[520px] overflow-hidden bg-[#12091a] text-white sm:h-auto sm:min-h-[680px] lg:min-h-[720px]">
           <Image src={HERO_IMAGE} alt="An African learner working on a laptop in a LEA learning environment" fill priority quality={100} sizes="100vw" unoptimized className="scale-[1.22] object-cover object-[78%_center] origin-[78%_52%] sm:scale-100 sm:object-[72%_center] lg:object-[62%_center]" />
