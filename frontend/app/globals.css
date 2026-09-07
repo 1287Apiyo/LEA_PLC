@@ -290,3 +290,113 @@ html {
     transform: none;
   }
 }
+
+/* Landing-page motion: quiet, editorial movement rather than decorative noise. */
+@keyframes lea-hero-drift {
+  0%,
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.035) translate3d(-0.6%, -0.35%, 0);
+  }
+}
+
+@keyframes lea-orb-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0) rotate(5deg);
+  }
+}
+
+.lea-hero-image {
+  will-change: transform;
+}
+
+.lea-hero-slide {
+  transition: opacity 1100ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.lea-float-orb {
+  animation: lea-orb-float 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+.lea-float-orb-delay {
+  animation-delay: -2.5s;
+  animation-duration: 9s;
+}
+
+.lea-stagger-1,
+.lea-stagger-2,
+.lea-stagger-3 {
+  animation: lea-fade-up 650ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.lea-stagger-1 { animation-delay: 80ms; }
+.lea-stagger-2 { animation-delay: 170ms; }
+.lea-stagger-3 { animation-delay: 260ms; }
+
+@media (max-width: 639px) {
+  .lea-hero-image {
+    animation-name: lea-hero-drift-mobile;
+  }
+}
+
+@keyframes lea-hero-drift-mobile {
+  0%,
+  100% {
+    transform: scale(1.22) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.25) translate3d(-0.35%, 0, 0);
+  }
+}
+
+@keyframes lea-hero-enter {
+  from {
+    opacity: 0;
+    transform: scale(1.035) translate3d(1.2%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes lea-slide-content-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.lea-hero-enter {
+  animation: none;
+}
+
+.lea-slide-content-enter {
+  animation: lea-slide-content-enter 650ms cubic-bezier(0.23, 1, 0.32, 1) 160ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lea-hero-image,
+  .lea-float-orb,
+  .lea-stagger-1,
+  .lea-stagger-2,
+  .lea-stagger-3 {
+    animation: none;
+  }
+
+  .lea-hero-enter,
+  .lea-slide-content-enter {
+    animation: none;
+  }
+}

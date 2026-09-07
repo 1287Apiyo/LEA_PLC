@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
+import { SocialLinks } from "@/components/landing/social-links";
 
 export function LandingFooter() {
   return (
@@ -11,11 +12,12 @@ export function LandingFooter() {
             <div className="inline-flex items-start gap-2"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f47945]" strokeWidth={2} aria-hidden="true" /><span>Applewood Adams, 13th Floor</span></div>
             <a className="inline-flex items-center gap-2 transition hover:text-white" href="tel:0729929101"><Phone className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />0729 929101</a>
             <a className="inline-flex items-center gap-2 transition hover:text-white" href="mailto:lealabsplc@gmail.com"><Mail className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />lealabsplc@gmail.com</a>
+            <div className="mt-5"><SocialLinks /></div>
           </div>
           <div className="flex flex-col items-start gap-4">
-            <div className="text-left">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#f6eef9]">LEA Labs</p>
-              <p className="mt-2 text-xs leading-6 text-[#d7c6df]">Practical learning for digital work.</p>
+              <div className="text-left">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#f6eef9]">LEA Labs</p>
+                <p className="mt-2 text-xs leading-6 text-[#d7c6df]">Practical learning for digital work.</p>
             </div>
             <Link className="inline-flex items-center gap-2 self-start bg-[#f47945] px-5 py-3 text-xs font-semibold text-[#351039] transition hover:bg-white" href="/register">Get started <ArrowRight className="h-3.5 w-3.5" /></Link>
           </div>

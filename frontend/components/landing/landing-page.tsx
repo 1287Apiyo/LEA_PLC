@@ -17,12 +17,19 @@ import {
 } from "lucide-react";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { TestimonialsRotator } from "@/components/landing/testimonials-rotator";
+import { SocialLinks } from "@/components/landing/social-links";
 import { APP_NAME } from "@/lib/constants";
 import { PROGRAMMES as programmes } from "@/lib/programmes";
 
 const HERO_IMAGE = "/lea-home-hero-teen-v2.png";
 const MENTOR_IMAGE = "/lea-community-dashboard.png";
 const COMMUNITY_IMAGE = "/lea-home-community.png";
+
+const HERO_SLIDES = [
+  { slug: "software-engineering", image: HERO_IMAGE, eyebrow: "LEA Labs · learn by doing", title: "Open a world of possibility.", copy: "LEA helps learners across Africa turn curiosity into practical digital confidence through guided programmes, hands-on projects, and support from people who understand the journey. Start with the foundations, practise on real challenges, and build work you can carry into your next opportunity.", cta: "Find your starting point" },
+  { slug: "applied-ai", image: "/lea-hero-applied-ai.png", eyebrow: "Applied AI · work thoughtfully", title: "Make AI useful.", copy: "LEA helps you move beyond the hype and use intelligent tools with clarity, care, and practical intent. Explore workflows for research, decision-making, and creative work while keeping human judgement at the centre.", cta: "Explore Applied AI" },
+  { slug: "basic-computer-knowledge", image: "/lea-hero-digital-foundations.png", eyebrow: "Digital Foundations · start with confidence", title: "Start with confidence.", copy: "LEA gives beginners, children, and families a welcoming first step into digital life. Build confidence with devices, files, the internet, and everyday tools through supportive practice you can carry into learning, school, and home.", cta: "Explore Digital Foundations" },
+];
 
 const PROGRAMME_CARD_IMAGES: Record<string, string> = {
   "software-engineering": "/lea-home-program-software.png",
@@ -49,13 +56,20 @@ const support = [
 export default function LandingPage() {
   const [showCourseNotice, setShowCourseNotice] = useState(true);
   const [noticeProgrammeIndex, setNoticeProgrammeIndex] = useState(0);
+  const [heroIndex, setHeroIndex] = useState(0);
 
   useEffect(() => {
     const daysSinceEpoch = Math.floor(Date.now() / 86_400_000);
     setNoticeProgrammeIndex(daysSinceEpoch % programmes.length);
   }, []);
 
+  useEffect(() => {
+    const timer = window.setInterval(() => setHeroIndex((index) => (index + 1) % HERO_SLIDES.length), 8000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   const noticeProgramme = programmes[noticeProgrammeIndex] ?? programmes[0];
+  const activeHero = HERO_SLIDES[heroIndex];
 
   return (
     <div id="top" className="min-h-screen overflow-hidden bg-[#fffdfb] text-[#26142f] selection:bg-[#f47945]/25">
@@ -79,21 +93,24 @@ export default function LandingPage() {
 
         {/* HERO — LEA's editorial learning still-life */}
         <section className="relative h-[520px] min-h-[520px] overflow-hidden bg-[#12091a] text-white sm:h-auto sm:min-h-[680px] lg:min-h-[720px]">
-          <Image src={HERO_IMAGE} alt="An African learner working on a laptop in a LEA learning environment" fill priority quality={100} sizes="100vw" unoptimized className="scale-[1.22] object-cover object-[78%_center] origin-[78%_52%] sm:scale-100 sm:object-[72%_center] lg:object-[62%_center]" />
+          <div aria-hidden="true" className="absolute inset-0">
+            {HERO_SLIDES.map((slide, index) => <Image key={slide.slug} src={slide.image} alt="" fill priority={index === 0} quality={100} sizes="100vw" unoptimized className={`lea-hero-slide lea-hero-image ${slide.slug === "basic-computer-knowledge" ? "scale-[1.22] object-[78%_center] origin-[78%_52%] sm:scale-100 sm:object-[72%_center] lg:object-[62%_center]" : "scale-[0.94] object-[72%_top] origin-[72%_top] sm:scale-[0.96] sm:object-[68%_top] lg:scale-[0.96] lg:object-[62%_top]"} object-cover ${heroIndex === index ? "opacity-100" : "opacity-0"}`} />)}
+          </div>
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,9,26,0.9)_0%,rgba(18,9,26,0.66)_34%,rgba(18,9,26,0.08)_72%,rgba(18,9,26,0.18)_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(18,9,26,0.72)_0%,transparent_45%),radial-gradient(circle_at_55%_60%,rgba(244,121,69,0.14),transparent_30%)]" />
           <div className="relative flex h-full min-h-0 items-end justify-start px-5 pb-32 sm:h-auto sm:min-h-[680px] sm:px-10 sm:pb-44 lg:min-h-[720px] lg:px-[7vw] lg:pb-48">
             <div className="mx-auto mr-auto w-full max-w-[1440px]">
-              <div className="w-full max-w-[900px]">
-              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#f7c2aa]">LEA Labs · learn by doing</p>
-              <h1 className="mt-5 max-w-[980px] text-[clamp(2.7rem,6vw,6rem)] font-medium leading-[0.9] tracking-[-0.075em] text-[#fffdfb] lg:whitespace-nowrap">
-                Open a world <span className="block text-[#f47945]">of possibility.</span>
+              <div key={activeHero.slug} className="lea-slide-content-enter w-full max-w-[900px]">
+              <p key={`${activeHero.slug}-eyebrow`} className="lea-stagger-1 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f7c2aa]">{activeHero.eyebrow}</p>
+              <h1 className="lea-stagger-2 mt-5 max-w-[980px] text-[clamp(2.7rem,6vw,6rem)] font-medium leading-[0.9] tracking-[-0.075em] text-[#fffdfb] lg:whitespace-nowrap">
+                {activeHero.title.split(" ").slice(0, -1).join(" ")} <span className="block text-[#f47945]">{activeHero.title.split(" ").slice(-1)}</span>
               </h1>
-              <p className="mt-6 max-w-[560px] text-sm leading-7 text-white/80 sm:text-base">LEA helps learners across Africa turn curiosity into practical digital confidence through guided programmes, hands-on projects, and support from people who understand the journey. <span className="hidden sm:inline">Start with the foundations, practise on real challenges, and build work you can carry into your next opportunity.</span></p>
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link href="#programmes" className="inline-flex h-11 items-center gap-3 rounded-full border border-[#f47945] bg-[#f47945] px-6 text-xs font-bold text-[#351039] transition hover:border-white hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#12091a]">Find your starting point <ArrowDownRight className="h-4 w-4" /></Link>
+              <p key={`${activeHero.slug}-copy`} className="lea-stagger-2 mt-6 max-w-[560px] text-sm leading-7 text-white/80 sm:text-base">{activeHero.copy}</p>
+              <div className="lea-stagger-3 mt-8 flex flex-wrap items-center gap-4">
+                <Link href={`/programmes/${activeHero.slug}`} className="inline-flex h-11 items-center gap-3 rounded-full border border-[#f47945] bg-[#f47945] px-6 text-xs font-bold text-[#351039] transition hover:border-white hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#12091a]">{activeHero.cta} <ArrowDownRight className="h-4 w-4" /></Link>
                 <Link href="#programmes" className="inline-flex items-center gap-2 border-b border-white/45 pb-1 text-xs font-bold text-white transition hover:border-[#f47945] hover:text-[#f47945]">Explore programmes <span aria-hidden>↗</span></Link>
               </div>
+              <div className="mt-8 flex items-center gap-2" aria-label="Hero programme slides">{HERO_SLIDES.map((slide, index) => <button key={slide.slug} type="button" onClick={() => setHeroIndex(index)} aria-label={`Show ${slide.title}`} aria-current={heroIndex === index ? "true" : undefined} className={`h-1.5 rounded-full transition-all ${heroIndex === index ? "w-10 bg-[#f47945]" : "w-5 bg-white/40 hover:bg-white/70"}`} />)}</div>
             </div>
           </div>
         </div>
@@ -201,6 +218,7 @@ export default function LandingPage() {
                 <div className="inline-flex items-start gap-2"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f47945]" strokeWidth={2} aria-hidden="true" /><span>Applewood Adams, 13th Floor</span></div>
                 <a className="inline-flex items-center gap-2 transition hover:text-white" href="tel:0729929101"><Phone className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />0729 929101</a>
                 <a className="inline-flex items-center gap-2 transition hover:text-white" href="mailto:lealabsplc@gmail.com"><Mail className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />lealabsplc@gmail.com</a>
+                <div className="mt-5"><SocialLinks /></div>
               </div>
               <div className="flex flex-col items-start gap-4">
                 <div className="text-left">
