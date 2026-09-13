@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
-import { BrandMark } from "@/components/shared/brand-mark";
 import { APP_NAME } from "@/lib/constants";
 import { PROGRAMMES } from "@/lib/programmes";
 
@@ -22,9 +21,15 @@ export function LandingNav() {
     <header className="sticky top-0 z-50 bg-[#fcfbff]/90 backdrop-blur-xl">
       <div className="px-5 sm:px-10 lg:px-[7vw]">
         <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between">
-       <Link href="/" className="inline-flex items-center" aria-label={`${APP_NAME} home`}>
-  <BrandMark className="h-20 w-20" />
-</Link>
+          <Link href="/" className="inline-flex items-center" aria-label={`${APP_NAME} home`}>
+            <img
+              src="/lea-labs-plc-logo.jpeg"
+              alt="LEA Labs PLC"
+              className="h-14 w-auto max-w-[68vw] object-contain sm:h-16 md:h-[68px] md:max-w-none"
+              loading="eager"
+              draggable={false}
+            />
+          </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
           {NAV_LINKS.map((link) => link.label === "Programs" ? (

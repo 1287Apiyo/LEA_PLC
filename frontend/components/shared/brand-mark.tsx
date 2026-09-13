@@ -3,9 +3,9 @@ type BrandMarkProps = { className?: string };
 export function BrandMark({ className }: BrandMarkProps) {
   return (
     <img
-      src="/lea-logo.png"
-      alt="LEA Learn Explore Achieve logo"
-      className={`aspect-square rounded-full object-contain ${className ?? ""}`}
+      src="/lea-labs-plc-logo.jpeg"
+      alt="LEA Labs PLC"
+      className={`object-contain ${className ?? ""}`}
       loading="eager"
       draggable={false}
     />

@@ -11,7 +11,6 @@ import { CommandPalette } from "@/components/shared/command-palette";
 import { NotificationsPopover } from "@/components/shared/notifications-popover";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { UserMenu } from "@/components/shared/user-menu";
-import { APP_NAME } from "@/lib/constants";
 import type { Role } from "@/types/auth";
 
 interface AppShellProps {
@@ -21,13 +20,8 @@ interface AppShellProps {
 
 function Brand() {
   return (
-    <div className="flex h-14 items-center gap-2.5 border-b border-sidebar-border px-4">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-sm">
-        <BrandMark className="h-full w-full" />
-      </span>
-      <span className="text-sm font-semibold uppercase tracking-wider text-primary">
-        {APP_NAME}
-      </span>
+    <div className="flex h-14 items-center border-b border-sidebar-border px-3">
+      <BrandMark className="h-11 w-full" />
     </div>
   );
 }

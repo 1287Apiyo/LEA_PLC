@@ -1,6 +1,5 @@
 import { Star } from "lucide-react";
 import { BrandMark } from "@/components/shared/brand-mark";
-import { APP_NAME } from "@/lib/constants";
 
 /** Existing auth hero visual, kept static and free of extra overlays. */
 const HERO_URL = "https://sc04.alicdn.com/kf/A6f2b031566e04faab49c31d733236971q.jpg";
@@ -8,13 +7,8 @@ const HERO_URL = "https://sc04.alicdn.com/kf/A6f2b031566e04faab49c31d733236971q.
 /** Brand mark and wordmark shared by the desktop and mobile auth experiences. */
 export function AuthBrand({ light = false }: { light?: boolean }) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white p-1.5 shadow-sm">
-        <BrandMark className="h-full w-full" />
-      </span>
-      <span className={`text-xl font-semibold uppercase tracking-[0.18em] ${light ? "text-white" : "text-primary"}`}>
-        {APP_NAME}
-      </span>
+    <div className={`inline-flex items-center rounded-md bg-white p-1 shadow-sm ${light ? "ring-1 ring-white/20" : ""}`}>
+      <BrandMark className="h-14 w-56" />
     </div>
   );
 }
