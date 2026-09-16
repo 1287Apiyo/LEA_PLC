@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
+import { WhatsAppFloat } from "@/components/shared/whatsapp-float";
 
 import { APP_NAME } from "@/lib/constants";
 import "./globals.css";
@@ -38,6 +39,7 @@ export default function RootLayout({
           <QueryProvider>
             <ErrorBoundary>{children}</ErrorBoundary>
             <Toaster richColors position="top-right" closeButton />
+            <WhatsAppFloat />
           </QueryProvider>
         </ThemeProvider>
       </body>
