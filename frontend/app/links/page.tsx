@@ -14,7 +14,7 @@ import {
 import { BrandMark } from "@/components/shared/brand-mark";
 
 export const metadata: Metadata = {
-  title: "LEA Labs | Start here",
+  title: "Start here",
   description:
     "Explore LEA Labs programmes, learning opportunities, corporate training, and practical digital skills.",
 };

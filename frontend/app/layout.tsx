@@ -11,8 +11,8 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
   title: {
-    default: `${APP_NAME} | Digital Products | Technology Consulting`,
-    template: `%s | ${APP_NAME}`,
+    default: `${APP_NAME} | Digital products, consulting and skills`,
+    template: `${APP_NAME} | %s`,
   },
   description:
     "LEA Labs is a technology company building digital products, providing technology consulting, and delivering practical coding and digital skills programs for young learners and organisations.",
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: APP_NAME,
-    title: `${APP_NAME} | Digital Products | Technology Consulting`,
+    title: `${APP_NAME} | Digital products, consulting and skills`,
     description: "LEA Labs builds digital products, provides technology consulting, and delivers practical coding and digital skills programs for young learners and organisations.",
     images: [{ url: "/icon.png", width: 64, height: 64, alt: "LEA Labs" }],
   },
   twitter: {
     card: "summary",
-    title: `${APP_NAME} | Digital Products | Technology Consulting`,
+    title: `${APP_NAME} | Digital products, consulting and skills`,
     description: "LEA Labs builds digital products, provides technology consulting, and delivers practical coding and digital skills programs for young learners and organisations.",
     images: ["/icon.png"],
   },

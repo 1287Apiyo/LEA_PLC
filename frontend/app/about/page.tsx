@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Compass, GraduationCap, Handshake, Hammer, Leaf, Lightbulb, MapPin, MessageCircle, Rocket, Search, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { LandingFooter } from "@/components/landing/landing-footer";
 import { MobileCarousel } from "@/components/shared/mobile-carousel";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn about LEA Labs, a technology company building useful digital products, supporting organisations, and creating practical learning pathways.",
+};
 
 const ABOUT_HERO_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-community-launch_f1ae296d.jpg";
 const MENTOR_IMAGE = "https://leasystem-jgtiwg7u.manus.space/manus-storage/lea-mentor-support_9d78971d.jpg";
@@ -65,8 +71,3 @@ export default function AboutPage() {
     </div>
   );
 }
-
-export const metadata = {
-  title: "About LEA Labs",
-  description: "Learn about LEA Labs, our story, mission, vision, values, team, and learning ecosystem.",
-};

@@ -26,4 +26,4 @@ export default function ServicesPage() {
   </main><LandingFooter /></div>;
 }
 
-export const metadata = { title: "Services | LEA Labs", description: "Focused product delivery, connected systems, and practical technology guidance from LEA Labs." };
+export const metadata = { title: "Services", description: "Focused product delivery, connected systems, and practical technology consulting from LEA Labs." };

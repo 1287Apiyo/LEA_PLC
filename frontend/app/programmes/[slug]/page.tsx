@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: ProgrammePageProps) {
   const { slug } = await params;
   const programme = getProgramme(slug);
   return {
-    title: programme ? `${programme.title} | LEA Labs` : "Programme | LEA Labs",
+    title: programme ? programme.title : "Programme",
     description: programme?.overview,
   };
 }
