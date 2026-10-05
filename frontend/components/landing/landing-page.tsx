@@ -92,13 +92,13 @@ export default function LandingPage() {
       <main>
 
         {/* HERO — LEA's editorial learning still-life */}
-        <section className="relative h-[520px] min-h-[520px] overflow-hidden bg-[#12091a] text-white sm:h-auto sm:min-h-[680px] lg:min-h-[720px]">
+        <section className="relative h-[620px] min-h-[620px] overflow-hidden bg-[#12091a] text-white sm:h-auto sm:min-h-[680px] lg:min-h-[720px]">
           <div aria-hidden="true" className="absolute inset-0">
             {HERO_SLIDES.map((slide, index) => <Image key={slide.slug} src={slide.image} alt="" fill priority={index === 0} quality={100} sizes="100vw" unoptimized className={`lea-hero-slide lea-hero-image ${slide.slug === "basic-computer-knowledge" ? "scale-[1.22] object-[78%_center] origin-[78%_52%] sm:scale-100 sm:object-[72%_center] lg:object-[62%_center]" : "scale-[0.94] object-[72%_top] origin-[72%_top] sm:scale-[0.96] sm:object-[68%_top] lg:scale-[0.96] lg:object-[62%_top]"} object-cover ${heroIndex === index ? "opacity-100" : "opacity-0"}`} />)}
           </div>
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,9,26,0.9)_0%,rgba(18,9,26,0.66)_34%,rgba(18,9,26,0.08)_72%,rgba(18,9,26,0.18)_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(18,9,26,0.72)_0%,transparent_45%),radial-gradient(circle_at_55%_60%,rgba(244,121,69,0.14),transparent_30%)]" />
-          <div className="relative flex h-full min-h-0 items-end justify-start px-5 pb-32 sm:h-auto sm:min-h-[680px] sm:px-10 sm:pb-44 lg:min-h-[720px] lg:px-[7vw] lg:pb-48">
+          <div className="relative flex h-full min-h-0 items-start justify-start px-5 pb-20 pt-24 sm:h-auto sm:min-h-[680px] sm:items-end sm:px-10 sm:pb-44 sm:pt-0 lg:min-h-[720px] lg:px-[7vw] lg:pb-48">
             <div className="mx-auto mr-auto w-full max-w-[1440px]">
               <div key={activeHero.slug} className="lea-slide-content-enter w-full max-w-[900px]">
               <h1 className="lea-stagger-2 mt-0 max-w-[980px] text-[clamp(2.7rem,6vw,6rem)] font-medium leading-[0.9] tracking-[-0.075em] text-[#fffdfb] lg:whitespace-nowrap">
