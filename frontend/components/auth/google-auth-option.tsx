@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/auth-store";
-import { firebaseAuth } from "@/lib/firebase/client";
+import { getFirebaseAuth } from "@/lib/firebase/client";
 import { api } from "@/lib/api-client";
 import { ROLE_HOME } from "@/lib/constants";
 import type { AuthResponse, Role } from "@/types/auth";
@@ -22,7 +22,7 @@ export function GoogleAuthOption({ role = "learner" }: { role?: Extract<Role, "l
     try {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
-      const credential = await signInWithPopup(firebaseAuth, provider);
+      const credential = await signInWithPopup(getFirebaseAuth(), provider);
       const idToken = await credential.user.getIdToken();
       const response = await api.post<AuthResponse>("/auth/google", { idToken, role }, { auth: false });
 
