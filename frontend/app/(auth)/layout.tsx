@@ -1,7 +1,12 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
 import { AuthBrandPanel } from "@/components/auth/auth-brand-panel";
 import { AuthLoadingOverlay } from "@/components/auth/auth-loading-overlay";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

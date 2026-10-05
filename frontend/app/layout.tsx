@@ -9,12 +9,36 @@ import { APP_NAME } from "@/lib/constants";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
   title: {
-    default: `${APP_NAME} â€” Integrated Learning & Operations Platform`,
-    template: `%s Â· ${APP_NAME}`,
+    default: `${APP_NAME} — Integrated Learning & Operations Platform`,
+    template: `%s · ${APP_NAME}`,
   },
   description:
     "The digital operating system for LEA Labs: learning, corporate training, technology services, partnerships, finance and reporting.",
+  keywords: ["LEA Labs", "online learning", "professional training", "digital skills", "education platform", "corporate learning"],
+  applicationName: APP_NAME,
+  authors: [{ name: "LEA Labs" }],
+  creator: "LEA Labs",
+  publisher: "LEA Labs",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
+  openGraph: {
+    type: "website",
+    siteName: APP_NAME,
+    title: `${APP_NAME} — Learn, explore and achieve`,
+    description: "A digital learning and operations platform for practical skills, professional growth and meaningful work.",
+    images: [{ url: "/icon.png", width: 64, height: 64, alt: "LEA Labs" }],
+  },
+  twitter: {
+    card: "summary",
+    title: `${APP_NAME} — Learn, explore and achieve`,
+    description: "A digital learning and operations platform for practical skills and professional growth.",
+    images: ["/icon.png"],
+  },
 };
 
 export const viewport: Viewport = {
