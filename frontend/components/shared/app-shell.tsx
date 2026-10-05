@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Image from "next/image";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { BrandMark } from "@/components/shared/brand-mark";
 import { SidebarNav } from "@/components/shared/sidebar-nav";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { CommandPalette } from "@/components/shared/command-palette";
@@ -20,8 +20,10 @@ interface AppShellProps {
 
 function Brand() {
   return (
-    <div className="flex h-14 items-center border-b border-sidebar-border px-3">
-      <BrandMark className="h-11 w-full" />
+    <div className="flex h-16 items-center border-b border-sidebar-border px-4">
+      <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-white/15">
+        <Image src="/lea-dashboard-mark.jpeg" alt="LEA Labs" width={48} height={48} priority className="h-full w-full object-cover" />
+      </div>
     </div>
   );
 }

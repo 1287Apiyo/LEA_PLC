@@ -1,50 +1,29 @@
-import { Star } from "lucide-react";
+import Image from "next/image";
 import { BrandMark } from "@/components/shared/brand-mark";
 
-/** Existing auth hero visual, kept static and free of extra overlays. */
-const HERO_URL = "https://sc04.alicdn.com/kf/A6f2b031566e04faab49c31d733236971q.jpg";
-
-/** Brand mark and wordmark shared by the desktop and mobile auth experiences. */
-export function AuthBrand({ light = false }: { light?: boolean }) {
-  return (
-    <div className={`inline-flex items-center rounded-md bg-white p-1 shadow-sm ${light ? "ring-1 ring-white/20" : ""}`}>
-      <BrandMark className="h-14 w-56" />
-    </div>
-  );
+export function AuthBrand({ compact = false }: { compact?: boolean }) {
+  return <BrandMark className={compact ? "h-9 w-28" : "h-11 w-40"} />;
 }
 
-/** Static purple brand side panel shown on desktop auth screens. */
 export function AuthBrandPanel() {
   return (
-    <aside className="relative hidden min-h-full overflow-hidden bg-sidebar text-sidebar-foreground lg:flex lg:flex-col lg:justify-between lg:p-12">
-      <AuthBrand />
-
-      <div className="relative mx-auto w-full max-w-md px-4">
-        <div className="overflow-hidden rounded-3xl border-4 border-white/15 bg-[#E9E0F8] shadow-2xl">
-          <img
-            src={HERO_URL}
-            alt="Learners building and exploring with LEA Labs"
-            className="block h-auto w-full"
-            loading="lazy"
-          />
-        </div>
+    <aside className="relative flex min-h-[480px] flex-col overflow-hidden bg-white px-7 py-7 text-[#17171d] sm:px-12 sm:py-10 lg:min-h-full lg:px-14 lg:py-12">
+      <div className="relative z-10 flex items-center">
+        <AuthBrand compact />
       </div>
 
-      <div className="relative">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Learn. Explore. <span className="text-primary">Achieve.</span>
-        </h2>
-        <p className="mt-2 max-w-sm text-sm leading-relaxed text-sidebar-foreground/80">
-          Digital literacy, coding, corporate training and real certificates — one platform for every future-ready learner.
-        </p>
-        <div className="mt-5 flex items-center gap-2 text-sm text-sidebar-foreground/85">
-          <span className="flex items-center gap-0.5 text-yellow-300" aria-label="Five stars">
-            {[0, 1, 2, 3, 4].map((star) => (
-              <Star key={star} className="h-4 w-4 fill-current" aria-hidden />
-            ))}
-          </span>
-          <span>Trusted by schools, parents and corporates across East Africa</span>
+      <div className="relative z-10 mx-auto flex w-full max-w-[520px] flex-1 flex-col justify-center py-10 sm:py-14">
+        <div className="mb-3 max-w-sm">
+          <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#f15b3b]">Learn with purpose</p>
+          <h1 className="text-3xl font-semibold leading-[1.05] tracking-[-0.055em] sm:text-4xl lg:text-[3.25rem]">Make room for<br /><span className="text-[#f15b3b]">what&apos;s next.</span></h1>
+          <p className="mt-4 max-w-sm text-sm leading-6 text-[#6f6f78]">A calm space for focused learning, practical skills and the next idea you want to bring to life.</p>
         </div>
+
+        <div className="relative mx-auto mt-2 w-full max-w-[520px]">
+          <Image src="/lea-auth-illustration.png" alt="Learner studying at a laptop with learning cards" width={2304} height={1536} priority className="block h-auto w-full object-contain lea-auth-illustration" />
+        </div>
+
+        <div className="mt-1 flex items-center justify-between border-t border-black/10 pt-4 text-[#22222a]"><p className="text-sm font-bold">Ideas look better in motion.</p><span className="text-[10px] font-semibold text-[#9999a1]">LEA LABS</span></div>
       </div>
     </aside>
   );
