@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   creator: "LEA Labs",
   publisher: "LEA Labs",
   icons: {
-    icon: "/icon.png",
-    shortcut: "/icon.png",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
     apple: "/icon.png",
   },
   openGraph: {
