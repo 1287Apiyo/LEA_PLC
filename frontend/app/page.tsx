@@ -5,9 +5,9 @@ import { AUTH_COOKIE, ROLE_COOKIE, ROLE_HOME } from "@/lib/constants";
 import type { Role } from "@/types/auth";
 
 export const metadata = {
-  title: "LEA Labs — Learn. Explore. Achieve.",
+  title: "LEA Labs | Digital Products | Technology Consulting",
   description:
-    "Coding, digital literacy and real certificates for young learners — guided video lessons, hands-on coding workspaces and progress you can see.",
+    "LEA Labs is a technology company building digital products, providing technology consulting, and delivering practical coding and digital skills programs for young learners and organisations.",
 };
 
 /**

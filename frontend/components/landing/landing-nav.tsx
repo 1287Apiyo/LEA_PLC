@@ -21,7 +21,8 @@ export function LandingNav() {
     <header className="sticky top-0 z-50 bg-white">
       <div className="px-5 sm:px-10 lg:px-[7vw]">
         <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between">
-          <Link href="/" className="inline-flex items-center" aria-label={`${APP_NAME} home`}>
+          <div className="flex min-w-0 items-center gap-4">
+          <Link href="/" className="inline-flex shrink-0 items-center" aria-label={`${APP_NAME} home`}>
             <img
               src="/lea-labs-plc-logo.jpeg"
               alt="LEA Labs PLC"
@@ -30,6 +31,8 @@ export function LandingNav() {
               draggable={false}
             />
           </Link>
+          <p className="hidden max-w-[320px] text-[10px] font-semibold leading-4 tracking-[0.02em] text-[#716981] lg:block">Digital products | Technology consulting | Practical coding and digital skills</p>
+          </div>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
           {NAV_LINKS.map((link) => link.label === "Programs" ? (

@@ -11,12 +11,12 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
   title: {
-    default: `${APP_NAME} — Integrated Learning & Operations Platform`,
-    template: `%s · ${APP_NAME}`,
+    default: `${APP_NAME} | Digital Products | Technology Consulting`,
+    template: `%s | ${APP_NAME}`,
   },
   description:
-    "The digital operating system for LEA Labs: learning, corporate training, technology services, partnerships, finance and reporting.",
-  keywords: ["LEA Labs", "online learning", "professional training", "digital skills", "education platform", "corporate learning"],
+    "LEA Labs is a technology company building digital products, providing technology consulting, and delivering practical coding and digital skills programs for young learners and organisations.",
+  keywords: ["LEA Labs", "digital products", "technology consulting", "coding programs", "digital skills", "young learners", "organisations"],
   applicationName: APP_NAME,
   authors: [{ name: "LEA Labs" }],
   creator: "LEA Labs",
@@ -29,14 +29,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: APP_NAME,
-    title: `${APP_NAME} — Learn, explore and achieve`,
-    description: "A digital learning and operations platform for practical skills, professional growth and meaningful work.",
+    title: `${APP_NAME} | Digital Products | Technology Consulting`,
+    description: "LEA Labs builds digital products, provides technology consulting, and delivers practical coding and digital skills programs for young learners and organisations.",
     images: [{ url: "/icon.png", width: 64, height: 64, alt: "LEA Labs" }],
   },
   twitter: {
     card: "summary",
-    title: `${APP_NAME} — Learn, explore and achieve`,
-    description: "A digital learning and operations platform for practical skills and professional growth.",
+    title: `${APP_NAME} | Digital Products | Technology Consulting`,
+    description: "LEA Labs builds digital products, provides technology consulting, and delivers practical coding and digital skills programs for young learners and organisations.",
     images: ["/icon.png"],
   },
 };
