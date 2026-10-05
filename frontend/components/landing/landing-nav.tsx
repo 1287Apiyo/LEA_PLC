@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/#programmes", label: "Programs" },
   { href: "/about", label: "About" },
-  { href: "/corporate", label: "Corporate Training" },
+  { href: "/corporate", label: "Services" },
 ];
 
 export function LandingNav() {
@@ -18,7 +18,7 @@ export function LandingNav() {
   const [expandedProgramme, setExpandedProgramme] = useState<string | null>(null);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#fcfbff]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 bg-white">
       <div className="px-5 sm:px-10 lg:px-[7vw]">
         <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between">
           <Link href="/" className="inline-flex items-center" aria-label={`${APP_NAME} home`}>

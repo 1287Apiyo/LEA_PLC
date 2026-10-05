@@ -386,6 +386,39 @@ html {
   animation: lea-slide-content-enter 650ms cubic-bezier(0.23, 1, 0.32, 1) 160ms both;
 }
 
+/* Keep the corporate page's section hierarchy aligned with the home programme section. */
+.lea-motion-page main > #services > div > div:first-child > div > p,
+.lea-motion-page main > #contact > div > div:first-child > p {
+  font-size: clamp(1.35rem, 2.1vw, 2.25rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  text-transform: none;
+}
+
+.lea-motion-page main > section:first-child h1 {
+  font-size: clamp(2rem, 3.4vw, 3.25rem);
+}
+
+.lea-motion-page main > section:first-child h1 span {
+  color: white;
+}
+
+@media (min-width: 1100px) {
+  .lea-motion-page main > section:first-child h1 {
+    white-space: nowrap;
+  }
+}
+
+.lea-motion-page main > #services > div > div:first-child > div > h2,
+.lea-motion-page main > section:nth-of-type(4) > div > div:first-child > div > h2,
+.lea-motion-page main > #contact > div > div:first-child > h2 {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.75rem;
+  letter-spacing: normal;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .lea-hero-image,
   .lea-float-orb,

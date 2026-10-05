@@ -101,8 +101,7 @@ export default function LandingPage() {
           <div className="relative flex h-full min-h-0 items-end justify-start px-5 pb-32 sm:h-auto sm:min-h-[680px] sm:px-10 sm:pb-44 lg:min-h-[720px] lg:px-[7vw] lg:pb-48">
             <div className="mx-auto mr-auto w-full max-w-[1440px]">
               <div key={activeHero.slug} className="lea-slide-content-enter w-full max-w-[900px]">
-              <p key={`${activeHero.slug}-eyebrow`} className="lea-stagger-1 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f7c2aa]">{activeHero.eyebrow}</p>
-              <h1 className="lea-stagger-2 mt-5 max-w-[980px] text-[clamp(2.7rem,6vw,6rem)] font-medium leading-[0.9] tracking-[-0.075em] text-[#fffdfb] lg:whitespace-nowrap">
+              <h1 className="lea-stagger-2 mt-0 max-w-[980px] text-[clamp(2.7rem,6vw,6rem)] font-medium leading-[0.9] tracking-[-0.075em] text-[#fffdfb] lg:whitespace-nowrap">
                 {activeHero.title.split(" ").slice(0, -1).join(" ")} <span className="block text-[#f47945]">{activeHero.title.split(" ").slice(-1)}</span>
               </h1>
               <p key={`${activeHero.slug}-copy`} className="lea-stagger-2 mt-6 max-w-[560px] text-sm leading-7 text-white/80 sm:text-base">{activeHero.copy}</p>
