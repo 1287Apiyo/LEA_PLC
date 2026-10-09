@@ -1,0 +1,12 @@
+{
+  "homeHtmlBytes": 41632,
+  "dashboardHtmlBytes": 38655,
+  "cssBytes": 264694,
+  "homeHasProgrammeCards": true,
+  "dashboardHasSampleLearner": false,
+  "dashboardHasBothRealProgrammes": true,
+  "dashboardHasTourAnchor": false,
+  "catalogHasAllProgrammes": true,
+  "catalogHasSampleLearner": false,
+  "assetsAreLocalFileUris": 8
+}

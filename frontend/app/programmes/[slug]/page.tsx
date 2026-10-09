@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CalendarDays, Check, ChevronDown, Clock3, Sparkles, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, ChevronDown, Clock3, Users } from "lucide-react";
 import { notFound } from "next/navigation";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { LandingFooter } from "@/components/landing/landing-footer";
@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: ProgrammePageProps) {
 
 type IntakeOption = { title: string; mode: string; level?: string; duration?: string; price?: string };
 
-const PROGRAMME_CARD_IMAGES: Record<string, string> = {
-  "software-engineering": "/lea-home-program-software.png",
-  "applied-ai": "/lea-home-program-ai.png",
-  "basic-computer-knowledge": "/lea-home-program-computers.png",
+const PROGRAMME_HERO_IMAGES: Record<string, string> = {
+  "software-engineering": "/lea-card-software-human.png",
+  "applied-ai": "/lea-card-ai-human.png",
+  "basic-computer-knowledge": "/lea-card-computers-african.jpeg",
 };
 
 const HYBRID_SURCHARGE: Record<string, string> = {
@@ -86,7 +86,7 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
   const isSoftwareProgramme = programme.slug === "software-engineering";
   const intakeOptions = getIntakeOptions(slug);
   const heroPosition = programme.slug === "basic-computer-knowledge" ? "70% center" : "center";
-  const programmeCardImage = PROGRAMME_CARD_IMAGES[programme.slug] ?? programme.image;
+  const programmeHeroImage = PROGRAMME_HERO_IMAGES[programme.slug] ?? "/lea-community-learners.jpeg";
 
   return (
     <div className="min-h-screen bg-[#fffdfb] text-[#17131a] selection:bg-[#4d176e]/20">
@@ -96,8 +96,7 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
       <LandingNav />
       <main>
         <section className="relative isolate overflow-hidden bg-[#1f0d2e] text-white">
-          <div aria-hidden="true" className="absolute inset-0 bg-cover bg-center opacity-45" style={{ backgroundImage: `url(${programme.image})`, backgroundPosition: heroPosition }} />
-          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#1f0d2e] via-[#1f0d2e]/90 to-[#1f0d2e]/35" />
+          <div aria-hidden="true" className="absolute inset-[-12px] scale-[1.03] bg-cover bg-center opacity-40 blur-[6px]" style={{ backgroundImage: `url(${programmeHeroImage})`, backgroundPosition: heroPosition }} />
           <div className="relative mx-auto grid min-h-[520px] max-w-[1440px] items-center gap-10 px-5 py-14 sm:px-10 lg:grid-cols-[1.08fr_.92fr] lg:px-[7vw] lg:py-16">
             <div className="max-w-[680px]">
               <Link href="/#programmes" className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-white/70 transition hover:text-[#f47945]"><ArrowLeft className="h-4 w-4" /> Back to programmes</Link>
@@ -106,15 +105,12 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
               <p className="mt-6 max-w-[620px] text-base leading-8 text-white/80 sm:text-lg">{programme.overview}</p>
               <div className="mt-8 flex flex-wrap gap-3"><Link href="#enrol" className="inline-flex items-center gap-3 rounded-full bg-[#f47945] px-6 py-3 text-sm font-black text-[#351039] shadow-[0_12px_28px_rgba(244,121,69,.25)] transition hover:bg-[#ff8f57]">Start your application <ArrowRight className="h-4 w-4" /></Link><Link href="#modules" className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10">View curriculum</Link></div>
             </div>
-            <div className="relative hidden lg:block">
-              <div className="overflow-hidden rounded-[28px] border border-white/25 bg-white/10 p-3 shadow-2xl backdrop-blur-sm"><img src={programmeCardImage} alt={`${programme.title} programme`} className="h-[320px] w-full rounded-[20px] object-cover" /><div className="flex items-center justify-between gap-4 px-2 pb-1 pt-4"><span className="text-sm font-semibold text-white/80">{programme.outcome}</span><Sparkles className="h-5 w-5 shrink-0 text-[#f47945]" /></div></div>
-            </div>
           </div>
         </section>
 
         <section className="relative z-10 mx-auto -mt-8 max-w-[1440px] px-5 sm:px-10 lg:px-[7vw]">
           <div className="grid overflow-hidden rounded-[20px] border border-[#4d176e]/10 bg-white shadow-[0_18px_45px_rgba(77,23,110,.12)] sm:grid-cols-3">
-            {[{ icon: Clock3, label: "Duration", value: programme.duration }, { icon: CalendarDays, label: "Next intake", value: "October 1st, 2026" }, { icon: Users, label: "Learning format", value: programme.format }].map(({ icon: Icon, label, value }) => <div key={label} className="flex items-center gap-4 border-b border-[#4d176e]/10 px-5 py-5 last:border-0 sm:border-b-0 sm:border-r sm:last:border-r-0"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff0ea] text-[#f47945]"><Icon className="h-5 w-5" /></div><div><p className="text-[10px] font-black uppercase tracking-[.18em] text-[#6e6072]">{label}</p><p className="mt-1 text-sm font-semibold text-[#351039]">{value}</p></div></div>)}
+          {[{ icon: Clock3, label: "Duration", value: programme.duration }, { icon: CalendarDays, label: "Next intake", value: "October 1st, 2026" }, { icon: Users, label: "Learning format", value: programme.format }].map(({ icon: Icon, label, value }) => <div key={label} className="flex items-center gap-4 border-b border-[#4d176e]/10 px-5 py-5 last:border-0 sm:border-b-0 sm:border-r sm:last:border-r-0"><div className="flex h-10 w-10 shrink-0 items-center justify-center text-[#1f0d2e]"><Icon className="h-5 w-5" /></div><div><p className="text-[10px] font-black uppercase tracking-[.18em] text-[#6e6072]">{label}</p><p className="mt-1 text-sm font-semibold text-[#351039]">{value}</p></div></div>)}
           </div>
         </section>
 
@@ -126,7 +122,7 @@ export default async function ProgrammeDetailPage({ params }: ProgrammePageProps
                 <p className="text-xs font-black uppercase tracking-[.2em] text-[#f47945]">The LEA learning experience</p>
                 <h2 className="mt-3 max-w-[720px] text-[clamp(2rem,4vw,3.5rem)] font-normal leading-[.98] tracking-[-.06em] text-[#17131a]">A practical pathway for <span className="text-[#4d176e]">real progress.</span></h2>
                 <p className="mt-6 max-w-[760px] text-base leading-8 text-[#6e6072]">{programme.overview} {programme.outcome}</p>
-                <div className="mt-8 grid gap-3 sm:grid-cols-3">{programme.bullets.map((bullet) => <div key={bullet} className="rounded-xl border border-[#4d176e]/12 bg-white p-4 shadow-[0_8px_24px_rgba(77,23,110,.05)]"><Check className="h-5 w-5 text-[#f47945]" /><p className="mt-3 text-sm font-semibold text-[#351039]">{bullet}</p></div>)}</div>
+                <div className="mt-8 grid gap-3 sm:grid-cols-3">{programme.bullets.map((bullet) => <div key={bullet} className="rounded-xl border border-[#4d176e]/12 bg-white p-4 shadow-[0_8px_24px_rgba(77,23,110,.05)]"><p className="text-sm font-semibold text-[#351039]">{bullet}</p></div>)}</div>
               </div>
             </div>
 

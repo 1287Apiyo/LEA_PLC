@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Recorder test</title></head>
+<body style="margin:0"><canvas id="canvas" width="640" height="360"></canvas><p id="status">Starting</p>
+<script>
+(async()=>{
+  const canvas=document.getElementById('canvas'); const ctx=canvas.getContext('2d');
+  const type=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(t=>MediaRecorder.isTypeSupported(t));
+  if(!type){document.title='NO_WEBM';document.body.textContent='No WebM MediaRecorder';return;}
+  const stream=canvas.captureStream(24); const chunks=[]; const recorder=new MediaRecorder(stream,{mimeType:type,videoBitsPerSecond:900000});
+  recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  let frame=0; const timer=setInterval(()=>{ctx.fillStyle=frame%2?'#4d176e':'#f47945';ctx.fillRect(0,0,640,360);ctx.fillStyle='white';ctx.font='bold 42px Arial';ctx.fillText('LEA LOCAL WEBM TEST',48,180);frame++},42);
+  recorder.start(200); await new Promise(r=>setTimeout(r,1400)); clearInterval(timer);
+  await new Promise(r=>{recorder.onstop=r;recorder.stop()}); stream.getTracks().forEach(t=>t.stop());
+  const blob=new Blob(chunks,{type}); const reader=new FileReader();
+  reader.onload=()=>{document.body.innerHTML='<pre id="webm">'+String(reader.result).split(',')[1]+'</pre>';document.title='WEBM_READY_'+blob.size};
+  reader.readAsDataURL(blob);
+})().catch(e=>{document.title='ERROR';document.body.textContent=String(e.stack||e)});
+</script></body></html>

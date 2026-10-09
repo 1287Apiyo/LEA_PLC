@@ -8,8 +8,6 @@ import {
   ArrowRight,
   Clock3,
   Play,
-  ChevronDown,
-  ExternalLink,
   Mail,
   MapPin,
   Phone,
@@ -21,20 +19,18 @@ import { SocialLinks } from "@/components/landing/social-links";
 import { APP_NAME } from "@/lib/constants";
 import { PROGRAMMES as programmes } from "@/lib/programmes";
 
-const HERO_IMAGE = "/lea-home-hero-teen-v2.png";
-const MENTOR_IMAGE = "/lea-community-dashboard.png";
-const COMMUNITY_IMAGE = "/lea-home-community.png";
+const HERO_VIDEO = "/lea-home-coding-hero.mp4";
 
 const HERO_SLIDES = [
-  { slug: "software-engineering", image: HERO_IMAGE, eyebrow: "LEA Labs · learn by doing", title: "Open a world of possibility.", copy: "LEA helps learners across Africa turn curiosity into practical digital confidence through guided programmes, hands-on projects, and support from people who understand the journey. Start with the foundations, practise on real challenges, and build work you can carry into your next opportunity.", cta: "Find your starting point" },
-  { slug: "applied-ai", image: "/lea-hero-applied-ai.png", eyebrow: "Applied AI · work thoughtfully", title: "Make AI useful.", copy: "LEA helps you move beyond the hype and use intelligent tools with clarity, care, and practical intent. Explore workflows for research, decision-making, and creative work while keeping human judgement at the centre.", cta: "Explore Applied AI" },
-  { slug: "basic-computer-knowledge", image: "/lea-hero-digital-foundations.png", eyebrow: "Digital Foundations · start with confidence", title: "Start with confidence.", copy: "LEA gives beginners, children, and families a welcoming first step into digital life. Build confidence with devices, files, the internet, and everyday tools through supportive practice you can carry into learning, school, and home.", cta: "Explore Digital Foundations" },
+  { slug: "software-engineering", title: "Open a world of possibility.", copy: "LEA helps learners across Africa turn curiosity into practical digital confidence through guided programmes, hands-on projects, and support from people who understand the journey. Start with the foundations, practise on real challenges, and build work you can carry into your next opportunity.", cta: "Find your starting point" },
+  { slug: "applied-ai", title: "Make AI useful.", copy: "LEA helps you move beyond the hype and use intelligent tools with clarity, care, and practical intent. Explore workflows for research, decision-making, and creative work while keeping human judgement at the centre.", cta: "Explore Applied AI" },
+  { slug: "basic-computer-knowledge", title: "Start with confidence.", copy: "LEA gives beginners, children, and families a welcoming first step into digital life. Build confidence with devices, files, the internet, and everyday tools through supportive practice you can carry into learning, school, and home.", cta: "Explore Digital Foundations" },
 ];
 
 const PROGRAMME_CARD_IMAGES: Record<string, string> = {
-  "software-engineering": "/lea-home-program-software.png",
-  "applied-ai": "/lea-home-program-ai.png",
-  "basic-computer-knowledge": "/lea-home-program-computers.png",
+  "software-engineering": "/posters/software-engineering-sharp.png",
+  "applied-ai": "/posters/applied-ai-sharp.png",
+  "basic-computer-knowledge": "/posters/digital-foundations-sharp.png",
 };
 
 
@@ -44,12 +40,6 @@ const steps = [
   ["02", "Practise", "Turn concepts into working habits through projects and focused challenge."],
   ["03", "Refine", "Use peer and mentor feedback to improve how you approach the work."],
   ["04", "Advance", "Leave with a clearer story about the value you are ready to create."],
-];
-
-const support = [
-  ["01", "Human guidance", "Mentors help make the next concept, project, and decision more navigable."],
-  ["02", "Work you can point to", "Practical outputs help you articulate what you have learned and how you work."],
-  ["03", "Direction after the room", "Career conversations keep the learning experience connected to your next opportunity."],
 ];
 
 
@@ -67,12 +57,68 @@ export default function LandingPage() {
     const timer = window.setInterval(() => setHeroIndex((index) => (index + 1) % HERO_SLIDES.length), 8000);
     return () => window.clearInterval(timer);
   }, []);
+  useEffect(() => {
+    const targets = Array.from(document.querySelectorAll<HTMLElement>(".landing-page main > section, .landing-page [data-scroll-reveal]"));
+    const parallaxTargets = Array.from(document.querySelectorAll<HTMLElement>(".landing-page [data-scroll-parallax]"));
+    const root = document.documentElement;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let observer: IntersectionObserver | undefined;
+    let scrollFrame = 0;
+
+    const updateScrollMotion = () => {
+      if (scrollFrame) return;
+      scrollFrame = window.requestAnimationFrame(() => {
+        scrollFrame = 0;
+        const maxScroll = root.scrollHeight - window.innerHeight;
+        const progress = maxScroll > 0 ? Math.max(0, Math.min(1, window.scrollY / maxScroll)) : 0;
+        root.style.setProperty("--page-scroll-progress", String(progress));
+
+        if (reducedMotion) return;
+        const viewportCenter = window.innerHeight / 2;
+        parallaxTargets.forEach((target) => {
+          const bounds = target.getBoundingClientRect();
+          const range = Math.max(viewportCenter + bounds.height / 2, 1);
+          const position = Math.max(-1, Math.min(1, (bounds.top + bounds.height / 2 - viewportCenter) / range));
+          target.style.setProperty("--scroll-offset", `${(-position * 16).toFixed(1)}px`);
+        });
+      });
+    };
+
+    window.addEventListener("scroll", updateScrollMotion, { passive: true });
+    window.addEventListener("resize", updateScrollMotion);
+    updateScrollMotion();
+
+    if (!reducedMotion && targets.length && "IntersectionObserver" in window) {
+      const viewportHeight = window.innerHeight;
+      targets.forEach((target) => {
+        const bounds = target.getBoundingClientRect();
+        target.classList.toggle("is-visible", bounds.top < viewportHeight * 0.9 && bounds.bottom > 0);
+      });
+
+      root.classList.add("has-scroll-reveal");
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => entry.target.classList.toggle("is-visible", entry.isIntersecting));
+      }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+      targets.forEach((target) => observer?.observe(target));
+    }
+
+    return () => {
+      observer?.disconnect();
+      if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+      window.removeEventListener("scroll", updateScrollMotion);
+      window.removeEventListener("resize", updateScrollMotion);
+      root.classList.remove("has-scroll-reveal");
+      root.style.removeProperty("--page-scroll-progress");
+      parallaxTargets.forEach((target) => target.style.removeProperty("--scroll-offset"));
+    };
+  }, []);
 
   const noticeProgramme = programmes[noticeProgrammeIndex] ?? programmes[0];
   const activeHero = HERO_SLIDES[heroIndex];
 
   return (
-    <div id="top" className="min-h-screen overflow-hidden bg-[#fffdfb] text-[#26142f] selection:bg-[#f47945]/25">
+    <div id="top" className="landing-page min-h-screen overflow-hidden bg-[#fffdfb] text-[#26142f] selection:bg-[#f47945]/25">
+        <div aria-hidden="true" className="lea-scroll-progress"><span /></div>
         {showCourseNotice && (
           <aside className="relative z-[60] flex min-h-[44px] items-center bg-[#4d176e] px-5 py-1.5 text-white sm:px-10 lg:px-[7vw]" aria-label={`${noticeProgramme.title} course announcement`}>
             <div className="mx-auto flex w-full max-w-[1440px] items-center gap-5 pr-8 text-[10px] sm:gap-7 sm:text-xs">
@@ -91,18 +137,20 @@ export default function LandingPage() {
 
       <main>
 
-        {/* HERO — LEA's editorial learning still-life */}
+        {/* HERO — one clear coding video, with programme messages rotating over it */}
         <section className="relative h-[620px] min-h-[620px] overflow-hidden bg-[#12091a] text-white sm:h-auto sm:min-h-[680px] lg:min-h-[720px]">
-          <div aria-hidden="true" className="absolute inset-0">
-            {HERO_SLIDES.map((slide, index) => <Image key={slide.slug} src={slide.image} alt="" fill priority={index === 0} quality={100} sizes="100vw" unoptimized className={`lea-hero-slide lea-hero-image ${slide.slug === "basic-computer-knowledge" ? "scale-[1.22] object-[78%_center] origin-[78%_52%] sm:scale-100 sm:object-[72%_center] lg:object-[62%_center]" : "scale-[0.94] object-[72%_top] origin-[72%_top] sm:scale-[0.96] sm:object-[68%_top] lg:scale-[0.96] lg:object-[62%_top]"} object-cover ${heroIndex === index ? "opacity-100" : "opacity-0"}`} />)}
+          <div aria-hidden="true" data-scroll-parallax className="absolute inset-0">
+            <video className="absolute inset-0 h-full w-full object-cover object-[70%_center]" autoPlay loop muted playsInline preload="auto" aria-hidden="true"><source src={HERO_VIDEO} type="video/mp4" /></video>
           </div>
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,9,26,0.9)_0%,rgba(18,9,26,0.66)_34%,rgba(18,9,26,0.08)_72%,rgba(18,9,26,0.18)_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(18,9,26,0.72)_0%,transparent_45%),radial-gradient(circle_at_55%_60%,rgba(244,121,69,0.14),transparent_30%)]" />
+          <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,18,20,0.88)_0%,rgba(15,18,20,0.58)_34%,rgba(15,18,20,0.08)_72%,rgba(15,18,20,0.16)_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(15,18,20,0.66)_0%,transparent_45%),radial-gradient(circle_at_55%_60%,rgba(244,121,69,0.1),transparent_30%)]" />
+          <div aria-hidden="true" className="lea-float-orb pointer-events-none absolute right-[13%] top-[22%] hidden h-20 w-20 rounded-full border border-white/20 bg-white/5 lg:block" />
+          <div aria-hidden="true" className="lea-float-orb lea-float-orb-delay pointer-events-none absolute bottom-[24%] right-[28%] hidden h-10 w-10 rounded-full border border-[#f47945]/40 bg-[#f47945]/10 lg:block" />
           <div className="relative flex h-full min-h-0 items-start justify-start px-5 pb-20 pt-24 sm:h-auto sm:min-h-[680px] sm:items-end sm:px-10 sm:pb-44 sm:pt-0 lg:min-h-[720px] lg:px-[7vw] lg:pb-48">
             <div className="mx-auto mr-auto w-full max-w-[1440px]">
-              <div key={activeHero.slug} className="lea-slide-content-enter w-full max-w-[900px]">
-              <h1 className="lea-stagger-2 mt-0 max-w-[980px] text-[clamp(2.7rem,6vw,6rem)] font-medium leading-[0.9] tracking-[-0.075em] text-[#fffdfb] lg:whitespace-nowrap">
-                {activeHero.title.split(" ").slice(0, -1).join(" ")} <span className="block text-[#f47945]">{activeHero.title.split(" ").slice(-1)}</span>
+              <div key={activeHero.slug} data-scroll-reveal className="lea-slide-content-enter w-full max-w-[900px]">
+              <h1 className="lea-stagger-2 mt-0 w-full text-[clamp(1.1rem,5.5vw,3.25rem)] font-semibold leading-[1.05] tracking-[-0.055em] text-white whitespace-nowrap">
+                {activeHero.title}
               </h1>
               <p key={`${activeHero.slug}-copy`} className="lea-stagger-2 mt-6 max-w-[560px] text-sm leading-7 text-white/80 sm:text-base">{activeHero.copy}</p>
               <div className="lea-stagger-3 mt-8 flex flex-wrap items-center gap-4">
@@ -118,92 +166,112 @@ export default function LandingPage() {
 
         <section id="programmes" className="relative scroll-mt-20 overflow-hidden bg-[#fffdfb] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
           <div className="relative mx-auto max-w-[1440px]">
-            <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end"><div><h2 className="max-w-[620px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#151116]">Choose a practical path forward.</h2></div><p className="max-w-[460px] text-sm leading-7 text-[#6e6072]">Choose between <span className="font-semibold text-[#4d176e]">Software Engineering</span>, <span className="font-semibold text-[#4d176e]">Applied AI</span>, and <span className="font-semibold text-[#4d176e]">Digital Foundations</span> for beginners, children, and families.</p></div>
-            <div className="mt-8 -mx-5 overflow-hidden px-5 pb-3 md:mx-0 md:px-0 md:pb-0 lg:mt-10"><div className="flex snap-x snap-mandatory gap-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-visible md:snap-none">{programmes.map((programme) => <Link key={programme.title} href={`/programmes/${programme.slug}`} className="group w-[calc(100vw-2.5rem)] min-w-[calc(100vw-2.5rem)] shrink-0 basis-[calc(100vw-2.5rem)] snap-start overflow-hidden rounded-[26px] border border-[#f47945]/75 bg-white shadow-[0_18px_45px_rgba(77,23,110,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_60px_rgba(77,23,110,0.16)] md:min-w-0 md:w-auto md:basis-auto md:shrink"><div className="relative aspect-[1.45] overflow-hidden bg-[#1f0d2e]"><Image src={PROGRAMME_CARD_IMAGES[programme.slug] ?? programme.image} alt={`${programme.title} programme`} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-[#241027]/75 via-[#351039]/10 to-transparent" /><div className="absolute bottom-4 left-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#f47945] text-xs font-black text-[#351039]">{programme.number}</div><span className="absolute bottom-5 right-5 text-4xl font-semibold text-white/90">{programme.icon}</span></div><div className="flex min-h-[290px] flex-col p-5 sm:p-6"><h3 className="max-w-[270px] text-[clamp(1.2rem,1.5vw,1.5rem)] font-bold leading-[1.04] tracking-[-0.04em] text-[#f06d36]">{programme.title}</h3><p className="mt-3 text-sm leading-6 text-[#302434]">{programme.short}</p><p className="mt-2 text-xs leading-5 text-[#6e6072]">{programme.audience}</p><div className="mt-4 flex flex-wrap gap-2">{programme.bullets.map((bullet) => <span key={bullet} className="rounded-full border border-[#4d176e]/35 px-3 py-1.5 text-[10px] font-semibold text-[#4d176e]">{bullet}</span>)}</div><span className="mt-4 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#f47945] text-xs font-black text-[#351039] transition group-hover:bg-[#ff8f57]">View programme <ArrowRight className="h-4 w-4" /></span></div></Link>)}</div></div>
-            <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#4d176e] md:hidden">Swipe to explore →</p>
-            <div className="mt-7 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-[#6e6072]"><span>Practical learning, whatever your starting point.</span><span>Three pathways. One clear next step.</span></div>
+            <div data-scroll-reveal className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end"><div><h2 className="max-w-[620px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-[#151116]">Choose a practical path forward.</h2></div><p className="max-w-[460px] text-sm leading-7 text-[#6e6072]">Choose between <span className="font-semibold text-[#1f0d2e]">Software Engineering</span>, <span className="font-semibold text-[#1f0d2e]">Applied AI</span>, and <span className="font-semibold text-[#1f0d2e]">Digital Foundations</span> for beginners, children, and families.</p></div>
+            <div className="mt-8 -mx-5 overflow-hidden px-5 pb-3 md:mx-0 md:px-0 md:pb-0 lg:mt-10"><div className="flex snap-x snap-mandatory gap-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-visible md:snap-none">{programmes.map((programme, index) => <Link key={programme.title} data-scroll-reveal data-scroll-delay={index + 1} href={`/programmes/${programme.slug}`} className="group w-[calc(100vw-2.5rem)] min-w-[calc(100vw-2.5rem)] shrink-0 basis-[calc(100vw-2.5rem)] snap-start overflow-hidden rounded-[26px] border border-[#f47945]/75 bg-[#1f0d2e] shadow-[0_18px_45px_rgba(31,13,46,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_60px_rgba(31,13,46,0.16)] md:min-w-0 md:w-auto md:basis-auto md:shrink"><div className="relative aspect-[4/5] overflow-hidden bg-[#1f0d2e]"><Image src={PROGRAMME_CARD_IMAGES[programme.slug] ?? programme.image} alt={`${programme.title} programme`} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" /></div><div className="flex min-h-[160px] flex-col p-4 sm:p-5"><h3 className="text-base font-bold leading-tight tracking-[-0.02em] text-[#f7c2aa]">{programme.title}</h3><p className="mt-2 text-xs leading-5 text-white/85">{programme.short}</p><span className="mt-auto inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#f47945] px-5 text-xs font-black text-[#351039] transition group-hover:bg-[#ff8f57]">View programme <ArrowRight className="h-4 w-4" /></span></div></Link>)}</div></div>
+            <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#1f0d2e] md:hidden">Swipe to explore →</p>
+            <div data-scroll-reveal className="mt-7 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-[#6e6072]"><span>Practical learning, whatever your starting point.</span><span>Three pathways. One clear next step.</span></div>
           </div>
         </section>
 
-        <section id="how-it-works" className="scroll-mt-20 bg-[#1f0d2e] px-5 py-12 text-white sm:px-10 sm:py-14 lg:flex lg:min-h-[540px] lg:items-center lg:px-[7vw] lg:py-12">
-          <div className="relative mx-auto grid w-full max-w-[1440px] items-center gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10">
-            <div className="flex flex-col justify-center lg:min-h-[380px]">
-              <div>
-                <h2 className="mt-0 max-w-[450px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-white"><span className="text-white">Your next move</span><br /><span className="text-[#f47945]">is more than a</span><br /><span className="text-white">course.</span></h2>
-                <p className="mt-3 max-w-[450px] text-sm leading-7 text-[#ead9ed] sm:text-base">LEA is designed as a practical sequence: find a fit, make the work, gather feedback, and shape a direction you can carry beyond the classroom.</p>
-                <Link href="/register" className="mt-5 inline-flex h-10 items-center gap-4 rounded-full bg-white px-5 text-xs font-semibold text-[#26142f] transition hover:-translate-y-0.5 hover:bg-[#fff7ef] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f0d2e]">Start the conversation <ArrowRight className="h-4 w-4" /></Link>
-              </div>
+        <section id="how-it-works" className="relative isolate scroll-mt-20 overflow-hidden px-5 py-12 text-[#f47945] sm:px-10 sm:py-12 lg:flex lg:min-h-[540px] lg:items-center lg:px-[7vw] lg:py-12">
+          <div aria-hidden="true" data-scroll-parallax className="lea-scroll-image pointer-events-none absolute inset-0 z-0">
+            <Image src="/lea-community-learners.jpeg" alt="" fill sizes="100vw" className="object-cover blur-[26px] brightness-[0.52] saturate-[0.68]" />
+            <div className="absolute inset-0 bg-black/60" />
+          </div>
+          <div data-scroll-parallax className="relative z-10 mx-auto grid w-full max-w-[1440px] items-center gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:gap-12">
+            <div data-scroll-reveal data-reveal="left" className="flex flex-col justify-center">
+              <h2 className="mt-0 max-w-[500px] text-[clamp(1.85rem,3vw,2.9rem)] font-semibold leading-[0.98] tracking-[-0.065em] text-white">Your next move<br /><span className="text-white">is more than a</span><br />course</h2>
+              <p className="mt-5 max-w-[470px] text-sm leading-7 text-white/90 sm:text-base sm:leading-8">LEA is designed as a practical sequence: find a fit, make the work, gather feedback, and shape a direction you can carry beyond the classroom.</p>
+              <Link href="/register" className="mt-7 inline-flex h-12 w-fit items-center gap-3 rounded-xl bg-[#f47945] px-5 text-sm font-bold text-[#1f0d2e] shadow-[0_10px_24px_rgba(244,121,69,0.24)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f0d2e]">Start the conversation <ArrowRight className="h-4 w-4" /></Link>
             </div>
-            <div className="relative space-y-5 lg:pt-0">
-              <div aria-hidden="true" className="absolute bottom-5 left-[23px] top-5 w-px bg-[#f47945]/55 sm:left-[24px]" />
-              {steps.map(([number, title, text]) => (
-                <article key={number} className="relative grid grid-cols-[46px_1fr] gap-3 sm:grid-cols-[50px_1fr] sm:gap-3">
-                  <div className="relative z-10 flex justify-center pt-0.5"><span className="flex h-6 w-6 items-center justify-center rounded-full border border-[#f47945] bg-[#1f0d2e] text-[9px] font-bold text-[#f47945] sm:h-7 sm:w-7 sm:text-[10px]">{number}</span></div>
-                  <div className="pb-1"><h3 className="text-base font-semibold tracking-[-0.02em] text-[#f47945] sm:text-lg">{title}</h3><p className="mt-1 max-w-[450px] text-[11px] leading-5 text-[#ead9ed] sm:text-sm">{text}</p></div>
-                </article>
-              ))}
+            <div data-scroll-reveal data-reveal="right" className="relative p-4 sm:p-6 lg:p-8">
+              <span aria-hidden="true" className="absolute bottom-9 left-9 top-9 w-px bg-[#f47945] sm:bottom-11 sm:left-11 sm:top-11 lg:bottom-[52px] lg:left-[52px] lg:top-[52px]" />
+              <ol className="relative space-y-4">
+                {steps.map(([number, title, text]) => (
+                  <li key={number} data-scroll-reveal data-reveal="right" data-scroll-delay={Number(number)} className="group relative grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-4 motion-safe:transition-transform motion-safe:hover:translate-x-1">
+                    <span className="relative z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-[11px] font-bold tracking-[0.08em] text-[#f47945] ring-1 ring-[#1f0d2e]/10">{number}</span>
+                    <div>
+                      <h3 className="text-base font-bold tracking-[-0.02em] text-[#f47945] sm:text-lg">{title}</h3>
+                      <p className="mt-2 max-w-[42ch] text-xs leading-5 text-white sm:text-sm sm:leading-6">{text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         </section>
 
         <section id="site-tour" className="scroll-mt-20 bg-white px-5 py-14 text-[#151116] sm:px-10 sm:py-16 lg:px-[7vw] lg:py-20">
-          <div className="relative mx-auto max-w-[1440px]">
+          <div data-scroll-parallax className="relative mx-auto max-w-[1440px] rounded-[32px] border border-[#eee3e9] bg-white p-5 shadow-[0_24px_70px_rgba(31,13,46,0.06)] sm:p-8 lg:p-10">
             <div className="grid items-center gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
-              <div className="max-w-[420px]">
-                <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f47945]">The LEA experience</p>
-                <h2 className="mt-4 max-w-[390px] text-[clamp(1.9rem,3vw,3.25rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-[#151116]">See the path before you take it.</h2>
-                <p className="mt-5 max-w-[390px] text-sm leading-7 text-[#5f5265] sm:text-base">Take a guided walk through the real LEA rhythm: choose a programme, learn inside the course player, practise with quizzes and projects, get feedback, and move forward with support.</p>
+              <div data-scroll-reveal data-reveal="left" className="max-w-[420px]">
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f47945]">Inside the LEA platform</p>
+                <h2 className="mt-4 max-w-[390px] text-[clamp(1.9rem,3vw,3.25rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-[#151116]">See how the learning journey works.</h2>
+                <p className="mt-5 max-w-[390px] text-sm leading-7 text-[#5f5265] sm:text-base">Take a step-by-step tour of the real LEA homepage, programme choices, and learner dashboard. The dashboard screen uses clearly representative sample data, not a live learner account.</p>
                 <ol className="mt-7">
                   {[
-                    ["01", "Choose a direction", "Programme discovery"],
-                    ["02", "Make the work", "Lessons, notes, quizzes"],
-                    ["03", "Stay supported", "Tutors and discussions"],
-                    ["04", "Show your progress", "Projects and certificates"],
+                    ["01", "Start at the homepage", "See where to begin"],
+                    ["02", "Browse the programmes", "Compare learning paths"],
+                    ["03", "Find the holiday bootcamp", "Digital Scratch Programming"],
+                    ["04", "Open the learner dashboard", "Courses and next steps"],
                   ].map(([number, title, detail]) => (
-                    <li key={number} className="grid grid-cols-[30px_1fr_auto] items-center gap-3 py-3">
+                    <li key={number} className="group grid grid-cols-[30px_1fr_auto] items-center gap-3 rounded-xl border-b border-[#f0e8e5] px-2 py-3 transition duration-300 hover:translate-x-1">
                       <span className="text-[10px] font-black text-[#f47945]">{number}</span>
-                      <span className="text-xs font-bold text-[#241b42]">{title}</span>
+                      <span className="text-xs font-bold text-[#241b42] transition-colors duration-300 group-hover:text-[#f47945]">{title}</span>
                       <span className="text-right text-[10px] text-[#7b6d80]">{detail}</span>
                     </li>
                   ))}
                 </ol>
-                <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#6f6075]"><span className="inline-flex items-center gap-2"><Clock3 className="h-3.5 w-3.5 text-[#f47945]" /> 2:19 guided tour</span><span className="inline-flex items-center gap-2"><Play className="h-3.5 w-3.5 text-[#4d176e]" /> Watch at your pace</span></div>
-                <Link href="#tour-video" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#f47945] px-5 py-3 text-xs font-black text-[#351039] shadow-[0_12px_24px_rgba(244,121,69,0.18)] transition hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6eef9]">Watch the guided tour <ArrowRight className="h-4 w-4" /></Link>
+                <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#6f6075]"><span className="inline-flex items-center gap-2"><Clock3 className="h-3.5 w-3.5 text-[#f47945]" /> 00:22 platform tour</span><span className="inline-flex items-center gap-2"><Play className="h-3.5 w-3.5 text-[#4d176e]" /> Real screens · sample data</span></div>
+                <Link href="#tour-video" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#f47945] px-5 py-3 text-xs font-black text-[#351039] shadow-[0_12px_24px_rgba(244,121,69,0.18)] transition hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6eef9]">Watch the platform tour <ArrowRight className="h-4 w-4" /></Link>
               </div>
-              <div className="relative">
+              <div data-scroll-reveal data-reveal="right" className="relative">
                 <div id="tour-video" className="relative overflow-hidden rounded-[28px] border border-[#4d176e]/25 bg-[#12091a] p-2 shadow-[0_28px_70px_rgba(77,23,110,0.22)] sm:p-3">
-                  <div className="flex items-center justify-end px-3 py-2 text-[10px] text-[#cdb7d5]"><span className="tracking-[0.16em]">LEA LABS · PRODUCT TOUR</span></div>
-                  <video className="aspect-video w-full rounded-[20px] bg-[#1f0d2e] object-cover" controls playsInline preload="metadata" poster="/lea-tour-poster.png" aria-label="LEA Labs product tour showing public programme discovery, learner course tools, tutor support, discussions, projects, certificates, and instructor workflows">
-                    <source src="/lea-site-tour.mp4" type="video/mp4" />
+                  <div className="flex items-center justify-end px-3 py-2 text-[10px] text-[#cdb7d5]"><span className="tracking-[0.16em]">REAL LEA SCREENS · STEP BY STEP</span></div>
+                  <video className="aspect-video w-full rounded-[20px] bg-[#1f0d2e] object-cover" controls playsInline preload="metadata" poster="/lea-real-site-tour-poster.png" aria-label="A step-by-step tour of the actual LEA homepage, programmes, holiday bootcamp and learner dashboard; dashboard values are sample data.">
+                    <source src="/lea-real-site-walkthrough.webm" type="video/webm" />
                     Your browser does not support the LEA Labs site-tour video. <Link href="#programmes" className="text-[#f47945]">Explore the programmes instead.</Link>
                   </video>
-                  <div className="flex flex-col gap-3 px-3 pt-3 text-[10px] text-[#cdb7d5] sm:flex-row sm:items-center sm:justify-between"><span>Guided product tour · built for real learner progress</span><span className="text-[#f47945]">Learn · Build · Move forward</span></div><div className="mt-4 grid gap-2 px-3 pt-3 sm:grid-cols-3"><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">01</p><p className="mt-1 text-xs font-semibold text-white">Choose your direction</p></div><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">02</p><p className="mt-1 text-xs font-semibold text-white">Practise inside the portal</p></div><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">03</p><p className="mt-1 text-xs font-semibold text-white">Leave with evidence</p></div></div>
+                  <div className="flex flex-col gap-3 px-3 pt-3 text-[10px] text-[#cdb7d5] sm:flex-row sm:items-center sm:justify-between"><span>Actual LEA pages and learner dashboard components</span><span className="text-[#f47945]">Sample learner data · no live account</span></div>
+                  <div className="mt-4 grid gap-2 px-3 pt-3 sm:grid-cols-3"><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">01</p><p className="mt-1 text-xs font-semibold text-white">Browse the site</p></div><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">02</p><p className="mt-1 text-xs font-semibold text-white">Choose a programme</p></div><div><p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#f47945]">03</p><p className="mt-1 text-xs font-semibold text-white">Follow your progress</p></div></div>
                 </div>
               </div>
             </div>
-            <div className="mt-10 grid gap-4 sm:grid-cols-4">
-              {[['01', 'Find your fit'], ['02', 'Learn by doing'], ['03', 'Get guidance'], ['04', 'Share the work']].map(([number, label]) => <div key={number} className="flex items-center gap-3 py-3 text-xs font-bold text-[#4d176e] sm:px-0"><span className="text-[10px] font-black text-[#f47945]">{number}</span><span>{label}</span></div>)}
-            </div>
           </div>
         </section>
 
-
-        <div aria-hidden="true" className="relative z-10 h-8 bg-[#1f0d2e]"><div className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-l-[30px] border-r-[30px] border-t-[30px] border-l-transparent border-r-transparent border-t-[#fffdfb]" /></div>
-
-        <section className="bg-[#1f0d2e] px-5 pb-8 pt-16 text-white sm:px-10 sm:pb-10 sm:pt-18 lg:px-[7vw] lg:pb-12 lg:pt-22">
-          <div className="relative mx-auto grid max-w-[1440px] items-stretch gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <section className="relative isolate overflow-hidden px-5 pb-8 pt-16 text-white sm:px-10 sm:pb-10 sm:pt-18 lg:px-[7vw] lg:pb-12 lg:pt-22">
+          <div aria-hidden="true" data-scroll-parallax className="lea-scroll-image pointer-events-none absolute inset-0 z-0">
+            <Image src="/lea-card-computers-african.jpeg" alt="" fill sizes="100vw" className="object-cover blur-[26px] brightness-[0.52] saturate-[0.68]" />
+            <div className="absolute inset-0 bg-black/60" />
+          </div>
+          <div data-scroll-parallax className="relative z-10 mx-auto grid max-w-[1440px] items-stretch gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
             <div>
-              <h2 className="mt-4 max-w-[590px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-white"><span className="text-white">The work matters.</span> <span className="text-[#f47945]">So does the person doing it.</span></h2>
-              <p className="mt-5 max-w-[620px] text-sm leading-7 text-[#f4e8f5] sm:text-base">Learning is more durable when someone can challenge your thinking, celebrate the progress, and help you connect a project to the direction you are building toward.</p>
+              <h2 data-scroll-reveal data-reveal="left" className="mt-4 max-w-[590px] text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-white"><span className="text-white">The work matters.</span> <span className="text-white">So does the person doing it.</span></h2>
+              <p data-scroll-reveal data-reveal="left" className="mt-5 max-w-[620px] text-sm leading-7 text-white/80 sm:text-base">Learning is more durable when someone can challenge your thinking, celebrate the progress, and help you connect a project to the direction you are building toward.</p>
             </div>
-            <div className="relative flex items-start justify-start lg:justify-end lg:pt-0"><TestimonialsRotator /></div>
+            <div data-scroll-reveal data-reveal="right" className="relative flex items-start justify-start lg:justify-end lg:pt-0"><TestimonialsRotator /></div>
           </div>
         </section>
 
-        <section id="community" className="scroll-mt-20 bg-[#f6eef9] px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
-          <div className="relative mx-auto grid max-w-[1440px] items-center gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-24">
-            <div className="relative pt-8 sm:pt-10"><div className="absolute left-0 top-0 h-20 w-20 border-l border-t border-[#f47945]" /><Image src={COMMUNITY_IMAGE} alt="African learners sharing a collaborative learning space" width={1400} height={1000} sizes="(min-width: 1024px) 55vw, 100vw" className="aspect-[1.4] w-full object-cover object-center [clip-path:polygon(0_0,100%_0,100%_82%,82%_100%,0_88%)]" /></div>
-            <div className="max-w-[520px]"><h2 className="mt-4 text-[clamp(1.75rem,2.8vw,3rem)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#151116]"><span className="text-[#151116]">A place to learn from other people in</span> <span className="text-[#f47945]">motion.</span></h2><p className="mt-5 max-w-[480px] text-sm leading-7 text-[#6e6072] sm:text-base">The LEA community is for sharing questions, meeting collaborators, seeing what peers are building, and staying connected to a wider conversation about digital work.</p><div className="mt-6 flex flex-wrap gap-2">{["Peer exchange", "Guest sessions", "Studio events", "Open resources"].map((label) => <span key={label} className="border border-[#cdb7d5] bg-white/30 px-3 py-2 text-[10px] font-bold text-[#5c4566]">{label}</span>)}</div><Link href="/register" className="mt-6 inline-flex items-center gap-2 text-xs font-black text-[#4d176e]">Ask about the LEA community <ExternalLink className="h-3.5 w-3.5" /></Link></div>
+        <section id="community" className="scroll-mt-20 bg-white px-5 py-16 sm:px-10 sm:py-18 lg:px-[7vw] lg:py-22">
+          <div data-scroll-parallax className="relative mx-auto grid max-w-[1280px] items-center gap-8 rounded-[32px] border border-[#eee3e9] bg-white p-5 shadow-[0_24px_70px_rgba(31,13,46,0.06)] sm:p-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20 lg:p-10">
+            <div data-scroll-reveal data-reveal="left" className="group relative mx-auto aspect-[4/5] w-full max-w-[500px] overflow-hidden rounded-[28px] bg-white shadow-[0_24px_60px_rgba(36,16,43,0.16)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_32px_72px_rgba(36,16,43,0.24)] focus-within:-translate-y-1">
+              <Image src="/posters/scratch-bootcamp-sharp.png" alt="LEA Labs Scratch Programming Bootcamp holiday poster with the full programme price of KES 25,000." fill sizes="(min-width: 1024px) 500px, 90vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+            </div>
+            <div data-scroll-reveal data-reveal="right" className="max-w-[600px] lg:py-6">
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#f47945]">Holiday bootcamp</p>
+              <h2 className="mt-3 max-w-[18ch] text-[clamp(1.5rem,2.3vw,2.35rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-[#151116]">Digital Scratch Programming</h2>
+              <p className="mt-4 max-w-[54ch] text-sm leading-6 text-[#6e6072]">During the school holidays, learners use Scratch to turn ideas into interactive stories, animations, and simple games—one practical project at a time.</p>
+              <div className="mt-6 flex flex-col gap-2 rounded-2xl border border-[#f1ded5] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-4">
+                <div>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#6e6072]">Full programme</p>
+                  <p className="mt-1 text-xl font-semibold tracking-tight text-[#4d176e] sm:text-[1.35rem]">KES 25,000</p>
+                </div>
+                <p className="max-w-[28ch] text-xs leading-5 text-[#6e6072] sm:text-right">Covers the full programme.</p>
+              </div>
+              <Link href="/register" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#f47945] px-5 py-3 text-xs font-semibold text-[#1f0d2e] shadow-[0_12px_24px_rgba(244,121,69,0.18)] transition hover:-translate-y-0.5 hover:bg-[#ff8f57] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f47945] focus-visible:ring-offset-2">Register your interest <ArrowRight className="h-4 w-4" /></Link>
+            </div>
           </div>
         </section>
 
@@ -213,13 +281,13 @@ export default function LandingPage() {
         <footer className="bg-[#1f0d2e] px-5 py-8 text-white sm:px-10 lg:px-[7vw] lg:py-9">
           <div className="mx-auto max-w-[1440px]">
             <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-              <div className="flex flex-col items-start gap-2 text-xs leading-5 text-[#d7c6df]">
+              <div data-scroll-reveal className="flex flex-col items-start gap-2 text-xs leading-5 text-[#d7c6df]">
                 <div className="inline-flex items-start gap-2"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f47945]" strokeWidth={2} aria-hidden="true" /><span>Applewood Adams, 13th Floor</span></div>
                 <a className="inline-flex items-center gap-2 transition hover:text-white" href="tel:0729929101"><Phone className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />0729 929101</a>
                 <a className="inline-flex items-center gap-2 transition hover:text-white" href="mailto:lealabsplc@gmail.com"><Mail className="h-3.5 w-3.5 text-[#f47945]" strokeWidth={2} aria-hidden="true" />lealabsplc@gmail.com</a>
                 <div className="mt-5"><SocialLinks /></div>
               </div>
-              <div className="flex flex-col items-start gap-4">
+              <div data-scroll-reveal className="flex flex-col items-start gap-4">
                 <div className="text-left">
                   <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#f6eef9]">LEA Labs</p>
                   <p className="mt-2 text-xs leading-6 text-[#d7c6df]">Practical learning for digital work.</p>
@@ -227,7 +295,7 @@ export default function LandingPage() {
                 <Link className="inline-flex items-center gap-2 self-start bg-[#f47945] px-5 py-3 text-xs font-semibold text-[#351039] transition hover:bg-white" href="/register">Get started <ArrowRight className="h-3.5 w-3.5" /></Link>
               </div>
             </div>
-            <div className="mt-6 border-t border-white/10 pt-4 text-[11px] text-[#bfa9c8]">
+            <div data-scroll-reveal className="mt-6 border-t border-white/10 pt-4 text-[11px] text-[#bfa9c8]">
               <span>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</span>
             </div>
           </div>

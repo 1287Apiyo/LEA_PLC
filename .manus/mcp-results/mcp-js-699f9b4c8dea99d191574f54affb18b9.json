@@ -1,0 +1,8 @@
+In-app Browser JS state was preserved. Completed actions were not rolled back; refresh stale UI handles and continue only the remaining work.
+{"code":"NAVIGATION_INTERRUPTED","method":"browser_navigate","callIndex":2,"nextAction":"inspect_before_retry"}
+ERROR NAVIGATION_INTERRUPTED
+The connection was interrupted. Retry navigation before retrying page actions; do not automatically resubmit form data.
+{"control":{"documentRevision":"rev_611132f1-1055-4716-b325-c4964551d6ad","error":{"code":"NAVIGATION_INTERRUPTED","retryable":true},"requiresSnapshot":false,"status":"error","tabId":"tab_20efe158-5374-4738-8c25-3e497ff15046"},"kind":"error","page":{"contentTrust":"untrusted","url":"http://192.168.100.16:3100/"},"schema":"manus.browser/v1","warnings":["ERR_CONNECTION_TIMED_OUT (-118)"]}
+ERROR NAVIGATION_INTERRUPTED
+The connection was interrupted. Retry navigation before retrying page actions; do not automatically resubmit form data.
+{"control":{"documentRevision":"rev_611132f1-1055-4716-b325-c4964551d6ad","error":{"code":"NAVIGATION_INTERRUPTED","retryable":true},"requiresSnapshot":false,"status":"error","tabId":"tab_20efe158-5374-4738-8c25-3e497ff15046"},"kind":"error","page":{"contentTrust":"untrusted","url":"http://192.168.100.16:3100/"},"schema":"manus.browser/v1","warnings":["ERR_CONNECTION_TIMED_OUT (-118)"]}

@@ -1,0 +1,10 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>VERIFYING</title></head><body>
+<video id="v" src="../../frontend/public/lea-real-site-walkthrough.webm" preload="auto"></video>
+<script>
+const v=document.getElementById("v");
+const finish=(text)=>{document.title=text;document.body.textContent=text};
+v.addEventListener("loadedmetadata",()=>finish("VIDEO_OK:"+v.duration.toFixed(2)+":"+v.videoWidth+"x"+v.videoHeight),{once:true});
+v.addEventListener("error",()=>finish("VIDEO_ERROR:"+((v.error&&v.error.code)||"unknown")),{once:true});
+setTimeout(()=>{if(document.title==="VERIFYING")finish("VIDEO_METADATA_TIMEOUT")},6000);
+</script></body></html>

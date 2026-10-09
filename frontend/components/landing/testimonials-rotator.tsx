@@ -41,7 +41,7 @@ export function TestimonialsRotator() {
         </p>
         <div className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="text-sm font-bold text-[#f47945]">{testimonial.name}</span>
-          <span className="text-xs text-[#ead9ed]">{testimonial.detail}</span>
+          <span className="text-xs text-white/70">{testimonial.detail}</span>
         </div>
       </div>
       <div className="mt-6 flex items-center gap-2" aria-label="Testimonial navigation">
@@ -52,7 +52,7 @@ export function TestimonialsRotator() {
             onClick={() => setActiveIndex(index)}
             aria-label={`Show testimonial ${index + 1}`}
             aria-pressed={activeIndex === index}
-            className={`h-1.5 rounded-full transition-all ${activeIndex === index ? "w-8 bg-[#f47945]" : "w-2 bg-white/35 hover:bg-white/70"}`}
+            className={`h-1.5 rounded-full transition-all ${activeIndex === index ? "w-8 bg-[#f47945]" : "w-2 bg-white/30 hover:bg-white/60"}`}
           />
         ))}
       </div>

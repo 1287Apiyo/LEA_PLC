@@ -5,9 +5,9 @@ import { Mail, MessageCircle, Phone, X, ArrowRight } from "lucide-react";
 import { useState } from "react";
 
 const services = [
-  { number: "01", title: "Product development", description: "We develop products, systems, apps, and websites that help people and organisations do more useful work.", detail: "From idea to launch, we bring the strategy, design, and technology together into something real and ready to use.", image: "/lea-card-software-human.png", outcomes: ["Products and platforms", "Apps and websites", "Systems that scale"] },
-  { number: "02", title: "Consultation", description: "Get clear, practical guidance before you invest time, budget, or energy in the wrong technology move.", detail: "We help you understand the options, shape a sensible direction, and make decisions your team can stand behind.", image: "/lea-home-community.png", outcomes: ["Technology strategy", "Clear priorities", "Confident decisions"] },
-  { number: "03", title: "Corporate training", description: "Give your team practical digital skills they can use with confidence in their everyday work.", detail: "We design focused learning experiences around the tools, capabilities, and outcomes that matter to your organisation.", image: "/lea-corporate-training.jpg", outcomes: ["Practical workshops", "Team capability", "Relevant learning"] },
+  { number: "01", title: "Product development", description: "We develop products, systems, apps, and websites that help people and organisations do more useful work.", detail: "From idea to launch, we bring the strategy, design, and technology together into something real and ready to use.", image: "/app.jpg", outcomes: ["Products and platforms", "Apps and websites", "Systems that scale"] },
+  { number: "02", title: "Consultation", description: "Get clear, practical guidance before you invest time, budget, or energy in the wrong technology move.", detail: "We help you understand the options, shape a sensible direction, and make decisions your team can stand behind.", image: "/consultation.jpg", outcomes: ["Technology strategy", "Clear priorities", "Confident decisions"] },
+  { number: "03", title: "Corporate training", description: "Give your team practical digital skills they can use with confidence in their everyday work.", detail: "We design focused learning experiences around the tools, capabilities, and outcomes that matter to your organisation.", image: "/train.jpg", outcomes: ["Practical workshops", "Team capability", "Relevant learning"] },
 ];
 
 const phone = "0729929101";
