@@ -71,6 +71,22 @@ export function ProgrammeCurriculum({ items }: ProgrammeCurriculumProps) {
                     </span>
                   ))}
                 </div>
+                {item.project ? (
+                  <div className="mt-4 rounded-[14px] border border-[#f47945]/35 bg-[#fff7f2] p-4">
+                    <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[#b94920]">Build project</p>
+                    <p className="mt-1.5 text-sm leading-6 text-[#4a354c]">{item.project}</p>
+                  </div>
+                ) : null}
+                {item.stack?.length ? (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-black uppercase tracking-[0.14em] text-[#8a748e]">Stack</span>
+                    {item.stack.map((technology) => (
+                      <span key={technology} className="rounded-full border border-[#248c7b]/25 bg-[#eef8f5] px-3 py-1.5 text-xs font-semibold text-[#176b5e]">
+                        {technology}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             </details>
           );

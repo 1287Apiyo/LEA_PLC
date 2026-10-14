@@ -14,6 +14,9 @@ export interface CourseCatalogItem {
   track: string;
   outcomes: string[];
   skills: string[];
+  stack: string[];
+  evidence: string[];
+  integration: string | null;
   deliverable: string;
   project: string;
   trend_tags: string[];
@@ -147,6 +150,9 @@ export interface CourseDetail {
   track?: string;
   outcomes?: string[];
   skills?: string[];
+  stack?: string[];
+  evidence?: string[];
+  integration?: string | null;
   deliverable?: string;
   project?: string;
   trend_tags?: string[];
