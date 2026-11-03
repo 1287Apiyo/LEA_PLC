@@ -144,8 +144,6 @@ export default function LandingPage() {
           </div>
           <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,18,20,0.88)_0%,rgba(15,18,20,0.58)_34%,rgba(15,18,20,0.08)_72%,rgba(15,18,20,0.16)_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(15,18,20,0.66)_0%,transparent_45%),radial-gradient(circle_at_55%_60%,rgba(244,121,69,0.1),transparent_30%)]" />
-          <div aria-hidden="true" className="lea-float-orb pointer-events-none absolute right-[13%] top-[22%] hidden h-20 w-20 rounded-full border border-white/20 bg-white/5 lg:block" />
-          <div aria-hidden="true" className="lea-float-orb lea-float-orb-delay pointer-events-none absolute bottom-[24%] right-[28%] hidden h-10 w-10 rounded-full border border-[#f47945]/40 bg-[#f47945]/10 lg:block" />
           <div className="relative flex h-full min-h-0 items-start justify-start px-5 pb-20 pt-24 sm:h-auto sm:min-h-[680px] sm:items-end sm:px-10 sm:pb-44 sm:pt-0 lg:min-h-[720px] lg:px-[7vw] lg:pb-48">
             <div className="mx-auto mr-auto w-full max-w-[1440px]">
               <div key={activeHero.slug} data-scroll-reveal className="lea-slide-content-enter w-full max-w-[900px]">
