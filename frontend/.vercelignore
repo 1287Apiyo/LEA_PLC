@@ -1,0 +1,12 @@
+# Generated dependencies and build artifacts are installed by Vercel.
+node_modules/
+.next/
+
+# Local-only configuration and private administrator files.
+.env*
+var/
+
+# Local diagnostics and development utilities are not part of the web app.
+*.log
+scripts/
+_scripts/

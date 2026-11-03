@@ -2,10 +2,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Firebase App Hosting expects the standalone server bundle and route manifest.
-  output: "standalone",
-  // App Hosting builds from frontend/, so keep the standalone bundle rooted here.
-  outputFileTracingRoot: __dirname,
+  // Vercel detects and deploys this Next.js application directly from frontend/.
+  // Do not use `output: "standalone"`: that setting was only needed by the
+  // previous Firebase App Hosting deployment.
   serverExternalPackages: ["pdfkit"],
   images: {
     remotePatterns: [
